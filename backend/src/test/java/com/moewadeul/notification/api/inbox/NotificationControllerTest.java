@@ -10,7 +10,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import com.moewadeul.common.error.BusinessException;
 import com.moewadeul.common.error.CommonErrorCode;
 import com.moewadeul.common.error.GlobalExceptionHandler;
-import com.moewadeul.common.paging.PageSlice;
+import com.moewadeul.common.paging.CursorSlice;
 import com.moewadeul.common.security.LoginMember;
 import com.moewadeul.common.security.SecurityConfig;
 import com.moewadeul.common.trace.TraceIdFilter;
@@ -62,16 +62,16 @@ class NotificationControllerTest {
     }
 
     @Test
-    @DisplayName("[F-20] 목록은 content·page·size·hasNext 형식이고 page와 size를 생략하면 0과 20이다")
-    void listReturnsPageFormat() {
+    @DisplayName("[F-20] 목록은 content·size·hasNext·nextCursor 형식이고 cursor와 size를 생략하면 null과 20이다")
+    void listReturnsCursorFormat() {
         Instant createdAt = Instant.parse("2026-10-05T03:00:00Z");
-        when(notificationQueryService.list(MEMBER_ID, 0, 20))
-                .thenReturn(new PageSlice<>(
+        when(notificationQueryService.list(MEMBER_ID, null, 20))
+                .thenReturn(new CursorSlice<>(
                         List.of(new NotificationItem(
                                 11L, "BASECAMP_APPROVED", "합류 승인", "승인됐습니다.", "/basecamps/3", null, createdAt)),
-                        0,
                         20,
-                        true));
+                        true,
+                        11L));
 
         MvcTestResult result = mvc.get().uri(PATH).with(login()).exchange();
 
@@ -89,50 +89,55 @@ class NotificationControllerTest {
                       "createdAt": "2026-10-05T03:00:00Z"
                     }
                   ],
-                  "page": 0,
                   "size": 20,
-                  "hasNext": true
+                  "hasNext": true,
+                  "nextCursor": 11
                 }
                 """);
     }
 
     @Test
-    @DisplayName("[F-20] page와 size를 보내면 그대로 서비스에 넘긴다")
-    void listPassesPageAndSize() {
-        when(notificationQueryService.list(MEMBER_ID, 2, 50)).thenReturn(new PageSlice<>(List.of(), 2, 50, false));
+    @DisplayName("[F-20] cursor와 size를 보내면 그대로 서비스에 넘긴다")
+    void listPassesCursorAndSize() {
+        when(notificationQueryService.list(MEMBER_ID, 11L, 50))
+                .thenReturn(new CursorSlice<>(List.of(), 50, false, null));
 
         MvcTestResult result =
-                mvc.get().uri(PATH + "?page=2&size=50").with(login()).exchange();
+                mvc.get().uri(PATH + "?cursor=11&size=50").with(login()).exchange();
 
         assertThat(result).hasStatus(HttpStatus.OK);
-        assertThat(result).bodyJson().extractingPath("$.page").isEqualTo(2);
-        verify(notificationQueryService).list(MEMBER_ID, 2, 50);
+        assertThat(result).bodyJson().extractingPath("$.nextCursor").isNull();
+        verify(notificationQueryService).list(MEMBER_ID, 11L, 50);
     }
 
     @Test
-    @DisplayName("[F-20] size가 51이거나 0이거나 page가 음수이면 400 INVALID_INPUT이다")
+    @DisplayName("[F-20] 옛 클라이언트가 보내는 page 파라미터는 무시하고 첫 쪽으로 읽는다")
+    void listIgnoresLegacyPage() {
+        when(notificationQueryService.list(MEMBER_ID, null, 20))
+                .thenReturn(new CursorSlice<>(List.of(), 20, false, null));
+
+        MvcTestResult result = mvc.get().uri(PATH + "?page=3").with(login()).exchange();
+
+        assertThat(result).hasStatus(HttpStatus.OK);
+        verify(notificationQueryService).list(MEMBER_ID, null, 20);
+    }
+
+    @Test
+    @DisplayName("[F-20] size가 51이거나 0이거나 cursor가 0·음수·숫자가 아니면 400 INVALID_INPUT이다")
     void listRejectsOutOfRangePaging() {
         MvcTestResult tooBig = mvc.get().uri(PATH + "?size=51").with(login()).exchange();
         MvcTestResult zero = mvc.get().uri(PATH + "?size=0").with(login()).exchange();
-        MvcTestResult negativePage =
-                mvc.get().uri(PATH + "?page=-1").with(login()).exchange();
+        MvcTestResult zeroCursor =
+                mvc.get().uri(PATH + "?cursor=0").with(login()).exchange();
+        MvcTestResult negativeCursor =
+                mvc.get().uri(PATH + "?cursor=-1").with(login()).exchange();
+        MvcTestResult textCursor =
+                mvc.get().uri(PATH + "?cursor=abc").with(login()).exchange();
 
-        assertThat(tooBig).hasStatus(HttpStatus.BAD_REQUEST);
-        assertThat(tooBig).bodyJson().extractingPath("$.code").isEqualTo("INVALID_INPUT");
-        assertThat(zero).hasStatus(HttpStatus.BAD_REQUEST);
-        assertThat(negativePage).hasStatus(HttpStatus.BAD_REQUEST);
-        verifyNoInteractions(notificationQueryService);
-    }
-
-    @Test
-    @DisplayName("[F-20] 건너뛸 건수가 int 범위를 넘는 큰 page는 500이 아니라 400 INVALID_INPUT이다")
-    void listRejectsPageBeyondIntOffset() {
-        MvcTestResult result =
-                mvc.get().uri(PATH + "?page=50000000&size=50").with(login()).exchange();
-
-        assertThat(result).hasStatus(HttpStatus.BAD_REQUEST);
-        assertThat(result).bodyJson().extractingPath("$.code").isEqualTo("INVALID_INPUT");
-        assertThat(result).bodyJson().extractingPath("$.fieldErrors[0].field").isEqualTo("page");
+        for (MvcTestResult result : new MvcTestResult[] {tooBig, zero, zeroCursor, negativeCursor, textCursor}) {
+            assertThat(result).hasStatus(HttpStatus.BAD_REQUEST);
+            assertThat(result).bodyJson().extractingPath("$.code").isEqualTo("INVALID_INPUT");
+        }
         verifyNoInteractions(notificationQueryService);
     }
 
