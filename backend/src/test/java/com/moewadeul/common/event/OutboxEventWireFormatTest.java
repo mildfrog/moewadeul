@@ -6,6 +6,7 @@ import com.moewadeul.member.application.EmailVerificationEvents;
 import com.moewadeul.member.application.MemberSessionCleanup;
 import com.moewadeul.member.application.password.PasswordResetEvents;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -106,6 +107,14 @@ class OutboxEventWireFormatTest {
                         new BasecampEvents.MembersPayload(30L, List.of(4L, 5L)),
                         "{\"basecampId\":30,\"memberIds\":[4,5]}",
                         "{\"memberIds\": [4, 5], \"basecampId\": 30}"),
+                new Wire(
+                        "BASECAMP_CONFIRMED",
+                        BasecampEvents.CONFIRMED,
+                        "BASECAMP",
+                        BasecampEvents.AGGREGATE_TYPE,
+                        new BasecampEvents.MembersPayload(30L, List.of(4L, 5L), true, LocalDate.of(2026, 11, 18)),
+                        "{\"basecampId\":30,\"memberIds\":[4,5],\"automatic\":true,\"startDate\":\"2026-11-18\"}",
+                        "{\"automatic\": true, \"memberIds\": [4, 5], \"startDate\": \"2026-11-18\", \"basecampId\": 30}"),
                 new Wire(
                         "EMAIL_VERIFICATION_REQUESTED",
                         EmailVerificationEvents.EVENT_TYPE,

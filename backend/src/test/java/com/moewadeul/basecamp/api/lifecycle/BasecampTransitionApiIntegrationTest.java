@@ -159,8 +159,12 @@ class BasecampTransitionApiIntegrationTest {
         assertThat(events.get(0).get("aggregate_type")).isEqualTo("BASECAMP");
         assertThat(((Number) events.get(0).get("aggregate_id")).longValue()).isEqualTo(basecampId);
         JsonNode payload = jsonMapper.readTree((String) events.get(0).get("payload"));
-        assertThat(Set.copyOf(payload.propertyNames())).containsExactlyInAnyOrder("basecampId", "memberIds");
+        // 캠프 리더의 확정은 개별 메일이라 automatic이 없고, 메일 기한(EV-09)에 쓸 출발일이 있다.
+        assertThat(Set.copyOf(payload.propertyNames()))
+                .containsExactlyInAnyOrder("basecampId", "memberIds", "startDate");
         assertThat(payload.get("basecampId").asLong()).isEqualTo(basecampId);
+        assertThat(payload.get("startDate").asString())
+                .isEqualTo(fixture.basecampRow(basecampId).get("start_date").toString());
         assertThat(memberIds(payload)).containsExactlyInAnyOrder(leader.getId(), member.getId());
     }
 
