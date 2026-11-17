@@ -15,7 +15,7 @@ public interface MemoryMapper {
             @Param("memberId") long memberId, @Param("visibility") MemoryVisibility visibility);
 
     List<MemoryFeedRow> selectPublicFeed(
-            @Param("viewerId") Long viewerId, @Param("limit") int limit, @Param("offset") long offset);
+            @Param("viewerId") Long viewerId, @Param("cursor") Long cursor, @Param("limit") int limit);
 
     boolean existsActiveMember(@Param("memberId") long memberId);
 

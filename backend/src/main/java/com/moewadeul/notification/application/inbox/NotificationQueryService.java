@@ -1,9 +1,9 @@
 package com.moewadeul.notification.application.inbox;
 
+import com.moewadeul.common.paging.CursorSlice;
 import com.moewadeul.common.paging.PageSlice;
 import com.moewadeul.notification.domain.Notification;
 import com.moewadeul.notification.domain.NotificationRepository;
-import com.moewadeul.notification.domain.NotificationSlice;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,9 @@ public class NotificationQueryService {
     private final NotificationRepository notificationRepository;
 
     @Transactional(readOnly = true)
-    public PageSlice<NotificationItem> list(long memberId, int page, int size) {
-        NotificationSlice slice = notificationRepository.findPage(memberId, page, size);
-        List<NotificationItem> content =
-                slice.content().stream().map(NotificationQueryService::toItem).toList();
-        return new PageSlice<>(content, page, size, slice.hasNext());
+    public CursorSlice<NotificationItem> list(long memberId, Long cursor, int size) {
+        List<Notification> rows = notificationRepository.findRecent(memberId, cursor, PageSlice.fetchSize(size));
+        return CursorSlice.of(rows, size, Notification::getId).map(NotificationQueryService::toItem);
     }
 
     @Transactional(readOnly = true)

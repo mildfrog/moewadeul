@@ -11,7 +11,7 @@ public interface NotificationRepository {
 
     Optional<Notification> findByIdAndMemberId(long id, long memberId);
 
-    NotificationSlice findPage(long memberId, int page, int size);
+    List<Notification> findRecent(long memberId, Long cursor, int limit);
 
     long countByMemberIdAndReadAtIsNull(long memberId);
 

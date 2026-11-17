@@ -54,6 +54,27 @@ class SpotReviewApiIntegrationTest {
     private TestImageStorage storage;
 
     @Test
+    @DisplayName("[F-10] 후기 목록은 page×size가 10,000을 넘으면 400 INVALID_INPUT이고, 마지막 허용 쪽은 200이다")
+    void listRejectsPageBeyondDepthLimit() {
+        // given
+        long spotId = saveSpot();
+
+        // when
+        MvcTestResult lastAllowed = mvc.get()
+                .uri("/api/spots/" + spotId + "/reviews?page=499&size=20")
+                .exchange();
+        MvcTestResult beyond = mvc.get()
+                .uri("/api/spots/" + spotId + "/reviews?page=500&size=20")
+                .exchange();
+
+        // then
+        assertThat(lastAllowed).hasStatus(HttpStatus.OK);
+        assertThat(lastAllowed).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+        assertThat(beyond).hasStatus(HttpStatus.BAD_REQUEST);
+        assertThat(beyond).bodyJson().extractingPath("$.code").isEqualTo("INVALID_INPUT");
+    }
+
+    @Test
     @DisplayName("[F-10] 인증 회원이 CSRF 토큰과 함께 후기를 쓰면 201이고, 비로그인 사용자의 목록과 상세에 그 후기가 보인다")
     void writeThenListAndDetailAsAnonymous() {
         // given

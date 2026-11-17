@@ -126,7 +126,7 @@ api("GET /api/community/posts/{postId}",
 api("GET /api/community/posts/{postId}/comments",
     rows="(SELECT p.id postId FROM community_post p JOIN community_comment c ON c.post_id=p.id WHERE p.status='ACTIVE' GROUP BY p.id ORDER BY COUNT(*) DESC LIMIT 5) UNION ALL "
          "(SELECT id FROM community_post WHERE status='ACTIVE' AND id % 1999 = 11 LIMIT 45)")
-api("GET /api/memories/feed", rows=[{}, dict(page=3), dict(page=50), dict(page=500), dict(actor=HEAVY)], query=lambda r: r)
+api("GET /api/memories/feed", rows=[{}, dict(cursor="__MEMORY_AFTER_60__"), dict(cursor="__MEMORY_AFTER_1000__"), dict(cursor="__MEMORY_AFTER_10000__"), dict(actor=HEAVY)], query=lambda r: r)
 api("GET /api/memories/{memoryId}", rows="SELECT id memoryId, IF(id % 2 = 0, 'bg0000001@loadtest.invalid', '') actor FROM memory WHERE visibility='PUBLIC' AND status='ACTIVE' AND id % 397 = 3 LIMIT 100")
 api("GET /api/members/{memberId}/memories", rows="(SELECT id memberId FROM member WHERE email='user000001@loadtest.invalid') UNION ALL (SELECT DISTINCT member_id FROM memory WHERE id % 397 = 3 LIMIT 50)")
 api("GET /api/members/{memberId}/profile", rows="SELECT id memberId FROM member WHERE email LIKE 'bg00000%' LIMIT 100")
@@ -136,8 +136,8 @@ for key in ["GET /api/me", "GET /api/me/trust", "GET /api/me/basecamps", "GET /a
             "GET /api/me/companion-reviews/received", "GET /api/me/notification-settings", "GET /api/me/solo-trips"]:
     api(key, rows=f"SELECT email actor FROM member WHERE email LIKE 'bg00000%' AND status='ACTIVE' LIMIT 40")
 api("GET /api/me/memories", rows=[dict(actor=USER1)])
-api("GET /api/me/notifications", rows=[dict(actor=USER1, page=0), dict(actor=USER1, page=3), dict(actor=USER1, page=100), dict(actor=HEAVY, page=0)],
-    query=lambda r: {"page": r["page"]})
+api("GET /api/me/notifications", rows=[dict(actor=USER1), dict(actor=USER1, cursor="__NOTIF_AFTER_60__"), dict(actor=USER1, cursor="__NOTIF_AFTER_2000__"), dict(actor=HEAVY)],
+    query=lambda r: {"cursor": r["cursor"]} if "cursor" in r else {})
 api("GET /api/me/notifications/unread-count", rows=[dict(actor=USER1), dict(actor=HEAVY)])
 api("GET /api/me/program-applications", rows="SELECT email actor FROM member WHERE email LIKE 'user00000%' LIMIT 40")
 api("GET /api/members/{memberId}/companion-reviews", actor=HEAVY,

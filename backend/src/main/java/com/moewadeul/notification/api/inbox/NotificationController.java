@@ -1,7 +1,7 @@
 package com.moewadeul.notification.api.inbox;
 
 import com.moewadeul.common.security.LoginMember;
-import com.moewadeul.common.web.PageResponse;
+import com.moewadeul.common.web.CursorResponse;
 import com.moewadeul.notification.application.inbox.NotificationQueryService;
 import com.moewadeul.notification.application.inbox.NotificationReadService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,17 +28,19 @@ class NotificationController {
 
     @Operation(
             summary = "알림함 목록",
-            description = "로그인한 회원의 알림을 최신순으로 돌려준다. page는 0부터 시작하고 기본값은 0이다. size는 1~50이고 기본값은 20이다. "
-                    + "응답에는 전체 개수가 없고 다음 페이지가 있는지만 hasNext로 알려 준다. "
-                    + "content의 각 항목에는 notificationId, type, title, body, link, readAt, createdAt이 있다. "
-                    + "link는 연결할 화면이 없으면 null이고, readAt은 아직 읽지 않았으면 null이다. "
-                    + "로그인하지 않았으면 401 AUTHENTICATION_REQUIRED, page·size가 범위를 벗어나면 400 INVALID_INPUT이다.")
+            description =
+                    "로그인한 회원의 알림을 최신순으로 돌려준다. 첫 페이지는 cursor 없이 요청하고, 다음 페이지는 응답의 nextCursor를 cursor(1 이상)로 보내 이어 읽는다. "
+                            + "size는 1~50이고 기본값은 20이다. 전체 개수 없이 content, size, hasNext, nextCursor를 주고, 마지막 페이지면 nextCursor는 null이다. "
+                            + "페이지 사이에 새 알림이 와도 이미 읽은 알림이 다시 나오거나 건너뛰어지지 않는다. "
+                            + "content의 각 항목에는 notificationId, type, title, body, link, readAt, createdAt이 있다. "
+                            + "link는 연결할 화면이 없으면 null이고, readAt은 아직 읽지 않았으면 null이다. "
+                            + "로그인하지 않았으면 401 AUTHENTICATION_REQUIRED, cursor·size가 범위를 벗어나면 400 INVALID_INPUT이다.")
     @GetMapping
-    PageResponse<NotificationResponse> list(
+    CursorResponse<NotificationResponse> list(
             @AuthenticationPrincipal LoginMember loginMember,
             @Valid @ParameterObject @ModelAttribute NotificationListRequest request) {
-        return PageResponse.from(
-                notificationQueryService.list(loginMember.memberId(), request.pageOrDefault(), request.sizeOrDefault()),
+        return CursorResponse.from(
+                notificationQueryService.list(loginMember.memberId(), request.cursor(), request.sizeOrDefault()),
                 NotificationResponse::from);
     }
 

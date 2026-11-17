@@ -2,14 +2,11 @@ package com.moewadeul.notification.infra;
 
 import com.moewadeul.notification.domain.Notification;
 import com.moewadeul.notification.domain.NotificationRepository;
-import com.moewadeul.notification.domain.NotificationSlice;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,12 +20,15 @@ public interface NotificationJpaRepository extends JpaRepository<Notification, L
     @Override
     Optional<Notification> findByIdAndMemberId(long id, long memberId);
 
-    Slice<Notification> findByMemberIdOrderByIdDesc(long memberId, Pageable pageable);
+    List<Notification> findByMemberIdOrderByIdDesc(long memberId, Limit limit);
+
+    List<Notification> findByMemberIdAndIdLessThanOrderByIdDesc(long memberId, long cursor, Limit limit);
 
     @Override
-    default NotificationSlice findPage(long memberId, int page, int size) {
-        Slice<Notification> slice = findByMemberIdOrderByIdDesc(memberId, PageRequest.of(page, size));
-        return new NotificationSlice(slice.getContent(), slice.hasNext());
+    default List<Notification> findRecent(long memberId, Long cursor, int limit) {
+        return cursor == null
+                ? findByMemberIdOrderByIdDesc(memberId, Limit.of(limit))
+                : findByMemberIdAndIdLessThanOrderByIdDesc(memberId, cursor, Limit.of(limit));
     }
 
     @Override
