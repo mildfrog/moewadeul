@@ -25,8 +25,14 @@ public class OutboxPollingScheduler implements ApplicationListener<ContextRefres
     private static final String JOB_NAME = "outbox-polling";
     private static final String MAIL_JOB_NAME = "outbox-mail-polling";
 
+    // 묶음이 가득 차면 1초를 쉬지 않고 바로 다음 묶음을 집는다. 쉬면 0시 자동 처리처럼 수천 건이 한꺼번에 쌓였을 때
+    // 처리량이 묶음 크기/1초(초당 약 21건)로 묶여, 그 뒤에 들어온 다른 알림이 몇 분씩 기다린다(5,000건에 226초).
+    // 한 번 실행에 묶음 수를 제한해 실행마다 실패 지표와 종료 확인이 돌아오게 한다.
+    static final int MAX_BATCHES_PER_RUN = 40;
+
     private final OutboxPublisher publisher;
     private final ScheduledJobRunner jobRunner;
+    private final int batchSize;
 
     public OutboxPollingScheduler(
             OutboxPublisher publisher,
@@ -36,6 +42,7 @@ public class OutboxPollingScheduler implements ApplicationListener<ContextRefres
         properties.requireLeaseOutlastsBatch(mailProperties.sendTimeout());
         this.publisher = publisher;
         this.jobRunner = jobRunner;
+        this.batchSize = properties.batchSize();
         jobRunner.register(JOB_NAME);
         jobRunner.register(MAIL_JOB_NAME);
     }
@@ -58,9 +65,16 @@ public class OutboxPollingScheduler implements ApplicationListener<ContextRefres
     }
 
     private void publish(OutboxLane lane) {
-        int processed = publisher.publishPending(lane);
-        if (processed > 0) {
-            log.debug("outbox events processed lane={} count={}", lane, processed);
+        int total = 0;
+        for (int batch = 0; batch < MAX_BATCHES_PER_RUN; batch++) {
+            int processed = publisher.publishPending(lane);
+            total += processed;
+            if (processed < batchSize) {
+                break;
+            }
+        }
+        if (total > 0) {
+            log.debug("outbox events processed lane={} count={}", lane, total);
         }
     }
 }
