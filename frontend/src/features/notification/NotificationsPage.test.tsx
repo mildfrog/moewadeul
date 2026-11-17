@@ -8,7 +8,7 @@ import {
   markAllNotificationsRead,
   updateNotificationSettings,
 } from '../../api/notifications';
-import type { NotificationItem, NotificationSetting, Page } from '../../api/types';
+import type { CursorPage, NotificationItem, NotificationSetting } from '../../api/types';
 import { NotificationsPage } from './NotificationsPage';
 
 vi.mock('../../api/notifications', async (importOriginal) => ({
@@ -48,8 +48,9 @@ function notification(id: number, readAt: string | null): NotificationItem {
   } as NotificationItem;
 }
 
-function page(items: NotificationItem[], pageNumber: number, hasNext: boolean): Page<NotificationItem> {
-  return { content: items, page: pageNumber, size: 20, hasNext } as Page<NotificationItem>;
+function cursorPage(items: NotificationItem[], hasNext: boolean): CursorPage<NotificationItem> {
+  const last = items[items.length - 1];
+  return { content: items, size: 20, hasNext, nextCursor: hasNext && last ? last.notificationId : null };
 }
 
 describe('알림 화면', () => {
@@ -67,10 +68,10 @@ describe('알림 화면', () => {
     root = createRoot(container);
     vi.mocked(fetchNotificationSettings).mockResolvedValue([]);
     vi.mocked(markAllNotificationsRead).mockResolvedValue(undefined as never);
-    vi.mocked(fetchNotifications).mockImplementation(async (pageNumber) =>
-      pageNumber === 0
-        ? page([notification(1, null), notification(2, null)], 0, true)
-        : page([notification(3, null)], 1, false),
+    vi.mocked(fetchNotifications).mockImplementation(async (cursor) =>
+      cursor === null
+        ? cursorPage([notification(2, null), notification(1, null)], true)
+        : cursorPage([notification(0, null)], false),
     );
     await act(async () => root.render(<NotificationsPage />));
   });
@@ -81,12 +82,22 @@ describe('알림 화면', () => {
   });
 
   it('더 보기를 누르면 다음 쪽 알림이 아래에 붙고 더 보기 버튼이 사라진다', async () => {
-    expect(container.textContent).not.toContain('알림3');
+    expect(container.textContent).not.toContain('알림0');
 
     await act(async () => button('더 보기')?.click());
 
-    expect(container.textContent).toMatch(/알림1.*알림2.*알림3/);
+    expect(container.textContent).toMatch(/알림2.*알림1.*알림0/);
     expect(button('더 보기')).toBeUndefined();
+  });
+
+  it('첫 요청에는 cursor가 없고, 더 보기는 직전 응답의 nextCursor를 보낸다', async () => {
+    expect(fetchNotifications).toHaveBeenCalledTimes(1);
+    expect(fetchNotifications).toHaveBeenLastCalledWith(null, expect.anything());
+
+    await act(async () => button('더 보기')?.click());
+
+    expect(fetchNotifications).toHaveBeenCalledTimes(2);
+    expect(fetchNotifications).toHaveBeenLastCalledWith(1, undefined);
   });
 
   it('모두 읽음 표시를 누르면 받아 둔 알림이 모두 읽은 상태가 된다', async () => {

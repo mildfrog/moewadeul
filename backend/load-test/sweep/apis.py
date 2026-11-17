@@ -136,8 +136,8 @@ for key in ["GET /api/me", "GET /api/me/trust", "GET /api/me/basecamps", "GET /a
             "GET /api/me/companion-reviews/received", "GET /api/me/notification-settings", "GET /api/me/solo-trips"]:
     api(key, rows=f"SELECT email actor FROM member WHERE email LIKE 'bg00000%' AND status='ACTIVE' LIMIT 40")
 api("GET /api/me/memories", rows=[dict(actor=USER1)])
-api("GET /api/me/notifications", rows=[dict(actor=USER1, page=0), dict(actor=USER1, page=3), dict(actor=USER1, page=100), dict(actor=HEAVY, page=0)],
-    query=lambda r: {"page": r["page"]})
+api("GET /api/me/notifications", rows=[dict(actor=USER1), dict(actor=USER1, cursor="__NOTIF_AFTER_60__"), dict(actor=USER1, cursor="__NOTIF_AFTER_2000__"), dict(actor=HEAVY)],
+    query=lambda r: {"cursor": r["cursor"]} if "cursor" in r else {})
 api("GET /api/me/notifications/unread-count", rows=[dict(actor=USER1), dict(actor=HEAVY)])
 api("GET /api/me/program-applications", rows="SELECT email actor FROM member WHERE email LIKE 'user00000%' LIMIT 40")
 api("GET /api/members/{memberId}/companion-reviews", actor=HEAVY,

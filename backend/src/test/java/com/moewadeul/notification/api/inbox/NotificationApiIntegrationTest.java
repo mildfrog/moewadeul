@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,7 +67,7 @@ class NotificationApiIntegrationTest {
     }
 
     @Test
-    @DisplayName("[F-20] 알림 목록은 최신순이고 다른 회원의 알림은 담지 않으며 size만큼 끊어 hasNext를 알린다")
+    @DisplayName("[F-20] 알림 목록은 최신순이고 다른 회원의 알림은 담지 않으며 size만큼 끊어 hasNext와 nextCursor를 알린다")
     void listIsNewestFirstAndOwnOnly() {
         // given
         long first = insert(owner, "n1", false);
@@ -76,18 +77,128 @@ class NotificationApiIntegrationTest {
 
         // when
         MvcTestResult all = get(ownerSession, PATH);
-        MvcTestResult firstPage = get(ownerSession, PATH + "?page=0&size=2");
-        MvcTestResult secondPage = get(ownerSession, PATH + "?page=1&size=2");
+        MvcTestResult firstPage = get(ownerSession, PATH + "?size=2");
+        MvcTestResult lastPage = get(ownerSession, PATH + "?size=2&cursor=" + nextCursor(firstPage));
 
         // then
         assertThat(all).hasStatus(HttpStatus.OK);
         assertThat(ids(all)).containsExactly(third, second, first);
         assertThat(all).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+        assertThat(all).bodyJson().extractingPath("$.nextCursor").isNull();
+        assertThat(all).bodyJson().doesNotHavePath("$.page");
         assertThat(ids(firstPage)).containsExactly(third, second);
         assertThat(firstPage).bodyJson().extractingPath("$.hasNext").isEqualTo(true);
-        assertThat(ids(secondPage)).containsExactly(first);
-        assertThat(secondPage).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
-        assertThat(secondPage).bodyJson().extractingPath("$.page").isEqualTo(1);
+        assertThat(nextCursor(firstPage)).isEqualTo(second);
+        assertThat(ids(lastPage)).containsExactly(first);
+        assertThat(lastPage).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+        assertThat(lastPage).bodyJson().extractingPath("$.nextCursor").isNull();
+    }
+
+    @Test
+    @DisplayName("[F-20] nextCursor를 따라 끝까지 읽으면 내 알림을 중복과 누락 없이 새것부터 모두 받고 다른 회원 알림은 섞이지 않는다")
+    void followingCursorsReadsEveryOwnNotificationOnce() {
+        // given
+        ArrayList<Long> expected = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            expected.add(0, insert(owner, "own" + i, i % 2 == 0));
+            insert(other, "other" + i, false);
+        }
+
+        // when
+        List<Long> seen = new ArrayList<>();
+        String cursor = "";
+        while (true) {
+            MvcTestResult page = get(ownerSession, PATH + "?size=3" + cursor);
+            assertThat(page).hasStatus(HttpStatus.OK);
+            seen.addAll(ids(page));
+            if (!hasNext(page)) {
+                assertThat(page).bodyJson().extractingPath("$.nextCursor").isNull();
+                break;
+            }
+            cursor = "&cursor=" + nextCursor(page);
+        }
+
+        // then
+        assertThat(seen).containsExactlyElementsOf(expected);
+    }
+
+    @Test
+    @DisplayName("[F-20] 페이지 사이에 새 알림이 와도 다음 쪽은 이미 읽은 알림을 다시 주거나 건너뛰지 않고, 새 알림은 처음부터 다시 읽을 때 맨 앞에 나온다")
+    void newNotificationBetweenPagesDoesNotShiftNextPage() {
+        // given
+        long first = insert(owner, "n1", false);
+        long second = insert(owner, "n2", false);
+        long third = insert(owner, "n3", false);
+        long fourth = insert(owner, "n4", false);
+
+        // when
+        MvcTestResult page0 = get(ownerSession, PATH + "?size=2");
+        long arrived = insert(owner, "n5", false);
+        MvcTestResult page1 = get(ownerSession, PATH + "?size=2&cursor=" + nextCursor(page0));
+        MvcTestResult reload = get(ownerSession, PATH + "?size=2");
+
+        // then
+        assertThat(ids(page0)).containsExactly(fourth, third);
+        assertThat(ids(page1)).containsExactly(second, first);
+        assertThat(page1).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+        assertThat(ids(reload)).containsExactly(arrived, fourth);
+    }
+
+    @Test
+    @DisplayName("[F-20] 가장 오래된 알림의 id나 그보다 작은 cursor는 빈 목록과 hasNext=false를 주고, 아주 큰 cursor는 첫 페이지와 같다")
+    void cursorBeyondOldestNotificationGivesEmptyLastPage() {
+        // given
+        long first = insert(owner, "n1", false);
+        long second = insert(owner, "n2", false);
+
+        // when
+        MvcTestResult atOldest = get(ownerSession, PATH + "?cursor=" + first);
+        MvcTestResult huge = get(ownerSession, PATH + "?cursor=" + Long.MAX_VALUE);
+
+        // then
+        assertThat(atOldest).hasStatus(HttpStatus.OK);
+        assertThat(ids(atOldest)).isEmpty();
+        assertThat(atOldest).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+        assertThat(atOldest).bodyJson().extractingPath("$.nextCursor").isNull();
+        assertThat(ids(huge)).containsExactly(second, first);
+    }
+
+    @Test
+    @DisplayName("[F-20] 옛 클라이언트가 보내는 page 파라미터는 무시하고 첫 쪽을 준다")
+    void listIgnoresLegacyPageParameter() {
+        // given
+        long only = insert(owner, "n1", false);
+
+        // when
+        MvcTestResult result = get(ownerSession, PATH + "?page=5");
+
+        // then
+        assertThat(result).hasStatus(HttpStatus.OK);
+        assertThat(ids(result)).containsExactly(only);
+    }
+
+    @Test
+    @DisplayName("[F-20] 다른 회원의 알림 id를 cursor로 보내도 내 알림만 나온다")
+    void otherMembersCursorDoesNotLeakNotifications() {
+        // given
+        long mine = insert(owner, "n1", false);
+        long theirs = insert(other, "n2", false);
+
+        // when
+        MvcTestResult result = get(ownerSession, PATH + "?cursor=" + (theirs + 1));
+
+        // then
+        assertThat(ids(result)).containsExactly(mine);
+    }
+
+    @Test
+    @DisplayName("[F-20] cursor는 1 이상의 정수여야 하고, 어기면 400 INVALID_INPUT이다")
+    void rejectsBadCursor() {
+        for (String bad : new String[] {"0", "-1", "abc"}) {
+            MvcTestResult result = get(ownerSession, PATH + "?cursor=" + bad);
+            assertThat(result).hasStatus(HttpStatus.BAD_REQUEST);
+            assertThat(result).bodyJson().extractingPath("$.code").isEqualTo("INVALID_INPUT");
+        }
     }
 
     @Test
@@ -203,9 +314,20 @@ class NotificationApiIntegrationTest {
         return mvc.post().uri(uri).cookie(session).with(csrf()).exchange();
     }
 
+    private static long nextCursor(MvcTestResult result) {
+        return JsonPath.<Number>read(body(result), "$.nextCursor").longValue();
+    }
+
+    private static boolean hasNext(MvcTestResult result) {
+        return JsonPath.<Boolean>read(body(result), "$.hasNext");
+    }
+
+    private static String body(MvcTestResult result) {
+        return new String(result.getResponse().getContentAsByteArray(), StandardCharsets.UTF_8);
+    }
+
     private static List<Long> ids(MvcTestResult result) {
-        String body = new String(result.getResponse().getContentAsByteArray(), StandardCharsets.UTF_8);
-        List<Number> ids = JsonPath.read(body, "$.content[*].notificationId");
+        List<Number> ids = JsonPath.read(body(result), "$.content[*].notificationId");
         return ids.stream().map(Number::longValue).toList();
     }
 

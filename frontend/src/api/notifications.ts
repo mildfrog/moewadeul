@@ -1,11 +1,11 @@
 import { apiFetch } from './client';
-import type { NotificationItem, NotificationSetting, Page } from './types';
+import type { CursorPage, NotificationItem, NotificationSetting } from './types';
 
 const NOTIFICATION_PAGE_SIZE = 20;
 
-export function fetchNotifications(page: number, signal?: AbortSignal): Promise<Page<NotificationItem>> {
-  return apiFetch<Page<NotificationItem>>('/api/me/notifications', {
-    query: { page, size: NOTIFICATION_PAGE_SIZE },
+export function fetchNotifications(cursor: number | null, signal?: AbortSignal): Promise<CursorPage<NotificationItem>> {
+  return apiFetch<CursorPage<NotificationItem>>('/api/me/notifications', {
+    query: { cursor, size: NOTIFICATION_PAGE_SIZE },
     signal,
   });
 }
