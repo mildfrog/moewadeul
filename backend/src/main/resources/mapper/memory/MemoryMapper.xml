@@ -62,8 +62,11 @@
         LEFT JOIN spot s ON s.id = r.spot_id AND s.status = 'ACTIVE'
         WHERE r.visibility = 'PUBLIC'
           AND r.status = 'ACTIVE'
+        <if test="cursor != null">
+          AND r.id &lt; #{cursor}
+        </if>
         ORDER BY r.id DESC
-        LIMIT #{limit} OFFSET #{offset}
+        LIMIT #{limit}
     </select>
 
     <select id="existsActiveMember" resultType="boolean">

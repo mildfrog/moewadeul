@@ -1,7 +1,7 @@
 package com.moewadeul.memory.api;
 
 import com.moewadeul.common.security.LoginMember;
-import com.moewadeul.common.web.PageResponse;
+import com.moewadeul.common.web.CursorResponse;
 import com.moewadeul.idempotency.application.IdempotencyExecutor;
 import com.moewadeul.idempotency.application.IdempotentRequest;
 import com.moewadeul.memory.application.MemoryCommandService;
@@ -68,7 +68,8 @@ class MemoryController {
             summary = "공개 추억 피드",
             description =
                     "모든 회원의 공개(PUBLIC) 기록을 새로 쓴 것부터 준다. 로그인하지 않아도 볼 수 있고 비공개 기록과 ACTIVE가 아닌(검토 대기, 숨김) 기록은 나오지 않는다. "
-                            + "page(0부터, 기본 0)와 size(1~50, 기본 20)를 받고, 전체 개수 없이 content, page, size, hasNext를 준다. "
+                            + "첫 페이지는 cursor 없이 요청하고, 다음 페이지는 응답의 nextCursor를 cursor(1 이상)로 보내 이어 읽는다. size는 1~50이고 기본값은 20이다. "
+                            + "전체 개수 없이 content, size, hasNext, nextCursor를 주고, 마지막 페이지면 nextCursor는 null이다. 페이지 사이에 새 기록이 올라와도 이미 읽은 기록이 다시 나오거나 건너뛰어지지 않는다. "
                             + "피드는 누구에게나 같은 모양이라 작성자 본인의 기록이어도 정확한 좌표 없이 소수 둘째 자리로 반올림한 "
                             + "approxLat, approxLng만 준다. 연결한 장소가 지도에 보이지 않으면 spot을, 글이 없으면 excerpt를 뺀다. "
                             + "excerpt는 글 앞 100자다. 사진은 모두 주지 않고 thumbnailUrl과 imageCount만 준다. "
@@ -76,11 +77,11 @@ class MemoryController {
                             + "1시간 동안 쓸 수 있고, 사진이 없으면 필드를 뺀다. imageCount는 사진 수이고 없으면 0이다. "
                             + "likedByMe는 로그인한 사람이 조회할 때만 주고, 비회원이면 필드를 뺀다.")
     @GetMapping("/api/memories/feed")
-    PageResponse<MemoryFeedItemResponse> feed(
+    CursorResponse<MemoryFeedItemResponse> feed(
             @AuthenticationPrincipal LoginMember loginMember, @Valid MemoryFeedRequest request) {
         Long viewerId = loginMember == null ? null : loginMember.memberId();
-        return PageResponse.from(
-                memoryQueryService.listFeed(request.pageOrDefault(), request.sizeOrDefault(), viewerId),
+        return CursorResponse.from(
+                memoryQueryService.listFeed(request.cursor(), request.sizeOrDefault(), viewerId),
                 MemoryFeedItemResponse::from);
     }
 
