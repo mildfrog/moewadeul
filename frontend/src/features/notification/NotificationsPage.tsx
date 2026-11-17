@@ -40,8 +40,8 @@ export function NotificationsPage() {
   return <NotificationList />;
 }
 
-function fetchPage(_filter: string, { page }: PageRequest, signal?: AbortSignal) {
-  return fetchNotifications(page, signal);
+function fetchPage(_filter: string, { cursor }: PageRequest, signal?: AbortSignal) {
+  return fetchNotifications(cursor, signal);
 }
 
 function NotificationList() {
