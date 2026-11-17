@@ -1,23 +1,27 @@
 package com.moewadeul.memory.api;
 
-import static com.moewadeul.common.testsupport.PageEnvelope.assertEnvelope;
 import static com.moewadeul.common.testsupport.TestCsrf.csrf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.jayway.jsonpath.JsonPath;
-import com.moewadeul.common.paging.PageSlice;
 import com.moewadeul.common.testsupport.IntegrationTest;
 import com.moewadeul.common.testsupport.MemberFixture;
 import com.moewadeul.common.testsupport.MutableClock;
 import com.moewadeul.common.testsupport.TestSequence;
 import com.moewadeul.member.application.verification.EmailVerificationIssuer;
 import com.moewadeul.member.domain.Member;
+import com.moewadeul.memory.domain.MemoryStatus;
 import com.moewadeul.spot.domain.GeoPoint;
 import com.moewadeul.spot.domain.ParkAreaJudgement;
 import com.moewadeul.spot.domain.Spot;
 import com.moewadeul.spot.infra.SpotJpaRepository;
 import jakarta.servlet.http.Cookie;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import org.assertj.core.api.AbstractListAssert;
+import org.assertj.core.api.ObjectAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +86,10 @@ class MemoryFeedApiIntegrationTest {
         assertThat(feed).bodyJson().doesNotHavePath("$.content[0].images");
         assertThat(feed).bodyJson().doesNotHavePath("$.content[0].thumbnailUrl");
         assertThat(feed).bodyJson().extractingPath("$.content[0].imageCount").isEqualTo(0);
-        assertEnvelope(feed, 0, 20, false);
+        assertThat(feed).bodyJson().extractingPath("$.size").isEqualTo(20);
+        assertThat(feed).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+        assertThat(feed).bodyJson().extractingPath("$.nextCursor").isNull();
+        assertThat(feed).bodyJson().doesNotHavePath("$.page");
     }
 
     @Test
@@ -102,63 +109,154 @@ class MemoryFeedApiIntegrationTest {
     }
 
     @Test
-    @DisplayName("[F-33] 피드는 size만큼 끊어 주고 다음 쪽이 있으면 hasNext가 true이며, 마지막 쪽은 false다")
-    void feedPagesWithHasNext() {
+    @DisplayName("[F-33] 피드는 size만큼 끊어 주고 다음 쪽이 있으면 hasNext와 nextCursor를 주며, 마지막 쪽은 false와 null이다")
+    void feedPagesWithCursor() {
         // given
         Cookie owner = verifiedSession(memberFixture.saveWithPassword(VALID_PASSWORD));
         long oldest = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
-        write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+        long middle = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
         long newest = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
 
         // when
-        MvcTestResult firstPage =
-                mvc.get().uri("/api/memories/feed?page=0&size=2").exchange();
-        MvcTestResult lastPage =
-                mvc.get().uri("/api/memories/feed?page=1&size=2").exchange();
+        MvcTestResult firstPage = mvc.get().uri("/api/memories/feed?size=2").exchange();
+        MvcTestResult lastPage = mvc.get()
+                .uri("/api/memories/feed?size=2&cursor=" + nextCursor(firstPage))
+                .exchange();
+        MvcTestResult exact = mvc.get().uri("/api/memories/feed?size=3").exchange();
 
         // then
-        assertThat(firstPage).bodyJson().extractingPath("$.content").asList().hasSize(2);
-        assertThat(firstPage).bodyJson().extractingPath("$.content[0].memoryId").isEqualTo((int) newest);
+        memoryIds(firstPage).containsExactly((int) newest, (int) middle);
         assertThat(firstPage).bodyJson().extractingPath("$.hasNext").isEqualTo(true);
-        assertThat(lastPage).bodyJson().extractingPath("$.content").asList().hasSize(1);
-        assertThat(lastPage).bodyJson().extractingPath("$.content[0].memoryId").isEqualTo((int) oldest);
+        assertThat(firstPage).bodyJson().extractingPath("$.nextCursor").isEqualTo((int) middle);
+        memoryIds(lastPage).containsExactly((int) oldest);
         assertThat(lastPage).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+        assertThat(lastPage).bodyJson().extractingPath("$.nextCursor").isNull();
+        assertThat(exact).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+        assertThat(exact).bodyJson().extractingPath("$.nextCursor").isNull();
     }
 
     @Test
-    @DisplayName("[F-33] 피드의 size가 50을 넘거나 page가 음수이면 400 INVALID_INPUT이다")
-    void feedRejectsInvalidPaging() {
+    @DisplayName("[F-33] nextCursor를 따라 끝까지 읽으면 공개 기록을 중복과 누락 없이 새것부터 모두 받고, 비공개·검토 대기·숨김 기록은 나오지 않는다")
+    void feedFollowingCursorsReadsEveryPublicMemoryOnce() throws Exception {
+        // given
+        Cookie owner = verifiedSession(memberFixture.saveWithPassword(VALID_PASSWORD));
+        List<Integer> expected = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            expected.add(0, (int) write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null));
+            write(owner, YESTERDAY, "PRIVATE", 37.1, 127.1, null);
+        }
+        long pending = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+        long hidden = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+        jdbc.update("UPDATE memory SET status = ? WHERE id = ?", MemoryStatus.PENDING_REVIEW.name(), pending);
+        jdbc.update("UPDATE memory SET status = ? WHERE id = ?", MemoryStatus.HIDDEN.name(), hidden);
+
+        // when
+        List<Integer> seen = new ArrayList<>();
+        String cursor = "";
+        while (true) {
+            MvcTestResult page =
+                    mvc.get().uri("/api/memories/feed?size=3" + cursor).exchange();
+            assertThat(page).hasStatus(HttpStatus.OK);
+            String body = page.getResponse().getContentAsString(StandardCharsets.UTF_8);
+            seen.addAll(JsonPath.<List<Integer>>read(body, "$.content[*].memoryId"));
+            if (!JsonPath.<Boolean>read(body, "$.hasNext")) {
+                assertThat(page).bodyJson().extractingPath("$.nextCursor").isNull();
+                break;
+            }
+            cursor = "&cursor=" + nextCursor(page);
+        }
+
+        // then
+        assertThat(seen).containsExactlyElementsOf(expected);
+    }
+
+    @Test
+    @DisplayName("[F-33] 페이지 사이에 새 기록이 올라와도 다음 쪽은 이미 읽은 기록을 다시 주거나 건너뛰지 않고, 새 기록은 처음부터 다시 읽을 때 맨 앞에 나온다")
+    void newMemoryBetweenPagesDoesNotShiftNextPage() {
+        // given
+        Cookie owner = verifiedSession(memberFixture.saveWithPassword(VALID_PASSWORD));
+        long first = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+        long second = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+        long third = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+        long fourth = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+        MvcTestResult page0 = mvc.get().uri("/api/memories/feed?size=2").exchange();
+
+        // when
+        long arrived = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+        MvcTestResult page1 = mvc.get()
+                .uri("/api/memories/feed?size=2&cursor=" + nextCursor(page0))
+                .exchange();
+        MvcTestResult reload = mvc.get().uri("/api/memories/feed?size=2").exchange();
+
+        // then
+        memoryIds(page0).containsExactly((int) fourth, (int) third);
+        memoryIds(page1).containsExactly((int) second, (int) first);
+        assertThat(page1).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+        memoryIds(reload).containsExactly((int) arrived, (int) fourth);
+    }
+
+    @Test
+    @DisplayName("[F-33] 가장 오래된 기록의 id나 그보다 작은 cursor는 빈 목록과 hasNext=false를 주고, 아주 큰 cursor는 첫 페이지와 같다")
+    void cursorBeyondOldestMemoryGivesEmptyLastPage() {
+        // given
+        Cookie owner = verifiedSession(memberFixture.saveWithPassword(VALID_PASSWORD));
+        long first = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+        long second = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+
+        // when
+        MvcTestResult atOldest =
+                mvc.get().uri("/api/memories/feed?cursor=" + first).exchange();
+        MvcTestResult beyond = mvc.get().uri("/api/memories/feed?cursor=1").exchange();
+        MvcTestResult huge =
+                mvc.get().uri("/api/memories/feed?cursor=" + Long.MAX_VALUE).exchange();
+
+        // then
+        for (MvcTestResult result : new MvcTestResult[] {atOldest, beyond}) {
+            assertThat(result).hasStatus(HttpStatus.OK);
+            memoryIds(result).isEmpty();
+            assertThat(result).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
+            assertThat(result).bodyJson().extractingPath("$.nextCursor").isNull();
+        }
+        memoryIds(huge).containsExactly((int) second, (int) first);
+    }
+
+    @Test
+    @DisplayName("[F-33] 옛 클라이언트가 보내는 page 파라미터는 무시하고 첫 쪽을 준다")
+    void feedIgnoresLegacyPageParameter() {
+        // given
+        Cookie owner = verifiedSession(memberFixture.saveWithPassword(VALID_PASSWORD));
+        long only = write(owner, YESTERDAY, "PUBLIC", 37.1, 127.1, null);
+
+        // when
+        MvcTestResult result = mvc.get().uri("/api/memories/feed?page=5").exchange();
+
+        // then
+        assertThat(result).hasStatus(HttpStatus.OK);
+        memoryIds(result).containsExactly((int) only);
+    }
+
+    @Test
+    @DisplayName("[F-33] 피드의 size가 50을 넘거나 0이면 400 INVALID_INPUT이다")
+    void feedRejectsInvalidSize() {
         MvcTestResult tooBig = mvc.get().uri("/api/memories/feed?size=51").exchange();
         MvcTestResult zero = mvc.get().uri("/api/memories/feed?size=0").exchange();
-        MvcTestResult negative = mvc.get().uri("/api/memories/feed?page=-1").exchange();
 
         assertThat(tooBig).hasStatus(HttpStatus.BAD_REQUEST);
         assertThat(tooBig).bodyJson().extractingPath("$.code").isEqualTo("INVALID_INPUT");
         assertThat(zero).hasStatus(HttpStatus.BAD_REQUEST);
-        assertThat(negative).hasStatus(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    @DisplayName("[F-33] 피드의 page가 상한이면 500이 아니라 빈 목록을 준다")
-    void feedWithMaxPageReturnsEmptyContent() {
-        MvcTestResult result = mvc.get()
-                .uri("/api/memories/feed?page=" + PageSlice.MAX_PAGE + "&size=" + PageSlice.MAX_SIZE)
-                .exchange();
+    @DisplayName("[F-33] 피드의 cursor는 1 이상의 정수여야 하고, 어기면 400 INVALID_INPUT이다")
+    void feedRejectsBadCursor() {
+        MvcTestResult zero = mvc.get().uri("/api/memories/feed?cursor=0").exchange();
+        MvcTestResult negative = mvc.get().uri("/api/memories/feed?cursor=-1").exchange();
+        MvcTestResult text = mvc.get().uri("/api/memories/feed?cursor=abc").exchange();
 
-        assertThat(result).hasStatus(HttpStatus.OK);
-        assertThat(result).bodyJson().extractingPath("$.content").asList().isEmpty();
-        assertThat(result).bodyJson().extractingPath("$.hasNext").isEqualTo(false);
-    }
-
-    @Test
-    @DisplayName("[F-33] 피드의 page가 상한을 넘으면 400 INVALID_INPUT이다")
-    void feedRejectsPageOverCap() {
-        MvcTestResult result = mvc.get()
-                .uri("/api/memories/feed?page=" + ((long) PageSlice.MAX_PAGE + 1))
-                .exchange();
-
-        assertThat(result).hasStatus(HttpStatus.BAD_REQUEST);
-        assertThat(result).bodyJson().extractingPath("$.code").isEqualTo("INVALID_INPUT");
+        for (MvcTestResult result : new MvcTestResult[] {zero, negative, text}) {
+            assertThat(result).hasStatus(HttpStatus.BAD_REQUEST);
+            assertThat(result).bodyJson().extractingPath("$.code").isEqualTo("INVALID_INPUT");
+        }
     }
 
     @Test
@@ -328,6 +426,18 @@ class MemoryFeedApiIntegrationTest {
         assertThat(feed).bodyJson().doesNotHavePath("$.content[1].spot");
         assertThat(list).bodyJson().doesNotHavePath("$[0].spot");
         assertThat(list).bodyJson().extractingPath("$[1].spot.name").isEqualTo("능선 끝 평지");
+    }
+
+    private static AbstractListAssert<?, List<?>, Object, ObjectAssert<Object>> memoryIds(MvcTestResult result) {
+        assertThat(result).hasStatus(HttpStatus.OK);
+        return assertThat(result)
+                .bodyJson()
+                .extractingPath("$.content[*].memoryId")
+                .asList();
+    }
+
+    private static long nextCursor(MvcTestResult result) {
+        return JsonPath.<Number>read(result(result), "$.nextCursor").longValue();
     }
 
     private static String result(MvcTestResult result) {

@@ -1,6 +1,7 @@
 package com.moewadeul.memory.application;
 
 import com.moewadeul.common.error.BusinessException;
+import com.moewadeul.common.paging.CursorSlice;
 import com.moewadeul.common.paging.PageSlice;
 import com.moewadeul.memory.domain.ApproximateLocation;
 import com.moewadeul.memory.domain.Memory;
@@ -37,10 +38,9 @@ public class MemoryQueryService {
     }
 
     @Transactional(readOnly = true)
-    public PageSlice<MemoryFeedItem> listFeed(int page, int size, Long viewerId) {
-        List<MemoryFeedRow> rows =
-                memoryMapper.selectPublicFeed(viewerId, PageSlice.fetchSize(size), PageSlice.offsetOf(page, size));
-        return PageSlice.of(rows, page, size).map(this::toFeedItem);
+    public CursorSlice<MemoryFeedItem> listFeed(Long cursor, int size, Long viewerId) {
+        List<MemoryFeedRow> rows = memoryMapper.selectPublicFeed(viewerId, cursor, PageSlice.fetchSize(size));
+        return CursorSlice.of(rows, size, MemoryFeedRow::memoryId).map(this::toFeedItem);
     }
 
     @Transactional(readOnly = true)

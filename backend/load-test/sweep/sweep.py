@@ -109,6 +109,9 @@ def rows_for(a, part):
             after = re.fullmatch(r"__AFTER_(\d+)__", str(r.get("cursor", "")))
             if after:
                 r["cursor"] = sql(f"SELECT id c FROM community_post WHERE status = 'ACTIVE' ORDER BY id DESC LIMIT 1 OFFSET {int(after.group(1)) - 1}")[0]["c"]
+            mem_after = re.fullmatch(r"__MEMORY_AFTER_(\d+)__", str(r.get("cursor", "")))
+            if mem_after:
+                r["cursor"] = sql(f"SELECT id c FROM memory WHERE visibility = 'PUBLIC' AND status = 'ACTIVE' ORDER BY id DESC LIMIT 1 OFFSET {int(mem_after.group(1)) - 1}")[0]["c"]
         return out
     q = re.sub(r"\{P:([\w.]+)\}", lambda m: f"MOD({m.group(1)}, {PARTS}) = {part}", a.rows)
     return sql(q)

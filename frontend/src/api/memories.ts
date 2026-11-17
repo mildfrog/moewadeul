@@ -1,5 +1,6 @@
 import { apiFetch } from './client';
 import type {
+  CursorPage,
   ImageUpload,
   ImageUploadRequest,
   MemoryCreateRequest,
@@ -10,7 +11,6 @@ import type {
   MemoryReportRequest,
   MemorySummary,
   MemoryUpdateRequest,
-  Page,
 } from './types';
 
 export function createMemory(req: MemoryCreateRequest, idempotencyKey: string): Promise<{ memoryId: number }> {
@@ -37,8 +37,15 @@ export function fetchMyMemories(signal?: AbortSignal): Promise<MemorySummary[]> 
   return apiFetch<MemorySummary[]>('/api/me/memories', { signal });
 }
 
-export function fetchMemoryFeed(page: number, size: number, signal?: AbortSignal): Promise<Page<MemoryFeedItem>> {
-  return apiFetch<Page<MemoryFeedItem>>(`/api/memories/feed?page=${page}&size=${size}`, { signal });
+export function fetchMemoryFeed(
+  cursor: number | null,
+  size: number,
+  signal?: AbortSignal,
+): Promise<CursorPage<MemoryFeedItem>> {
+  return apiFetch<CursorPage<MemoryFeedItem>>('/api/memories/feed', {
+    query: { cursor, size },
+    signal,
+  });
 }
 
 export function fetchMemberMemories(memberId: number, signal?: AbortSignal): Promise<MemberMemorySummary[]> {
