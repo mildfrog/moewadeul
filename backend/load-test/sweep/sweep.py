@@ -112,6 +112,15 @@ def rows_for(a, part):
             mem_after = re.fullmatch(r"__MEMORY_AFTER_(\d+)__", str(r.get("cursor", "")))
             if mem_after:
                 r["cursor"] = sql(f"SELECT id c FROM memory WHERE visibility = 'PUBLIC' AND status = 'ACTIVE' ORDER BY id DESC LIMIT 1 OFFSET {int(mem_after.group(1)) - 1}")[0]["c"]
+            notif_after = re.fullmatch(r"__NOTIF_AFTER_(\d+)__", str(r.get("cursor", "")))
+            if notif_after:
+                owner = f"(SELECT id FROM member WHERE email = '{r['actor']}')"
+                total = int(sql(f"SELECT COUNT(*) n FROM notification WHERE member_id = {owner}")[0]["n"])
+                depth = min(int(notif_after.group(1)), total)
+                if depth == 0:
+                    del r["cursor"]
+                else:
+                    r["cursor"] = sql(f"SELECT id c FROM notification WHERE member_id = {owner} ORDER BY id DESC LIMIT 1 OFFSET {depth - 1}")[0]["c"]
         return out
     q = re.sub(r"\{P:([\w.]+)\}", lambda m: f"MOD({m.group(1)}, {PARTS}) = {part}", a.rows)
     return sql(q)
