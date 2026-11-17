@@ -11,6 +11,7 @@ import com.moewadeul.common.outbox.OutboxLane;
 import com.moewadeul.common.scheduling.ShutdownSignal;
 import com.moewadeul.common.testsupport.IntegrationTest;
 import com.moewadeul.common.testsupport.MutableClock;
+import com.moewadeul.common.time.KoreaTime;
 import com.moewadeul.common.web.WebProperties;
 import com.moewadeul.member.domain.Member;
 import com.moewadeul.member.infra.MemberJpaRepository;
@@ -20,6 +21,7 @@ import com.moewadeul.outbox.application.OutboxPublisher;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -386,6 +388,62 @@ class NotificationMailIntegrationTest {
         // then
         assertThat(countByEmailStatus("SENT")).isEqualTo(1);
         assertThat(mailSender.sent()).extracting(MailMessage::to).containsExactly(applicant.getEmail());
+    }
+
+    @Test
+    @DisplayName("[EV-09] 출발일 0시(한국 시간)가 지나도록 보내지 못한 확정 메일은 보내지 않고 SKIPPED로 둔다")
+    void confirmedMailPastDepartureIsSkipped() {
+        // given
+        Member member = saveActiveMember();
+        LocalDate tomorrow = KoreaTime.dateOf(clock.instant()).plusDays(1);
+        recordConfirmed(3L, List.of(member.getId()), true, tomorrow);
+        publisher.publishPending(OutboxLane.DEFAULT);
+
+        // when
+        clock.advance(Duration.ofDays(2));
+        mailer.sendDue();
+
+        // then
+        assertThat(mailSender.sent()).isEmpty();
+        assertThat(countByEmailStatus("SKIPPED")).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("[EV-09] 출발일 0시 전이면 확정 메일을 보낸다")
+    void confirmedMailBeforeDepartureIsSent() {
+        // given
+        Member member = saveActiveMember();
+        LocalDate tomorrow = KoreaTime.dateOf(clock.instant()).plusDays(1);
+        recordConfirmed(3L, List.of(member.getId()), true, tomorrow);
+
+        // when
+        publishAndSend();
+
+        // then
+        assertThat(mailSender.sent()).hasSize(1);
+        assertThat(countSentNotifications()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("[EV-07] 자동 처리가 만든 확정 알림 메일은 대량으로, 캠프 리더가 확정한 알림 메일은 개별로 둔다")
+    void automaticConfirmedMailIsBulk() {
+        // given
+        Member auto = saveActiveMember();
+        Member manual = saveActiveMember();
+        LocalDate tomorrow = KoreaTime.dateOf(clock.instant()).plusDays(1);
+        recordConfirmed(3L, List.of(auto.getId()), true, tomorrow);
+        recordConfirmed(4L, List.of(manual.getId()), false, tomorrow);
+
+        // when
+        publisher.publishPending(OutboxLane.DEFAULT);
+
+        // then
+        assertThat(jdbcTemplate.queryForObject(
+                        "SELECT email_bulk FROM notification WHERE member_id = ?", Boolean.class, auto.getId()))
+                .isTrue();
+        assertThat(jdbcTemplate.queryForObject(
+                        "SELECT email_bulk FROM notification WHERE member_id = ?", Boolean.class, manual.getId()))
+                .isFalse();
     }
 
     @Test
@@ -870,6 +928,21 @@ class NotificationMailIntegrationTest {
 
     private void recordConfirmed(long basecampId, List<Long> memberIds) {
         record(CONFIRMED, basecampId, Map.of("basecampId", basecampId, "memberIds", memberIds));
+    }
+
+    private void recordConfirmed(long basecampId, List<Long> memberIds, boolean automatic, LocalDate startDate) {
+        record(
+                CONFIRMED,
+                basecampId,
+                Map.of(
+                        "basecampId",
+                        basecampId,
+                        "memberIds",
+                        memberIds,
+                        "automatic",
+                        automatic,
+                        "startDate",
+                        startDate.toString()));
     }
 
     private void recordProgramApplicationCanceled(long memberId, String reason, boolean refunded) {

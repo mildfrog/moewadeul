@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.moewadeul.common.mail.MailProperties;
 import com.moewadeul.common.outbox.OutboxLane;
@@ -80,6 +83,38 @@ class OutboxPollingSchedulerTest {
                         .counter()
                         .count())
                 .isZero();
+    }
+
+    @Test
+    @DisplayName("[NFR-04] 묶음이 가득 차면 쉬지 않고 다음 묶음을 집고, 덜 찬 묶음에서 멈춘다")
+    void drainsFullBatches() {
+        OutboxPublisher publisher = mock(OutboxPublisher.class);
+        when(publisher.publishPending(OutboxLane.DEFAULT)).thenReturn(25, 25, 3);
+
+        new OutboxPollingScheduler(
+                        publisher,
+                        new ScheduledJobRunner(metrics),
+                        properties(25, Duration.ofMinutes(10)),
+                        mailProperties())
+                .poll();
+
+        verify(publisher, times(3)).publishPending(OutboxLane.DEFAULT);
+    }
+
+    @Test
+    @DisplayName("[NFR-04] 묶음이 계속 가득 차도 한 번 실행에서 정해진 묶음 수만 처리하고 돌아온다")
+    void stopsAfterMaxBatches() {
+        OutboxPublisher publisher = mock(OutboxPublisher.class);
+        when(publisher.publishPending(OutboxLane.MAIL)).thenReturn(25);
+
+        new OutboxPollingScheduler(
+                        publisher,
+                        new ScheduledJobRunner(metrics),
+                        properties(25, Duration.ofMinutes(10)),
+                        mailProperties())
+                .pollMail();
+
+        verify(publisher, times(OutboxPollingScheduler.MAX_BATCHES_PER_RUN)).publishPending(OutboxLane.MAIL);
     }
 
     private OutboxPollingScheduler scheduler(OutboxProperties properties) {

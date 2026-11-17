@@ -7,6 +7,8 @@ import com.moewadeul.common.event.BasecampEvents;
 import com.moewadeul.common.event.ProgramEvents;
 import com.moewadeul.common.event.TrustEvents;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -151,6 +153,59 @@ class NotificationTemplatesTest {
             assertThat(draft.body()).contains("14일 안에").contains("동행 후기");
             assertThat(draft.link()).isEqualTo("/me/companion-reviews");
         });
+    }
+
+    @Test
+    @DisplayName("[EV-07][EV-09] 자동 처리가 만든 확정·취소 알림은 대량 메일이고, 메일은 출발일 0시(한국 시간)에 만료된다")
+    void automaticConfirmedAndCanceledAreBulkAndExpireAtDeparture() {
+        // given
+        LocalDate startDate = LocalDate.of(2026, 11, 18);
+        BasecampEvents.MembersPayload payload =
+                new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(1L, 2L), true, startDate);
+        Instant departure = Instant.parse("2026-11-17T15:00:00Z");
+
+        // when
+        List<NotificationDraft> drafts = new ArrayList<>(NotificationTemplates.confirmed(payload));
+        drafts.addAll(NotificationTemplates.canceled(payload));
+
+        // then
+        assertThat(drafts).hasSize(4).allSatisfy(draft -> {
+            assertThat(draft.bulkEmail()).isTrue();
+            assertThat(draft.emailExpiresAt()).isEqualTo(departure);
+        });
+    }
+
+    @Test
+    @DisplayName("[EV-07][EV-09] 캠프 리더가 확정한 알림은 개별 메일이고 메일은 출발일 0시에 만료되며, 출발일이 없는 옛 이벤트는 기한이 없다")
+    void manualConfirmedIsIndividualAndOldEventHasNoExpiry() {
+        // given
+        BasecampEvents.MembersPayload manual =
+                new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(1L), false, LocalDate.of(2026, 11, 18));
+        BasecampEvents.MembersPayload old = new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(1L));
+
+        // when
+        NotificationDraft manualDraft = NotificationTemplates.confirmed(manual).get(0);
+        NotificationDraft oldDraft = NotificationTemplates.confirmed(old).get(0);
+
+        // then
+        assertThat(manualDraft.bulkEmail()).isFalse();
+        assertThat(manualDraft.emailExpiresAt()).isEqualTo(Instant.parse("2026-11-17T15:00:00Z"));
+        assertThat(oldDraft.bulkEmail()).isFalse();
+        assertThat(oldDraft.emailExpiresAt()).isNull();
+    }
+
+    @Test
+    @DisplayName("[EV-07] 자동 처리가 만든 완료 알림은 대량 메일이고 메일 기한은 없다")
+    void automaticCompletedIsBulkWithoutExpiry() {
+        // given
+        BasecampEvents.MembersPayload payload = new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(8L), true, null);
+
+        // when
+        NotificationDraft draft = NotificationTemplates.completed(payload).get(0);
+
+        // then
+        assertThat(draft.bulkEmail()).isTrue();
+        assertThat(draft.emailExpiresAt()).isNull();
     }
 
     @Test

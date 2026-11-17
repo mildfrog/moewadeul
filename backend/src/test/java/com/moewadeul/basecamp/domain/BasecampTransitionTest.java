@@ -129,7 +129,11 @@ class BasecampTransitionTest {
                             BasecampEvents.CONFIRMED,
                             BasecampEvents.AGGREGATE_TYPE,
                             BASECAMP_ID,
-                            new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(LEADER_ID, MEMBER_ID))));
+                            new BasecampEvents.MembersPayload(
+                                    BASECAMP_ID,
+                                    List.of(LEADER_ID, MEMBER_ID),
+                                    false,
+                                    BasecampBuilder.DEFAULT_START_DATE)));
         }
 
         @Test
@@ -144,7 +148,8 @@ class BasecampTransitionTest {
                             BasecampEvents.CANCELED,
                             BasecampEvents.AGGREGATE_TYPE,
                             BASECAMP_ID,
-                            new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(MEMBER_ID))));
+                            new BasecampEvents.MembersPayload(
+                                    BASECAMP_ID, List.of(MEMBER_ID), false, BasecampBuilder.DEFAULT_START_DATE)));
         }
 
         @Test
@@ -358,7 +363,11 @@ class BasecampTransitionTest {
                             BasecampEvents.CONFIRMED,
                             BasecampEvents.AGGREGATE_TYPE,
                             BASECAMP_ID,
-                            new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(LEADER_ID, MEMBER_ID))));
+                            new BasecampEvents.MembersPayload(
+                                    BASECAMP_ID,
+                                    List.of(LEADER_ID, MEMBER_ID),
+                                    true,
+                                    BasecampBuilder.DEFAULT_START_DATE)));
         }
 
         @Test
@@ -380,7 +389,8 @@ class BasecampTransitionTest {
                             BasecampEvents.CANCELED,
                             BasecampEvents.AGGREGATE_TYPE,
                             BASECAMP_ID,
-                            new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(LEADER_ID))));
+                            new BasecampEvents.MembersPayload(
+                                    BASECAMP_ID, List.of(LEADER_ID), true, BasecampBuilder.DEFAULT_START_DATE)));
         }
 
         @Test
@@ -426,7 +436,7 @@ class BasecampTransitionTest {
                             BasecampEvents.COMPLETED,
                             BasecampEvents.AGGREGATE_TYPE,
                             BASECAMP_ID,
-                            new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(LEADER_ID, MEMBER_ID))));
+                            new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(LEADER_ID, MEMBER_ID), true, null)));
         }
 
         @Test

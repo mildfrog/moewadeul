@@ -92,6 +92,7 @@ class NotificationWriter {
                 dedupKey,
                 emailStatus,
                 draft.bulkEmail(),
+                draft.emailExpiresAt(),
                 now);
     }
 }

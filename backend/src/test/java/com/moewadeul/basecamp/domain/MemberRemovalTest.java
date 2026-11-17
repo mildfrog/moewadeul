@@ -177,7 +177,7 @@ class MemberRemovalTest {
                         BasecampEvents.CANCELED,
                         BasecampEvents.AGGREGATE_TYPE,
                         BASECAMP_ID,
-                        new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(MEMBER_ID))));
+                        new BasecampEvents.MembersPayload(BASECAMP_ID, List.of(MEMBER_ID), false, DEFAULT_START_DATE)));
     }
 
     @Test
