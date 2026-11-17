@@ -4,7 +4,7 @@ import type { Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ApiError } from '../../api/client';
 import { fetchMemoryFeed } from '../../api/memories';
-import type { MemoryFeedItem, Page } from '../../api/types';
+import type { CursorPage, MemoryFeedItem } from '../../api/types';
 import { MemoryFeedPage } from './MemoryFeedPage';
 
 vi.mock('../../api/memories', async (importOriginal) => ({
@@ -40,8 +40,9 @@ function item(id: number, overrides: Partial<MemoryFeedItem> = {}): MemoryFeedIt
   };
 }
 
-function page(items: MemoryFeedItem[], pageNumber: number, hasNext: boolean): Page<MemoryFeedItem> {
-  return { content: items, page: pageNumber, size: 24, hasNext } as Page<MemoryFeedItem>;
+function cursorPage(items: MemoryFeedItem[], hasNext: boolean): CursorPage<MemoryFeedItem> {
+  const last = items[items.length - 1];
+  return { content: items, size: 24, hasNext, nextCursor: hasNext && last ? last.memoryId : null };
 }
 
 describe('기록 피드 화면', () => {
@@ -72,12 +73,12 @@ describe('기록 피드 화면', () => {
 
   it('불러온 기록을 칸마다 글쓴이, 방문일, 사진 수, 좋아요 수를 읽어 주는 링크로 보여 준다', async () => {
     vi.mocked(fetchMemoryFeed).mockResolvedValue(
-      page([item(1, { imageCount: 2, thumbnailUrl: 'https://img.test/1.jpg' }), item(2)], 0, false),
+      cursorPage([item(1, { imageCount: 2, thumbnailUrl: 'https://img.test/1.jpg' }), item(2)], false),
     );
 
     await open();
 
-    expect(fetchMemoryFeed).toHaveBeenCalledWith(0, 24, expect.anything());
+    expect(fetchMemoryFeed).toHaveBeenCalledWith(null, 24, expect.anything());
     expect(cell(1)?.getAttribute('aria-label')).toBe('능선님의 기록, 10월 3일 (토), 사진 2장, 좋아요 3개');
     expect(cell(1)?.querySelector('img')?.getAttribute('src')).toBe('https://img.test/1.jpg');
     expect(cell(2)?.getAttribute('aria-label')).toBe('능선님의 기록, 10월 3일 (토), 좋아요 3개');
@@ -88,7 +89,7 @@ describe('기록 피드 화면', () => {
 
   it('대표 사진을 불러오지 못하면 그 칸은 기록 본문으로 바뀐다', async () => {
     vi.mocked(fetchMemoryFeed).mockResolvedValue(
-      page([item(1, { thumbnailUrl: 'https://img.test/broken.jpg', imageCount: 1 })], 0, false),
+      cursorPage([item(1, { thumbnailUrl: 'https://img.test/broken.jpg', imageCount: 1 })], false),
     );
     await open();
     expect(cell(1)?.textContent).not.toContain('기록 본문1');
@@ -102,7 +103,7 @@ describe('기록 피드 화면', () => {
   });
 
   it('공개된 기록이 하나도 없으면 빈 상태 안내와 내 기록 지도 링크를 보여 준다', async () => {
-    vi.mocked(fetchMemoryFeed).mockResolvedValue(page([], 0, false));
+    vi.mocked(fetchMemoryFeed).mockResolvedValue(cursorPage([], false));
 
     await open();
 
@@ -115,7 +116,7 @@ describe('기록 피드 화면', () => {
       .mockRejectedValueOnce(
         new ApiError(500, 'INTERNAL_ERROR', { code: 'INTERNAL_ERROR', message: 'x', traceId: 'trace-4' }),
       )
-      .mockResolvedValueOnce(page([item(1)], 0, false));
+      .mockResolvedValueOnce(cursorPage([item(1)], false));
 
     await open();
 
@@ -131,8 +132,8 @@ describe('기록 피드 화면', () => {
   });
 
   it('더 보기를 누르면 다음 쪽 기록이 뒤에 붙고 마지막 쪽이면 더 보기가 사라진다', async () => {
-    vi.mocked(fetchMemoryFeed).mockImplementation(async (pageNumber) =>
-      pageNumber === 0 ? page([item(1), item(2)], 0, true) : page([item(3)], 1, false),
+    vi.mocked(fetchMemoryFeed).mockImplementation(async (cursor) =>
+      cursor === null ? cursorPage([item(1), item(2)], true) : cursorPage([item(3)], false),
     );
     await open();
     expect(cell(3)).toBeNull();
@@ -147,9 +148,24 @@ describe('기록 피드 화면', () => {
     expect(button('더 보기')).toBeUndefined();
   });
 
+  it('더 보기는 직전 응답의 nextCursor를 cursor로 보내 이어 받고, 첫 요청에는 cursor가 없다', async () => {
+    vi.mocked(fetchMemoryFeed).mockImplementation(async (cursor) => {
+      if (cursor === null) return cursorPage([item(30), item(20)], true);
+      if (cursor === 20) return cursorPage([item(10)], false);
+      throw new Error(`예상하지 못한 cursor ${cursor}`);
+    });
+    await open();
+
+    await act(async () => button('더 보기')?.click());
+
+    expect(vi.mocked(fetchMemoryFeed).mock.calls.map(([cursor]) => cursor)).toEqual([null, 20]);
+    expect(cell(10)).not.toBeNull();
+    expect(button('더 보기')).toBeUndefined();
+  });
+
   it('더 보기가 실패하면 받아 둔 기록은 그대로 두고 오류 문구를 보여 준다', async () => {
-    vi.mocked(fetchMemoryFeed).mockImplementation(async (pageNumber) => {
-      if (pageNumber === 0) return page([item(1)], 0, true);
+    vi.mocked(fetchMemoryFeed).mockImplementation(async (cursor) => {
+      if (cursor === null) return cursorPage([item(1)], true);
       throw new ApiError(429, 'TOO_MANY_REQUESTS', null);
     });
     await open();
