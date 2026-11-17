@@ -231,7 +231,7 @@ public class Basecamp {
         if (headcount() < MIN_CONFIRM_HEADCOUNT) {
             throw new BusinessException(BasecampErrorCode.BASECAMP_NOT_ENOUGH_MEMBERS);
         }
-        markConfirmed(now);
+        markConfirmed(now, false);
     }
 
     public void cancel(CancelReason reason, Instant now) {
@@ -242,7 +242,7 @@ public class Basecamp {
         if (!KoreaTime.dateOf(now).isBefore(startDate)) {
             throw new BusinessException(BasecampErrorCode.BASECAMP_INVALID_STATE);
         }
-        markCanceled(reason, now);
+        markCanceled(reason, now, false);
     }
 
     public boolean departDayBefore(Instant now) {
@@ -251,9 +251,9 @@ public class Basecamp {
             return false;
         }
         if (headcount() < MIN_CONFIRM_HEADCOUNT) {
-            markCanceled(CancelReason.NOT_ENOUGH_MEMBERS, now);
+            markCanceled(CancelReason.NOT_ENOUGH_MEMBERS, now, true);
         } else {
-            markConfirmed(now);
+            markConfirmed(now, true);
         }
         return true;
     }
@@ -266,7 +266,7 @@ public class Basecamp {
         this.completedAt = now;
         expirePendingApplications(now);
         touch(now);
-        raiseMembers(BasecampEvents.COMPLETED, activeMemberIds());
+        raiseMembers(BasecampEvents.COMPLETED, activeMemberIds(), true, null);
         return true;
     }
 
@@ -346,7 +346,8 @@ public class Basecamp {
         if (isLeader(memberId)) {
             markCanceled(
                     cause == RemovalCause.SANCTION ? CancelReason.LEADER_SANCTIONED : CancelReason.LEADER_WITHDRAWN,
-                    now);
+                    now,
+                    false);
             return MemberRemoval.LEADER_CANCELED;
         }
         Optional<BasecampMember> activeMember = findMember(memberId).filter(BasecampMember::isActive);
@@ -417,16 +418,16 @@ public class Basecamp {
         touch(now);
     }
 
-    private void markConfirmed(Instant now) {
+    private void markConfirmed(Instant now, boolean automatic) {
         this.status = BasecampStatus.CONFIRMED;
         this.closedReason = null;
         this.confirmedAt = now;
         expirePendingApplications(now);
         touch(now);
-        raiseMembers(BasecampEvents.CONFIRMED, activeMemberIds());
+        raiseMembers(BasecampEvents.CONFIRMED, activeMemberIds(), automatic, startDate);
     }
 
-    private void markCanceled(CancelReason reason, Instant now) {
+    private void markCanceled(CancelReason reason, Instant now, boolean automatic) {
         this.status = BasecampStatus.CANCELED;
         this.closedReason = null;
         this.canceledAt = now;
@@ -434,7 +435,7 @@ public class Basecamp {
         expirePendingApplications(now);
         touch(now);
         List<Long> recipients = reason.notifiesLeader() ? activeMemberIds() : activeMembersExceptLeader();
-        raiseMembers(BasecampEvents.CANCELED, recipients);
+        raiseMembers(BasecampEvents.CANCELED, recipients, automatic, startDate);
     }
 
     private void raise(String eventType, Supplier<Object> payload) {
@@ -448,8 +449,12 @@ public class Basecamp {
     }
 
     private void raiseMembers(String eventType, List<Long> memberIds) {
+        raiseMembers(eventType, memberIds, false, null);
+    }
+
+    private void raiseMembers(String eventType, List<Long> memberIds, boolean automatic, LocalDate startDate) {
         List<Long> snapshot = List.copyOf(memberIds);
-        raise(eventType, () -> new BasecampEvents.MembersPayload(id, snapshot));
+        raise(eventType, () -> new BasecampEvents.MembersPayload(id, snapshot, automatic, startDate));
     }
 
     private void raiseDecision(String eventType, BasecampApplication application) {

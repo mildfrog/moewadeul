@@ -4,6 +4,7 @@ import com.moewadeul.common.event.BasecampEvents;
 import com.moewadeul.common.event.ProgramEvents;
 import com.moewadeul.common.event.TrustEvents;
 import com.moewadeul.common.time.KoreaTime;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -167,10 +168,15 @@ final class NotificationTemplates {
         };
     }
 
+    // 자동 처리가 만든 알림은 한 번에 수천 통이 되므로 대량 메일로 보낸다. 출발일이 있는 알림(확정·취소)은 출발일 0시(한국 시간)가 지나면 메일을 보내지 않는다.
     private static List<NotificationDraft> toMembers(
             BasecampEvents.MembersPayload payload, String type, String title, String body, String link) {
+        Instant emailExpiresAt = payload.startDate() == null
+                ? null
+                : payload.startDate().atStartOfDay(KoreaTime.ZONE).toInstant();
         return payload.memberIds().stream()
-                .map(memberId -> new NotificationDraft(memberId, type, title, body, link))
+                .map(memberId ->
+                        new NotificationDraft(memberId, type, title, body, link, payload.automatic(), emailExpiresAt))
                 .toList();
     }
 

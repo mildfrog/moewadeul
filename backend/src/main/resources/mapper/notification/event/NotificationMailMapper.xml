@@ -15,7 +15,8 @@
                n.title AS title,
                n.body AS body,
                n.link AS link,
-               (<include refid="deliverable"/>) AS deliverable
+               (<include refid="deliverable"/>
+                 AND (n.email_expires_at IS NULL OR n.email_expires_at &gt; #{now})) AS deliverable
         FROM notification n
         JOIN member m ON m.id = n.member_id
         LEFT JOIN notification_setting s ON s.member_id = n.member_id AND s.type = n.type
