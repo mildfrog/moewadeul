@@ -231,6 +231,41 @@ class ProgramApplyServiceIntegrationTest {
     }
 
     @Test
+    @DisplayName("[F-18][PG-02][NFR-02] 숙박 행사에 자리가 남아 있어도 신뢰 단계 0이면 행사 행 잠금을 기다리지 않고 TRUST_LEVEL_INSUFFICIENT이다")
+    void trustPrecheckDoesNotWaitForProgramRowLockWhileSeatsRemain() throws SQLException {
+        // given
+        long programId = fixture.saveProgram(3, true);
+        long unverified = fixture.saveMember();
+
+        // when, then
+        try (Connection holder = dataSource.getConnection()) {
+            holder.setAutoCommit(false);
+            holder.createStatement().executeQuery("SELECT id FROM program WHERE id = " + programId + " FOR UPDATE");
+            long startedAt = System.nanoTime();
+            assertErrorCode(
+                    () -> programApplyService.rejectIfSoldOutWithoutLock(unverified, programId),
+                    TrustErrorCode.TRUST_LEVEL_INSUFFICIENT);
+            assertThat(Duration.ofNanos(System.nanoTime() - startedAt)).isLessThan(Duration.ofSeconds(4));
+            holder.rollback();
+        }
+        assertThat(fixture.applicationCount(programId, unverified)).isZero();
+    }
+
+    @Test
+    @DisplayName("[F-18] 자리가 남아 있으면 사전 확인도 잠금 경로와 같은 순서로 신청 기간 오류를 신뢰 단계보다 먼저 낸다")
+    void precheckWithSeatsLeftKeepsErrorOrder() {
+        // given
+        long programId = fixture.saveProgram(3, true);
+        long unverified = fixture.saveMember();
+        clock.setInstant(MutableClock.DEFAULT_INSTANT.plus(Duration.ofDays(3650)));
+
+        // when, then
+        assertErrorCode(
+                () -> programApplyService.rejectIfSoldOutWithoutLock(unverified, programId),
+                ProgramErrorCode.PROGRAM_NOT_IN_APPLY_PERIOD);
+    }
+
+    @Test
     @DisplayName("[F-18] 자리가 남았거나 본인 신청이 남아 있으면 사전 확인이 거절하지 않고 잠금 경로에 맡긴다")
     void soldOutPrecheckLeavesUncertainCasesToLockedPath() {
         // given

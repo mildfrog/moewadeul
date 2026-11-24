@@ -43,25 +43,31 @@ public class ProgramApplyService {
         }
     }
 
-    // 매진 뒤 몰린 요청이 행사 행 잠금 줄에 서면 커넥션 10개를 붙잡아 지도 요청까지 기다리게 한다. 확실히 매진일 때만 잠금 없이 거절한다.
+    // 행사 행 잠금 줄에 선 요청은 커넥션 10개를 붙잡아 지도 요청까지 기다리게 한다.
+    // 잠금 경로에서 실패할 것이 확실한 매진과 신뢰 단계 부족은 잠금 없이 거절한다.
     public void rejectIfSoldOutWithoutLock(long memberId, long programId) {
         long seatChangesBeforeRead = soldOutPrograms.seatChanges(programId);
         Program program = programRepository.findById(programId).orElseThrow(BusinessException::notFound);
         Instant now = clock.instant();
-        if (programApplicationMapper.countSeatHolders(programId, now) < program.getCapacity()) {
+        program.requireApplicableAt(now);
+        boolean full = programApplicationMapper.countSeatHolders(programId, now) >= program.getCapacity();
+        if (full) {
+            markIfSoldOut(program, now, seatChangesBeforeRead);
+        }
+        requireTrustLevel(program, memberId);
+        if (!full || programApplicationMapper.existsActive(programId, memberId)) {
             return;
         }
-        program.requireApplicableAt(now);
+        throw new BusinessException(ProgramErrorCode.PROGRAM_SOLD_OUT);
+    }
+
+    private void markIfSoldOut(Program program, Instant now, long seatChangesBeforeRead) {
+        long programId = program.getId();
         SoldOutPrograms.SeatHolders seatHolders = new SoldOutPrograms.SeatHolders(
                 programId, programApplicationMapper.selectSeatHolderIds(programId, now), seatChangesBeforeRead);
         if (seatHolders.memberIds().size() >= program.getCapacity()) {
             soldOutPrograms.mark(seatHolders, program.getApplyCloseAt(), clock.instant());
         }
-        requireTrustLevel(program, memberId);
-        if (programApplicationMapper.existsActive(programId, memberId)) {
-            return;
-        }
-        throw new BusinessException(ProgramErrorCode.PROGRAM_SOLD_OUT);
     }
 
     @Transactional
