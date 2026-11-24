@@ -10,7 +10,6 @@ import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,26 +20,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class RowLockWritePermits {
 
-    static final int MAX_CONCURRENT_WRITES = 6;
-    private static final Duration PERMIT_WAIT = Duration.ofSeconds(5);
     private static final String IN_USE_GAUGE_NAME = "moewadeul.row.lock.writes.in.use";
     private static final String REJECTED_COUNTER_NAME = "moewadeul.row.lock.writes.rejected";
     private static final String PERMIT_WAIT_TIMER_NAME = "moewadeul.row.lock.writes.permit.wait";
 
-    private final Semaphore permits = new Semaphore(MAX_CONCURRENT_WRITES, true);
+    private final Semaphore permits;
     private final Duration permitWait;
     private final Counter rejected;
     private final Timer acquiredWait;
     private final Timer rejectedWait;
 
-    @Autowired
-    public RowLockWritePermits(MeterRegistry meterRegistry) {
-        this(meterRegistry, PERMIT_WAIT);
-    }
-
-    RowLockWritePermits(MeterRegistry meterRegistry, Duration permitWait) {
-        this.permitWait = permitWait;
-        Gauge.builder(IN_USE_GAUGE_NAME, permits, p -> MAX_CONCURRENT_WRITES - p.availablePermits())
+    public RowLockWritePermits(MeterRegistry meterRegistry, RowLockWritesProperties properties) {
+        int maxConcurrentWrites = properties.maxConcurrentWrites();
+        this.permits = new Semaphore(maxConcurrentWrites, true);
+        this.permitWait = properties.permitWait();
+        Gauge.builder(IN_USE_GAUGE_NAME, permits, p -> maxConcurrentWrites - p.availablePermits())
                 .description("행 잠금 쓰기 허가 중 쓰이고 있는 수")
                 .register(meterRegistry);
         this.rejected = Counter.builder(REJECTED_COUNTER_NAME)
