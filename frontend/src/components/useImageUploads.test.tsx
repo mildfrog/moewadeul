@@ -136,7 +136,7 @@ describe('useImageUploads', () => {
     expect(requestUpload).not.toHaveBeenCalled();
     expect(putImage).not.toHaveBeenCalled();
     expect(uploads.images[0]!.status).toBe('failed');
-    expect(uploads.images[0]!.error).toBe('이 사진은 올릴 수 없어요. 빼고 다른 사진을 골라 주세요.');
+    expect(uploads.images[0]!.error).toBe('이 사진은 올릴 수 없어요. 삭제한 뒤 다른 사진을 선택해 주세요.');
     expect(uploads.failed).toBe(true);
   });
 

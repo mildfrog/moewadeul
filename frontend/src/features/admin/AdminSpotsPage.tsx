@@ -70,7 +70,9 @@ function SpotReview() {
         <EmptyState
           framed
           title={tab === 'PENDING_REVIEW' ? '검토를 기다리는 박지가 없어요' : '숨긴 박지가 없어요'}
-          description={tab === 'PENDING_REVIEW' ? '신고가 쌓인 박지가 여기에 모여요.' : '숨긴 박지가 여기에 모여요.'}
+          description={
+            tab === 'PENDING_REVIEW' ? '신고가 누적된 박지가 표시돼요.' : '검토 후 숨김 처리한 박지가 표시돼요.'
+          }
         />
       )}
       {current !== null && current.items.length > 0 && (
@@ -122,7 +124,7 @@ function SpotCard({ item, tab, onDone }: { item: AdminSpotSummary; tab: AdminSpo
         <StatusText tone="neutral">{item.status === 'HIDDEN' ? '숨김' : '검토 대기'}</StatusText>
         {item.parkWarning && (
           <StatusText tone="warning" icon="alert">
-            공원 경계 경고
+            공원 구역 주의
           </StatusText>
         )}
       </div>

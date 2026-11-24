@@ -9,7 +9,7 @@ export function MapRegionChip({
 }) {
   let name = '이 지역';
   if (label?.kind === 'named') name = label.name;
-  else if (label?.kind === 'wide') name = '여러 시·도';
+  else if (label?.kind === 'wide') name = '넓은 지역';
 
   return (
     <div
@@ -19,7 +19,7 @@ export function MapRegionChip({
         aria-live="polite"
         className="inline-flex h-9 min-w-0 max-w-full items-center gap-1.5 rounded-control bg-surface px-3.5 text-sm text-ink shadow-raise"
       >
-        <span className="shrink-0 text-ink-muted">지금 보는 곳 ·</span>
+        <span className="shrink-0 text-ink-muted">현재 위치 ·</span>
         <span className="min-w-0 truncate font-semibold">{name}</span>
       </p>
     </div>

@@ -167,7 +167,7 @@ function DetailContent({ detail, onChanged }: { detail: ProgramDetail; onChanged
               </dd>
             </div>
             <div className="rounded-sheet bg-fill px-4 py-3">
-              <dt className="text-[0.8125rem] text-ink-muted">끝</dt>
+              <dt className="text-[0.8125rem] text-ink-muted">종료</dt>
               <dd className="text-sm font-extrabold tabular-nums sm:text-[0.9375rem]">
                 {formatKstDateTime(detail.endAt)}
               </dd>
@@ -182,8 +182,8 @@ function DetailContent({ detail, onChanged }: { detail: ProgramDetail; onChanged
         </header>
 
         {detail.status === 'CANCELED' && (
-          <Notice tone="danger" title="관리자가 행사를 취소했어요">
-            <p>신청한 회원에게 취소 알림을 보냈어요. 결제한 금액은 환불돼요.</p>
+          <Notice tone="danger" title="취소된 행사예요">
+            <p>신청자에게 취소 안내를 보냈으며, 결제 금액은 자동으로 환불돼요.</p>
           </Notice>
         )}
 
@@ -215,7 +215,7 @@ function DetailContent({ detail, onChanged }: { detail: ProgramDetail; onChanged
             {detail.overnight && (
               <div className={BOARD_ROW_CLASS}>
                 <dt className="text-ink-muted">참가 자격</dt>
-                <dd className="font-semibold text-ink">숙박 행사는 본인확인을 마친 회원만 신청할 수 있어요.</dd>
+                <dd className="font-semibold text-ink">숙박 행사는 본인확인을 마친 성인만 신청할 수 있어요.</dd>
               </div>
             )}
           </dl>
@@ -361,8 +361,8 @@ function ActionArea({ detail, onChanged }: { detail: ProgramDetail; onChanged: (
               </p>
             )}
             <p className="mt-1">
-              {detail.fee === 0 ? '참가비가 없는 행사예요.' : `참가비는 ${feeText(detail.fee)}이에요.`} 시연용 결제라서
-              실제로 돈이 나가지 않아요.
+              {detail.fee === 0 ? '참가비가 없는 무료 행사예요.' : `참가비는 ${feeText(detail.fee)}이에요.`} 시연용
+              결제이며 실제로 결제되지 않아요.
             </p>
           </Notice>
           <Button fullWidth loading={busy === 'pay'} disabled={payExpired || busy !== null} onClick={() => void pay()}>
@@ -379,14 +379,14 @@ function ActionArea({ detail, onChanged }: { detail: ProgramDetail; onChanged: (
           <p className="text-base font-semibold text-accent">신청이 확정됐어요.</p>
           <p className="text-sm text-ink-muted">
             {refundClosed
-              ? '환불 기한이 지나서 취소할 수 없어요.'
+              ? '환불 기한이 지나 취소할 수 없어요.'
               : `행사 시작 ${REFUND_BEFORE_START_HOURS}시간 전인 ${formatKstDateTime(new Date(refundDeadlineMs).toISOString())}까지 취소하면 환불돼요.`}
           </p>
           <Button
             fullWidth
             variant="danger"
             disabled={refundClosed || busy !== null}
-            disabledReason={refundClosed ? '환불 기한이 지나 취소할 수 없어요' : undefined}
+            disabledReason={refundClosed ? '환불 기한이 지나 취소할 수 없어요.' : undefined}
             onClick={() => setConfirmCancel(true)}
           >
             신청 취소
@@ -442,8 +442,8 @@ function ActionArea({ detail, onChanged }: { detail: ProgramDetail; onChanged: (
           <div className="flex flex-col gap-4">
             <p className="text-base text-ink">
               {confirmed
-                ? '취소하면 결제한 금액은 환불되고 자리는 다른 사람이 신청할 수 있게 열려요.'
-                : '취소하면 자리가 다시 열려요. 다시 신청하려면 남은 자리가 있어야 해요.'}
+                ? '신청을 취소하면 결제 금액은 환불되며, 자리가 다른 대기자에게 열려요.'
+                : '신청을 취소하면 해당 자리가 다시 열려요.'}
             </p>
             <div className="flex flex-col gap-2">
               <Button
@@ -456,7 +456,7 @@ function ActionArea({ detail, onChanged }: { detail: ProgramDetail; onChanged: (
                 신청 취소하기
               </Button>
               <Button variant="secondary" fullWidth disabled={busy !== null} onClick={() => setConfirmCancel(false)}>
-                그대로 두기
+                취소
               </Button>
             </div>
           </div>
@@ -476,7 +476,9 @@ const STALE_CODES = new Set([
 
 function ClosedApplyButton({ detail }: { detail: ProgramDetail }) {
   const reason =
-    detail.status === 'UPCOMING' ? `신청은 ${formatKstDateTime(detail.applyOpenAt)}부터예요` : '신청이 마감됐어요';
+    detail.status === 'UPCOMING'
+      ? `${formatKstDateTime(detail.applyOpenAt)}부터 신청할 수 있어요.`
+      : '신청이 마감됐어요.';
   return (
     <Button fullWidth disabled disabledReason={reason}>
       신청하기

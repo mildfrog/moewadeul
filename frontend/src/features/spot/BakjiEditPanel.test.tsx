@@ -156,7 +156,7 @@ describe('박지 수정 화면', () => {
     expect(radio('hasWater', '있음')?.checked).toBe(true);
     expect(radio('hasToilet', '없음')?.checked).toBe(true);
     expect(radio('signalLevel', '약함')?.checked).toBe(true);
-    expect(radio('groundType', '바꾸지 않음')?.checked).toBe(true);
+    expect(radio('groundType', '기존 유지')?.checked).toBe(true);
   });
 
   it('F-07: 바꾼 필드만 보내고, 비운 설명과 모름으로 바꾼 통신 상태는 null로 보낸다', async () => {

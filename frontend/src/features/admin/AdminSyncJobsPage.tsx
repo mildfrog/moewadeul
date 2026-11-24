@@ -25,15 +25,15 @@ const JOB_LABELS: Record<SyncJobType, string> = {
   FOREST: '국립 자연휴양림',
   FOREST_STANDARD: '공립·사립 휴양림',
   PARK_BOUNDARY: '공원 경계',
-  BAKJI_REJUDGE: '박지 경고 다시 확인',
+  BAKJI_REJUDGE: '박지 공원 구역 재확인',
 };
 
 const JOB_DESCRIPTIONS: Record<SyncJobType, string> = {
   GOCAMPING: '고캠핑 API에서 바뀐 야영장을 받아 반영해요.',
   FOREST: '서버에 있는 국립자연휴양림 파일을 다시 불러와요.',
   FOREST_STANDARD: '서버에 있는 전국휴양림표준데이터 파일을 다시 불러와요. 국립 휴양림을 먼저 불러와야 해요.',
-  PARK_BOUNDARY: '서버에 있는 공원 경계 파일을 다시 불러와요. 성공하면 박지 경고 다시 확인이 이어서 실행돼요.',
-  BAKJI_REJUDGE: '지금 불러온 공원 경계로 모든 박지의 공원 경고를 다시 확인해요.',
+  PARK_BOUNDARY: '서버에 있는 공원 경계 파일을 다시 불러와요. 완료되면 박지 공원 구역 재확인이 이어서 실행돼요.',
+  BAKJI_REJUDGE: '현재 공원 경계 데이터를 기준으로 모든 박지의 공원 구역 주의 여부를 다시 확인해요.',
 };
 
 const STATUS_META: Record<SyncJobStatus, { label: string; tone: StatusTone }> = {
@@ -359,7 +359,7 @@ function JobCard({
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
           <dt className="text-ink-muted">시작</dt>
           <dd className="font-mono tabular-nums text-ink">{formatKstDateTime(latest.startedAt)}</dd>
-          <dt className="text-ink-muted">끝남</dt>
+          <dt className="text-ink-muted">종료</dt>
           <dd className="font-mono tabular-nums text-ink">
             {latest.finishedAt ? formatKstDateTime(latest.finishedAt) : '-'}
           </dd>
@@ -377,7 +377,7 @@ function JobCard({
         <p className="break-words rounded-row bg-surface px-4 py-2.5 text-sm text-danger">{latest.errorMessage}</p>
       )}
       {jobType === 'PARK_BOUNDARY' && (
-        <p className="text-sm text-ink-muted">성공하면 박지 경고 다시 확인이 이어서 실행돼요</p>
+        <p className="text-sm text-ink-muted">완료되면 박지 공원 구역 재확인이 이어서 실행돼요</p>
       )}
       {error && (
         <div role="alert">
@@ -399,7 +399,7 @@ function JobCard({
         <Dialog title={`${label} 작업을 실행할까요?`} onClose={() => !busy && setConfirm(false)}>
           <div className="flex flex-col gap-4">
             <p className="text-base text-ink">
-              {JOB_DESCRIPTIONS[jobType]} 작업은 따로 실행되고, 결과는 이 화면에서 확인해요.
+              {JOB_DESCRIPTIONS[jobType]} 백그라운드에서 실행되며 결과는 이 화면에서 확인할 수 있어요.
             </p>
             <div className="flex flex-wrap justify-end gap-2">
               <Button variant="secondary" disabled={busy} onClick={() => setConfirm(false)}>

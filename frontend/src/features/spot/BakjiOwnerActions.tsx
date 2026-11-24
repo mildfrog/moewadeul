@@ -60,7 +60,7 @@ function DeleteBakjiDialog({
   return (
     <Dialog title="박지를 삭제할까요?" onClose={() => !submitting && onClose()}>
       <div className="flex flex-col gap-4">
-        <p className="text-base text-ink">삭제한 박지는 지도와 장소 상세에서 사라지고 되돌릴 수 없어요.</p>
+        <p className="text-base text-ink">삭제한 박지는 지도에서 바로 사라지며 복구할 수 없어요.</p>
         {error && (
           <div role="alert">
             <ErrorNotice title="삭제하지 못했어요" error={error.cause} />

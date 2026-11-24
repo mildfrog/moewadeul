@@ -65,7 +65,7 @@ export function ProgramListPage() {
         </div>
       )}
       <div aria-busy={current === null}>
-        <ListPanel header="시작일 빠른 순">
+        <ListPanel header="시작일 순">
           {current === null ? (
             showSkeleton ? (
               Array.from({ length: 3 }, (_, index) => (
@@ -107,8 +107,8 @@ export function ProgramListPage() {
 function ProgramEmpty({ filtered, onReset }: { filtered: boolean; onReset: () => void }) {
   return (
     <EmptyState
-      title={filtered ? '해당하는 행사가 없어요' : '지금 볼 수 있는 행사가 없어요'}
-      description={filtered ? undefined : '행사가 열리면 이 목록에 올라와요.'}
+      title={filtered ? '조건에 맞는 행사가 없어요' : '예정된 행사가 없어요'}
+      description={filtered ? undefined : '새 공식 행사가 열리면 이곳에 표시돼요.'}
       action={
         filtered ? (
           <Button variant="secondary" onClick={onReset}>

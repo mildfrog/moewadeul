@@ -110,7 +110,7 @@ describe('동행 후기 화면', () => {
     container.remove();
   });
 
-  describe('쓸 후기', () => {
+  describe('작성할 후기', () => {
     it('본인확인을 마치지 않은 회원에게는 목록을 요청하지 않고 본인확인 안내만 보인다', async () => {
       session.trustLevel = 0;
 
@@ -121,7 +121,7 @@ describe('동행 후기 화면', () => {
       expect(container.querySelector('a[href="/identity-verification"]')?.textContent).toBe('본인확인하기');
     });
 
-    it('후기를 쓸 베이스캠프와 함께 간 멤버, 남은 기한이 보이고 기한이 지난 것은 지났다고 보인다', async () => {
+    it('후기를 쓸 베이스캠프와 함께 간 멤버, 남은 기한이 보이고 기한이 지난 것은 만료됐다고 보인다', async () => {
       vi.mocked(fetchPendingCompanionReviews).mockResolvedValue([
         pending(1),
         pending(2, { deadline: '2020-01-01T00:00:00Z', targets: [{ memberId: 23, nickname: '구름' }] }),
@@ -134,16 +134,16 @@ describe('동행 후기 화면', () => {
       expect(container.querySelector('a[href="/members/21"]')?.textContent).toBe('별바라기');
       expect(container.querySelector('a[href="/members/22"]')?.textContent).toBe('달빛');
       expect(container.textContent).toContain('캠프2');
-      expect(container.textContent).toContain('기한이 지났어요');
+      expect(container.textContent).toContain('기한 만료');
       expect(container.querySelector('a[href="/members/23"]')?.textContent).toBe('구름');
     });
 
-    it('쓸 후기가 없으면 안내 문구가 나온다', async () => {
+    it('작성할 후기가 없으면 안내 문구가 나온다', async () => {
       vi.mocked(fetchPendingCompanionReviews).mockResolvedValue([]);
 
       await render();
 
-      expect(container.textContent).toContain('쓸 후기가 없어요');
+      expect(container.textContent).toContain('작성할 후기가 없어요');
     });
 
     it('불러오지 못하면 오류 문구가 나오고, 다시 불러오기를 누르면 목록이 나온다', async () => {
@@ -153,13 +153,13 @@ describe('동행 후기 화면', () => {
 
       await render();
 
-      expect(container.textContent).toContain('쓸 후기를 불러오지 못했어요');
-      expect(container.textContent).not.toContain('쓸 후기가 없어요');
+      expect(container.textContent).toContain('작성할 후기를 불러오지 못했어요');
+      expect(container.textContent).not.toContain('작성할 후기가 없어요');
 
       await act(async () => button('다시 불러오기')?.click());
 
       expect(container.textContent).toContain('캠프1');
-      expect(container.textContent).not.toContain('쓸 후기를 불러오지 못했어요');
+      expect(container.textContent).not.toContain('작성할 후기를 불러오지 못했어요');
     });
 
     it('다시 동행하고 싶은지 고르기 전에는 후기 남기기가 잠겨 있고, 고른 뒤 남기면 서버로 가고 목록에서 빠진다', async () => {
@@ -173,7 +173,7 @@ describe('동행 후기 화면', () => {
 
       expect(container.textContent).toContain('별바라기님에게 남길 동행 후기');
       expect(button('후기 남기기')?.disabled).toBe(true);
-      expect(container.textContent).toContain('다시 동행하고 싶은지 골라 주세요.');
+      expect(container.textContent).toContain('재동행 의사를 선택해 주세요.');
 
       await act(async () => field('예')?.click());
       await act(async () => field('시간 약속')?.click());
@@ -191,7 +191,7 @@ describe('동행 후기 화면', () => {
       });
       expect(container.querySelector('dialog')).toBeNull();
       expect(container.querySelector('[role="status"]')?.textContent).toBe('별바라기님에게 동행 후기를 남겼어요.');
-      expect(container.textContent).toContain('쓸 후기가 없어요');
+      expect(container.textContent).toContain('작성할 후기가 없어요');
     });
 
     it('한마디에 대한 서버 검증 오류는 입력란 아래에, 그 밖의 실패는 알림으로 보이고 쓰던 내용은 남는다', async () => {
@@ -219,7 +219,7 @@ describe('동행 후기 화면', () => {
       await act(async () => button('후기 남기기')?.click());
 
       expect(container.textContent).toContain('후기를 남기지 못했어요');
-      expect(container.textContent).toContain('이 멤버에게는 이미 동행 후기를 썼어요');
+      expect(container.textContent).toContain('이미 이 멤버에게 동행 후기를 남겼어요');
       expect(container.querySelector('dialog')).not.toBeNull();
       expect(comment()?.value).toBe('별로였어요');
     });
@@ -243,10 +243,10 @@ describe('동행 후기 화면', () => {
 
       expect(container.textContent).toContain('받은캠프1');
       expect(container.querySelector('a[href="/members/31"]')?.textContent).toBe('후기자1');
-      expect(container.textContent).toContain('다시 동행하고 싶어요');
+      expect(container.textContent).toContain('재동행 희망');
       expect(container.textContent).toContain('시간 약속 · 배려');
       expect(container.textContent).toContain('다음에도 같이 가요');
-      expect(container.textContent).toContain('다시 동행하고 싶지는 않아요');
+      expect(container.textContent).toContain('재동행 비희망');
       expect(container.textContent).toContain('내 후기를 남기면 상대가 쓴 후기를 볼 수 있어요.');
       expect(container.querySelector('a[href="/basecamps/77"]')?.textContent).toBe('베이스캠프 보기');
       expect(fetchPendingCompanionReviews).not.toHaveBeenCalled();
@@ -293,7 +293,7 @@ describe('동행 후기 화면', () => {
 
       await act(async () => button('후기 신고')?.click());
 
-      expect(container.querySelector('dialog')?.textContent).toContain('후기자1님이 내게 쓴 동행 후기를 신고해요.');
+      expect(container.querySelector('dialog')?.textContent).toContain('후기자1님이 나에게 남긴 동행 후기를 신고해요.');
     });
   });
 
@@ -309,7 +309,7 @@ describe('동행 후기 화면', () => {
     expect(container.textContent).toContain('받은캠프1');
     expect(container.textContent).not.toContain('별바라기');
 
-    await act(async () => button('쓸 후기')?.click());
+    await act(async () => button('작성할 후기')?.click());
 
     expect(window.location.search).toBe('');
     expect(container.textContent).toContain('별바라기');

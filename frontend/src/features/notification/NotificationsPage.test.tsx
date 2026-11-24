@@ -125,7 +125,7 @@ describe('알림 화면', () => {
   it('빈자리 알림 이메일 수신을 끄고 저장하면 서버로 꺼짐이 가고, 다시 열어도 꺼져 있다', async () => {
     const seatReleased = () =>
       [...container.querySelectorAll('label')]
-        .find((label) => label.textContent?.includes('빈자리 알림을 신청한 행사에 자리가 났을 때'))
+        .find((label) => label.textContent?.includes('공식 행사 빈자리 알림'))
         ?.querySelector('input');
     let stored: NotificationSetting[] = [{ type: 'PROGRAM_SEAT_RELEASED', emailEnabled: true }];
     vi.mocked(fetchNotificationSettings).mockImplementation(async () => stored);

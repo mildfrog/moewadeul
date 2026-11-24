@@ -98,11 +98,11 @@ describe('내 베이스캠프 화면', () => {
 
     await render();
 
-    expect(container.textContent).toContain('열었거나 합류한 베이스캠프가 없어요');
+    expect(container.textContent).toContain('참여 중인 베이스캠프가 없어요');
     expect(link('베이스캠프 찾기')?.getAttribute('href')).toBe('/basecamps');
   });
 
-  it('역할 탭을 누르면 그 역할로 다시 불러오고 카드에는 역할을 다시 적지 않으며, 결과가 없으면 해당하는 베이스캠프가 없다고 알린다', async () => {
+  it('역할 탭을 누르면 그 역할로 다시 불러오고 카드에는 역할을 다시 적지 않으며, 결과가 없으면 조건에 맞는 베이스캠프가 없다고 알린다', async () => {
     vi.mocked(fetchMyBasecamps).mockImplementation(async ({ relation }) =>
       relation === 'MEMBER' ? page([]) : page([basecamp(1, 'LEADER')]),
     );
@@ -116,7 +116,7 @@ describe('내 베이스캠프 화면', () => {
 
     await act(async () => button('멤버')?.click());
 
-    expect(container.textContent).toContain('해당하는 베이스캠프가 없어요');
+    expect(container.textContent).toContain('조건에 맞는 베이스캠프가 없어요');
     expect(link('베이스캠프 찾기')).toBeUndefined();
   });
 
@@ -148,7 +148,7 @@ describe('내 베이스캠프 화면', () => {
     await render();
 
     expect(container.textContent).toContain('내 베이스캠프를 불러오지 못했어요');
-    expect(container.textContent).not.toContain('열었거나 합류한 베이스캠프가 없어요');
+    expect(container.textContent).not.toContain('참여 중인 베이스캠프가 없어요');
 
     await act(async () => button('다시 불러오기')?.click());
 

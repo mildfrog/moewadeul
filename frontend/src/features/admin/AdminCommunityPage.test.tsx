@@ -21,7 +21,7 @@ const ME = {
   trustLevel: 1,
 };
 
-const STATE_CHANGED_MESSAGE = '상태가 바뀌어 지금은 할 수 없어요. 화면을 새로고침해 주세요.';
+const STATE_CHANGED_MESSAGE = '상태가 변경돼 지금은 처리할 수 없어요. 새로고침해 주세요.';
 
 function json(status: number, body: unknown) {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -157,7 +157,7 @@ describe('관리자 커뮤니티 검토', () => {
     expect(lists('GET', '/api/admin/community/comments')).toHaveLength(1);
     expect(text(container)).toContain('댓글러님의 댓글');
     expect(text(container)).toContain('연락처 남겨 주세요');
-    expect(text(container)).toContain('글 번호 12');
+    expect(text(container)).toContain('#12');
     expect(text(container)).toContain('개인정보 노출 5');
   });
 
@@ -188,7 +188,7 @@ describe('관리자 커뮤니티 검토', () => {
 
     const alert = text(cards()[0]?.querySelector('[role="alert"]') ?? null);
     expect(alert).toContain('사진 1장을 불러오지 못했어요.');
-    expect(alert).toContain('사진 주소가 만료돼요');
+    expect(alert).toContain('사진 링크가 만료될 수 있어요');
 
     posts.PENDING_REVIEW = () => json(200, page([post({ images: fresh })]));
     await act(async () => button('다시 불러오기', cards()[0] ?? container)?.click());
@@ -288,7 +288,7 @@ describe('관리자 커뮤니티 검토', () => {
     await act(async () => button('댓글')?.click());
 
     const card = cards()[0] ?? null;
-    expect(text(card)).toContain('작성자가 지운 글이에요.');
+    expect(text(card)).toContain('작성자가 삭제한 글이에요.');
     expect(card?.querySelectorAll('a')).toHaveLength(0);
   });
 
@@ -360,7 +360,9 @@ describe('관리자 커뮤니티 검토', () => {
     expect(lists('GET', '/api/admin/community/posts').map((call) => call.status)).toEqual(['PENDING_REVIEW', 'HIDDEN']);
     expect(button('숨기기')).toBeUndefined();
     expect(button('복구')).toBeDefined();
-    expect(text(container)).toContain('복구하면 이전 신고는 세지 않아요. 새 신고가 5건 쌓여야 다시 검토 대기가 돼요.');
+    expect(text(container)).toContain(
+      '복구하면 기존 신고 횟수는 초기화되며, 이후 신고 5건이 새로 쌓여야 다시 검토 대상이 돼요.',
+    );
   });
 
   it('숨기기는 확인 대화상자를 거쳐야 요청이 나가고, 취소하면 나가지 않는다', async () => {
@@ -369,7 +371,7 @@ describe('관리자 커뮤니티 검토', () => {
     await act(async () => button('숨기기')?.click());
     const dialog = container.querySelector('dialog');
     expect(text(dialog)).toContain(
-      '작성자A님의 글을 숨겨요. 숨긴 글은 다른 회원에게 보이지 않아요. 숨김 탭에서 복구할 수 있어요.',
+      '작성자A님의 글을 숨기면 다른 회원에게 보이지 않아요. 숨김 탭에서 언제든 복구할 수 있어요.',
     );
     expect(lists('POST', '/api/admin/community/posts/1/hide')).toHaveLength(0);
 
@@ -391,7 +393,7 @@ describe('관리자 커뮤니티 검토', () => {
     await act(async () => button('댓글')?.click());
 
     await act(async () => button('숨기기')?.click());
-    expect(text(container.querySelector('dialog'))).toContain('댓글러님의 댓글을 숨겨요. 숨긴 댓글은');
+    expect(text(container.querySelector('dialog'))).toContain('댓글러님의 댓글을 숨기면 다른 회원에게 보이지 않아요.');
     await act(async () => button('숨기기', container.querySelector('dialog') ?? container)?.click());
 
     expect(lists('POST', '/api/admin/community/comments/30/hide')).toHaveLength(1);
@@ -457,10 +459,10 @@ describe('관리자 커뮤니티 검토', () => {
   });
 
   it.each([
-    ['글', 'PENDING_REVIEW', '검토를 기다리는 글이 없어요', '신고가 쌓인 글이 여기에 모여요.'],
-    ['글', 'HIDDEN', '숨긴 글이 없어요', '숨긴 글이 여기에 모여요.'],
-    ['댓글', 'PENDING_REVIEW', '검토를 기다리는 댓글이 없어요', '신고가 쌓인 댓글이 여기에 모여요.'],
-    ['댓글', 'HIDDEN', '숨긴 댓글이 없어요', '숨긴 댓글이 여기에 모여요.'],
+    ['글', 'PENDING_REVIEW', '검토를 기다리는 글이 없어요', '신고가 누적돼 검토가 필요한 글이 표시돼요.'],
+    ['글', 'HIDDEN', '숨긴 글이 없어요', '검토 후 숨김 처리한 글이 표시돼요.'],
+    ['댓글', 'PENDING_REVIEW', '검토를 기다리는 댓글이 없어요', '신고가 누적돼 검토가 필요한 댓글이 표시돼요.'],
+    ['댓글', 'HIDDEN', '숨긴 댓글이 없어요', '검토 후 숨김 처리한 댓글이 표시돼요.'],
   ] as const)('%s %s 탭이 비면 안내 문구를 보인다', async (kind, status, title, description) => {
     posts.PENDING_REVIEW = () => json(200, page([]));
     comments.PENDING_REVIEW = () => json(200, page([]));

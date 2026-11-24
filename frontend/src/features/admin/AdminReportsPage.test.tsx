@@ -190,7 +190,7 @@ describe('관리자 신고 처리 목록', () => {
     await render();
 
     expect(text()).toContain('조건에 맞는 신고가 없어요');
-    expect(text()).toContain('처리 상태나 긴급 조건을 바꿔 주세요.');
+    expect(text()).toContain('처리 상태나 긴급 필터를 변경해 보세요.');
     expect(rows()).toHaveLength(0);
     expect(container.querySelector('[role="alert"]')).toBeNull();
   });

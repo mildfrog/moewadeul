@@ -121,7 +121,7 @@ function NotificationList() {
             {state.error ? (
               <ErrorNotice title="알림을 불러오지 못했어요" error={state.error} traceId={state.traceId ?? undefined} />
             ) : (
-              <ErrorNotice title="읽음 처리하지 못했어요" error={actionError?.cause} />
+              <ErrorNotice title="읽음 처리를 완료하지 못했어요" error={actionError?.cause} />
             )}
             {state.error && state.items.length === 0 && (
               <div>
@@ -133,7 +133,7 @@ function NotificationList() {
           </div>
         )}
         {state.items.length === 0 && !state.error ? (
-          <EmptyState framed title="알림이 없어요" description="합류 신청이나 신고 처리 결과가 오면 여기에 보여요." />
+          <EmptyState framed title="알림이 없어요" description="베이스캠프나 공식 행사 소식이 오면 이곳에 표시돼요." />
         ) : (
           <ListPanel>
             {state.items.map((item) => (
@@ -241,7 +241,7 @@ function EmailSettingsCard() {
 
   return (
     <PageCard title="이메일 수신 설정">
-      <p className="text-sm text-ink-muted">꺼도 알림함에는 알림이 계속 쌓여요.</p>
+      <p className="text-sm text-ink-muted">이메일 알림을 꺼도 알림함에서는 계속 확인할 수 있어요.</p>
       {state.status === 'loading' && <Skeleton className="h-40 w-full" />}
       {state.status === 'error' && (
         <div className="flex flex-col gap-2">

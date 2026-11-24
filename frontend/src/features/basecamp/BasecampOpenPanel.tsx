@@ -55,7 +55,7 @@ const CAPACITY_OPTIONS: ChoiceOption<string>[] = [2, 3, 4, 5, 6].map((value) => 
 }));
 
 const TRUST_OPTIONS: ChoiceOption<TrustChoice>[] = [
-  { value: 'NONE', label: '없음' },
+  { value: 'NONE', label: '제한 없음' },
   { value: '1', label: '신뢰 단계 1 이상' },
   { value: '2', label: '신뢰 단계 2 이상' },
 ];
@@ -121,7 +121,7 @@ export function BasecampOpenPanel({ spotId, onBack }: BasecampOpenPanelProps) {
         <h2 className="text-xl font-bold tracking-tight text-ink">{current.detail.name}에서 베이스캠프 열기</h2>
         <ParkWarningNotice warning={current.detail.parkWarning} />
         <p className="text-base font-semibold text-danger">
-          이 박지에서는 베이스캠프를 열 수 없어요. 다른 장소를 골라 주세요.
+          이 박지에서는 베이스캠프를 열 수 없어요. 다른 장소를 선택해 주세요.
         </p>
       </div>
     );
@@ -206,20 +206,20 @@ function OpenForm({ spotId, spotName }: { spotId: number; spotName: string }) {
 
   function validate(): FieldErrors {
     const errors: FieldErrors = {};
-    if (title.trim() === '') errors.title = '제목을 적어 주세요.';
-    if (description.trim() === '') errors.description = '설명을 적어 주세요.';
-    if (startDate === '') errors.startDate = '출발일을 골라 주세요.';
+    if (title.trim() === '') errors.title = '제목을 입력해 주세요.';
+    if (description.trim() === '') errors.description = '설명을 입력해 주세요.';
+    if (startDate === '') errors.startDate = '출발일을 선택해 주세요.';
     else if (startDate < minStart || startDate > maxStart)
-      errors.startDate = '출발일은 내일부터 60일 안에서 골라 주세요.';
-    if (endDate === '') errors.endDate = '돌아오는 날을 골라 주세요.';
+      errors.startDate = '출발일은 내일부터 60일 이내로 선택해 주세요.';
+    if (endDate === '') errors.endDate = '종료일을 선택해 주세요.';
     else if (endMin !== undefined && endMax !== undefined && (endDate < endMin || endDate > endMax)) {
-      errors.endDate = '돌아오는 날은 출발일에서 1~3박 뒤로 골라 주세요.';
+      errors.endDate = '일정은 출발일 기준 1~3박으로 선택해 주세요.';
     }
-    if (capacity === null) errors.capacity = '정원을 골라 주세요.';
+    if (capacity === null) errors.capacity = '정원을 선택해 주세요.';
     if ((ageMin === '') !== (ageMax === '')) {
-      errors.ageGroup = '연령대는 시작과 끝을 모두 골라 주세요.';
+      errors.ageGroup = '연령대는 최소와 최대를 모두 선택해 주세요.';
     } else if (ageMin !== '' && Number(ageMin) > Number(ageMax)) {
-      errors.ageGroup = '시작 연령대가 끝 연령대보다 높아요. 다시 골라 주세요.';
+      errors.ageGroup = '최소 연령대가 최대 연령대보다 높아요. 다시 선택해 주세요.';
     }
     return errors;
   }
@@ -331,7 +331,7 @@ function OpenForm({ spotId, spotName }: { spotId: number; spotName: string }) {
           error={fieldErrors.startDate}
         />
         <TextField
-          label="돌아오는 날"
+          label="종료일"
           name="endDate"
           type="date"
           min={endMin}
@@ -341,7 +341,7 @@ function OpenForm({ spotId, spotName }: { spotId: number; spotName: string }) {
           error={fieldErrors.endDate}
         />
       </div>
-      <p className="-mt-2 text-sm text-ink-muted">출발일은 내일부터 60일 안에서 골라요. 일정은 1~3박이에요.</p>
+      <p className="-mt-2 text-sm text-ink-muted">출발일은 내일부터 60일 이내, 일정은 1~3박까지 선택할 수 있어요.</p>
       <ChoiceGroup
         legend="정원 (캠프 리더 포함)"
         name="capacity"
@@ -359,12 +359,12 @@ function OpenForm({ spotId, spotName }: { spotId: number; spotName: string }) {
           options={TRUST_OPTIONS}
           value={minTrust}
           onChange={setMinTrust}
-          hint="신뢰 단계를 '없음'으로 둬도 합류하려면 본인확인이 필요해요."
+          hint="제한 없음을 선택해도 합류하려면 본인확인이 필요해요."
           error={fieldErrors.minTrustLevel}
         />
         <div className="grid grid-cols-2 gap-2">
           <SelectField
-            label="연령대 시작"
+            label="최소 연령대"
             name="ageGroupMin"
             options={AGE_OPTIONS}
             value={ageMin}
@@ -372,7 +372,7 @@ function OpenForm({ spotId, spotName }: { spotId: number; spotName: string }) {
             error={fieldErrors.ageGroup}
           />
           <SelectField
-            label="연령대 끝"
+            label="최대 연령대"
             name="ageGroupMax"
             options={AGE_OPTIONS}
             value={ageMax}
@@ -380,11 +380,11 @@ function OpenForm({ spotId, spotName }: { spotId: number; spotName: string }) {
           />
         </div>
         <Checkbox
-          label="같은 성별만 받기"
+          label="같은 성별만 모집"
           name="sameGenderOnly"
           checked={sameGenderOnly}
           onChange={(event) => setSameGenderOnly(event.target.checked)}
-          hint="연령대와 성별은 본인확인한 정보로만 따져요."
+          hint="연령대와 성별은 본인확인된 정보를 기준으로 적용돼요."
           error={fieldErrors.sameGenderOnly}
         />
       </fieldset>

@@ -81,7 +81,7 @@ function AuditLogList() {
 
   return (
     <section className="flex flex-col gap-4" aria-label="감사 기록">
-      <form className="flex flex-wrap items-start gap-3" aria-label="기록 조건" onSubmit={submit} noValidate>
+      <form className="flex flex-wrap items-start gap-3" aria-label="검색 필터" onSubmit={submit} noValidate>
         <SelectField
           className="w-full sm:w-52"
           label="대상 종류"
@@ -116,7 +116,7 @@ function AuditLogList() {
           <Button type="submit">조회</Button>
           {(filtered || hasAuditFormInput(form)) && (
             <Button variant="secondary" onClick={clear}>
-              조건 지우기
+              필터 초기화
             </Button>
           )}
         </div>
@@ -141,11 +141,11 @@ function AuditLogList() {
       {current !== null && current.items.length === 0 && !current.error && (
         <EmptyState
           framed
-          title={filtered ? '조건에 맞는 기록이 없어요' : '아직 관리자 기록이 없어요'}
+          title={filtered ? '조건에 맞는 기록이 없어요' : '아직 감사 기록이 없어요'}
           action={
             filtered ? (
               <Button variant="secondary" onClick={clear}>
-                조건 지우기
+                필터 초기화
               </Button>
             ) : undefined
           }
@@ -172,7 +172,7 @@ function AuditLogList() {
 function AuditLogRow({ item }: { item: AdminAuditLog }) {
   const targetLabel = AUDIT_TARGET_LABELS[item.targetType];
   const targetPath = auditTargetPath(item.targetType, item.targetId);
-  const target = `${targetLabel} ${item.targetId}번`;
+  const target = `${targetLabel} #${item.targetId}`;
   const entries = summarizeAuditDetail(item.detail, item.targetType);
   return (
     <li className="flex min-w-0 flex-col gap-1 rounded-row bg-surface px-4 py-3">
@@ -193,7 +193,7 @@ function AuditLogRow({ item }: { item: AdminAuditLog }) {
             </Link>
           )}
         </span>
-        <span>관리자 {item.adminId}번</span>
+        <span>관리자 #{item.adminId}</span>
       </p>
       {entries.length > 0 && (
         <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-muted">

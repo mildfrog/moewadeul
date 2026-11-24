@@ -131,7 +131,7 @@ describe('회원 프로필: 받은 후기', () => {
     await render();
 
     expect(fetchMemberCompanionReviews).not.toHaveBeenCalled();
-    expect(text()).toContain('이메일 인증을 마치면 이 회원이 받은 후기를 읽을 수 있어요.');
+    expect(text()).toContain('이메일 인증을 마치면 이 회원이 받은 후기를 볼 수 있어요.');
     expect(text()).not.toContain('불러오지 못했어요');
     expect(text()).toContain('완료한 동행');
   });
@@ -152,7 +152,7 @@ describe('회원 프로필: 받은 후기', () => {
     await render();
 
     expect(fetchMemberCompanionReviews).not.toHaveBeenCalled();
-    expect(text()).toContain('로그인하면 이 회원의 신뢰 단계와 동행 기록을 볼 수 있어요.');
+    expect(text()).toContain('로그인하면 이 회원의 신뢰 단계와 동행 기록을 확인할 수 있어요.');
     expect(text()).not.toContain('불러오지 못했어요');
   });
 

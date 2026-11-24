@@ -62,7 +62,7 @@ export function MemoryFeedPage() {
       <EmptyState
         framed
         title="공개된 기록이 아직 없어요"
-        description="다녀온 곳을 기록으로 남기고 공개하면 여기에 보여요."
+        description="다녀온 곳의 기록을 남기고 공개로 설정하면 이곳에 표시돼요."
         action={
           <Link to="/me/memories" className={SECONDARY_LINK_CLASS}>
             내 기록 지도

@@ -79,14 +79,14 @@ export function spotFilterChips(filters: SpotFilters, onChange: (next: SpotFilte
   if (filters.excludeWarning) {
     chips.push({
       key: 'excludeWarning',
-      label: '공원 경계 경고 빼기',
+      label: '공원 구역 주의 제외',
       onRemove: () => onChange({ ...filters, excludeWarning: false }),
     });
   }
   if (filters.hideClosed) {
     chips.push({
       key: 'hideClosed',
-      label: '휴장인 곳 빼기',
+      label: '휴장 중 제외',
       onRemove: () => onChange({ ...filters, hideClosed: false }),
     });
   }

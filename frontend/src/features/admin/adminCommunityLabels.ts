@@ -24,16 +24,19 @@ export const STATUS_LABELS: Record<AdminCommunityStatus, string> = {
 
 export const EMPTY_COPY: Record<CommunityNoun, Record<AdminCommunityStatus, { title: string; description: string }>> = {
   글: {
-    PENDING_REVIEW: { title: '검토를 기다리는 글이 없어요', description: '신고가 쌓인 글이 여기에 모여요.' },
-    HIDDEN: { title: '숨긴 글이 없어요', description: '숨긴 글이 여기에 모여요.' },
+    PENDING_REVIEW: { title: '검토를 기다리는 글이 없어요', description: '신고가 누적돼 검토가 필요한 글이 표시돼요.' },
+    HIDDEN: { title: '숨긴 글이 없어요', description: '검토 후 숨김 처리한 글이 표시돼요.' },
   },
   댓글: {
-    PENDING_REVIEW: { title: '검토를 기다리는 댓글이 없어요', description: '신고가 쌓인 댓글이 여기에 모여요.' },
-    HIDDEN: { title: '숨긴 댓글이 없어요', description: '숨긴 댓글이 여기에 모여요.' },
+    PENDING_REVIEW: {
+      title: '검토를 기다리는 댓글이 없어요',
+      description: '신고가 누적돼 검토가 필요한 댓글이 표시돼요.',
+    },
+    HIDDEN: { title: '숨긴 댓글이 없어요', description: '검토 후 숨김 처리한 댓글이 표시돼요.' },
   },
 };
 
-export const RESTORE_NOTE = '복구하면 이전 신고는 세지 않아요. 새 신고가 5건 쌓여야 다시 검토 대기가 돼요.';
+export const RESTORE_NOTE = '복구하면 기존 신고 횟수는 초기화되며, 이후 신고 5건이 새로 쌓여야 다시 검토 대상이 돼요.';
 
 export function reasonLabel(reason: CommunityReportReason): string {
   return REPORT_REASON_OPTIONS.find((option) => option.value === reason)?.label ?? reason;

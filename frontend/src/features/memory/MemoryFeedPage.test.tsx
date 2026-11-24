@@ -108,7 +108,7 @@ describe('기록 피드 화면', () => {
     await open();
 
     expect(container.textContent).toContain('공개된 기록이 아직 없어요');
-    expect(container.textContent).toContain('다녀온 곳을 기록으로 남기고 공개하면 여기에 보여요.');
+    expect(container.textContent).toContain('다녀온 곳의 기록을 남기고 공개로 설정하면 이곳에 표시돼요.');
   });
 
   it('처음 불러오지 못하면 오류 문구를 보여 주고 다시 불러오기를 누르면 기록이 나온다', async () => {
@@ -121,7 +121,7 @@ describe('기록 피드 화면', () => {
     await open();
 
     expect(container.querySelector('[role="alert"]')?.textContent).toContain('기록을 불러오지 못했어요');
-    expect(container.textContent).toContain('일시적인 문제가 생겼어요');
+    expect(container.textContent).toContain('일시적인 오류가 발생했어요');
     expect(container.textContent).toContain('문의 번호 trace-4');
     expect(container.textContent).not.toContain('공개된 기록이 아직 없어요');
 

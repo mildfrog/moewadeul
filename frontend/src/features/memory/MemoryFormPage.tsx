@@ -102,14 +102,14 @@ function MemoryAside() {
     <>
       <AsideSection title="공개 범위">
         <ul className="list-disc pl-5">
-          <li>처음에는 나만 보기로 남아요. 공개로는 언제든 바꿀 수 있어요.</li>
-          <li>전화번호나 주소 같은 개인정보는 적지 말아 주세요.</li>
+          <li>기본은 비공개로 저장되며, 언제든 공개로 바꿀 수 있어요.</li>
+          <li>전화번호나 주소 같은 개인정보는 적지 마세요.</li>
         </ul>
       </AsideSection>
       <AsideSection title="사진">
         <ul className="list-disc pl-5">
           <li>JPEG, PNG, WebP 파일을 {MEMORY_MAX_IMAGES}장까지, 장당 5MB까지 올릴 수 있어요.</li>
-          <li>맨 앞 사진이 대표 사진이 돼요. 순서는 &apos;앞으로&apos; 버튼으로 바꿀 수 있어요.</li>
+          <li>첫 번째 사진이 대표 사진으로 등록돼요.</li>
         </ul>
       </AsideSection>
     </>
@@ -125,8 +125,8 @@ function CreateForm() {
     return (
       <EmptyState
         framed
-        title="어디를 다녀왔는지 골라 주세요"
-        description="지도에서 다녀온 곳을 길게 누르거나 우클릭한 뒤 '여기에 기록 남기기'를 눌러 주세요."
+        title="다녀온 위치를 선택해 주세요"
+        description="지도에서 다녀온 곳을 길게 누르거나 우클릭한 뒤 '여기에 기록 남기기'를 선택해 주세요."
         action={
           <Link to="/map" className={SECONDARY_LINK_CLASS}>
             지도로 가기
@@ -275,10 +275,10 @@ function MemoryForm(props: MemoryFormProps) {
 
   function validate(): FormFieldErrors {
     const errors: FormFieldErrors = {};
-    if (visitedDate === '') errors.visitedDate = '다녀온 날을 골라 주세요.';
-    else if (visitedDate > today) errors.visitedDate = '오늘이나 그 전 날짜를 골라 주세요.';
+    if (visitedDate === '') errors.visitedDate = '방문일을 선택해 주세요.';
+    else if (visitedDate > today) errors.visitedDate = '오늘 이전 날짜만 선택할 수 있어요.';
     if (content.length > MEMORY_CONTENT_MAX)
-      errors.content = `${MEMORY_CONTENT_MAX.toLocaleString()}자 이하로 적어 주세요.`;
+      errors.content = `${MEMORY_CONTENT_MAX.toLocaleString()}자 이하로 입력해 주세요.`;
     return errors;
   }
 
@@ -362,8 +362,8 @@ function MemoryForm(props: MemoryFormProps) {
   }
 
   let submitReason: string | undefined;
-  if (uploading) submitReason = '사진을 올리는 중이에요. 다 올라가면 저장할 수 있어요.';
-  else if (failed) submitReason = '올리지 못한 사진은 다시 올리거나 빼 주세요.';
+  if (uploading) submitReason = '사진을 올리는 중이에요. 완료된 뒤 저장할 수 있어요.';
+  else if (failed) submitReason = '업로드에 실패한 사진은 다시 시도하거나 삭제해 주세요.';
 
   const spotLabel = spot === null ? null : (spot.name ?? '선택한 장소');
   const cancelTarget = props.mode === 'edit' ? `/memories/${props.memory.memoryId}` : '/map';
@@ -457,7 +457,7 @@ function MemoryForm(props: MemoryFormProps) {
           options={VISIBILITY_OPTIONS}
           value={visibility}
           onChange={setVisibility}
-          hint="공개해도 정확한 위치는 나만 봐요."
+          hint="공개로 설정해도 정확한 위치는 본인만 볼 수 있어요."
           error={fieldErrors.visibility}
           disabled={submitting}
         />

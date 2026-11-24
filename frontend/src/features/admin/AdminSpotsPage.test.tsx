@@ -133,10 +133,10 @@ describe('관리자 박지 검토', () => {
     expect(text(card)).toContain('검토 대기');
     expect(text(card)).toContain('제보자A');
     expect(text(card)).toContain('37.50000, 127.25000');
-    expect(text(card)).toContain('5건 (야영이 금지된 곳 3, 더는 야영할 수 없는 곳 0, 정보가 사실과 다른 곳 2)');
+    expect(text(card)).toContain('5건 (야영이 금지된 곳 3, 더 이상 야영할 수 없는 곳 0, 정보가 사실과 다른 곳 2)');
     expect(text(card)).toContain('11월 1일 (일) 12:00');
     expect(text(card)).toContain('사실과 달라요');
-    expect(text(card)).not.toContain('공원 경계 경고');
+    expect(text(card)).not.toContain('공원 구역 주의');
   });
 
   it('제보자가 없으면 공공데이터로 적고, 공원 경계에 걸린 박지에는 경고를 붙인다', async () => {
@@ -146,7 +146,7 @@ describe('관리자 박지 검토', () => {
 
     const card = cards()[0] ?? null;
     expect(text(card)).toContain('공공데이터');
-    expect(text(card)).toContain('공원 경계 경고');
+    expect(text(card)).toContain('공원 구역 주의');
     expect(text(card)).not.toContain('최근 신고');
   });
 
@@ -229,7 +229,7 @@ describe('관리자 박지 검토', () => {
     await render();
 
     expect(text()).toContain('검토를 기다리는 박지가 없어요');
-    expect(text()).toContain('신고가 쌓인 박지가 여기에 모여요.');
+    expect(text()).toContain('신고가 누적된 박지가 표시돼요.');
     expect(cards()).toHaveLength(0);
   });
 

@@ -71,7 +71,7 @@ export function MyProgramApplicationsPage() {
             {current.items.length === 0 && !current.error ? (
               <EmptyState
                 framed
-                title={filter === 'ALL' ? '신청한 행사가 없어요' : '해당하는 신청이 없어요'}
+                title={filter === 'ALL' ? '신청한 행사가 없어요' : '조건에 맞는 신청 내역이 없어요'}
                 action={
                   filter === 'ALL' && (
                     <Link to="/programs" className={buttonClassName('secondary')}>
@@ -130,7 +130,7 @@ function ApplicationCard({ item, now }: { item: MyProgramApplicationItem; now: n
         {item.status === 'CANCELED' && item.cancelReason && (
           <span className="text-sm text-ink-muted">취소 사유: {CANCEL_REASON_LABELS[item.cancelReason]}</span>
         )}
-        {item.status === 'EXPIRED' && <span className="text-sm text-ink-muted">결제 기한이 지났어요</span>}
+        {item.status === 'EXPIRED' && <span className="text-sm text-ink-muted">결제 기한 만료</span>}
       </Link>
     </li>
   );

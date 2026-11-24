@@ -166,7 +166,7 @@ describe('관리자 행사 등록·수정 화면', () => {
       expect(text(container)).toContain('시각은 모두 한국 시간이에요.');
       expect(text(container)).toContain('지도에서 장소를 열면 주소 끝에 있는 숫자예요. 비워 두면 연결하지 않아요.');
       expect(text(container)).not.toContain('정원을 줄일 수 없어요');
-      expect(text(container)).toContain('1~1440분이고, 비우면 15분이에요.');
+      expect(text(container)).toContain('1~1440분 사이로 입력하며, 비워 두면 기본 15분으로 설정돼요.');
       expect(button('등록하기')).toBeDefined();
       expect(link('목록으로')?.getAttribute('href')).toBe('/admin/programs');
       expect(calls).toEqual([]);
@@ -198,8 +198,8 @@ describe('관리자 행사 등록·수정 화면', () => {
 
       await click(button('등록하기'));
 
-      expect(messageUnder('신청 마감')).toBe('신청 마감은 신청 시작보다 늦어야 해요.');
-      expect(messageUnder('행사 종료')).toBe('행사 종료는 행사 시작보다 늦어야 해요.');
+      expect(messageUnder('신청 마감')).toBe('신청 마감은 신청 시작 이후여야 해요.');
+      expect(messageUnder('행사 종료')).toBe('행사 종료는 행사 시작 이후여야 해요.');
       expect(writes()).toEqual([]);
     });
 
@@ -213,7 +213,7 @@ describe('관리자 행사 등록·수정 화면', () => {
 
       await click(button('등록하기'));
 
-      expect(messageUnder('행사 시작')).toBe('행사 시작은 지금보다 늦어야 해요.');
+      expect(messageUnder('행사 시작')).toBe('행사 시작은 현재 시각 이후여야 해요.');
       expect(writes()).toEqual([]);
     });
 
@@ -351,7 +351,7 @@ describe('관리자 행사 등록·수정 화면', () => {
       const alert = container.querySelector('[role="alert"]');
       expect(text(alert)).toContain('처리 결과를 확인하지 못했어요');
       expect(text(alert)).toContain(
-        '행사가 등록됐는지 확인하지 못했어요. 내용을 바꾸지 않고 다시 등록하면 행사는 하나만 만들어져요.',
+        '행사가 등록됐는지 확인하지 못했어요. 내용을 수정하지 않고 다시 시도하면 중복 등록되지 않아요.',
       );
       expect(text(alert)).not.toContain('행사를 등록하지 못했어요');
       expect(alert?.querySelector('a')?.getAttribute('href')).toBe('/admin/programs');
@@ -429,9 +429,7 @@ describe('관리자 행사 등록·수정 화면', () => {
       expect(field('행사 시작').value).toBe('2099-11-21T10:00');
       expect(field('행사 종료').value).toBe('2099-11-22T12:00');
       expect(field('정원 (명)').value).toBe('200');
-      expect(text(container)).toContain(
-        '신청이 시작됐거나 신청이 들어온 행사는 정원을 줄일 수 없어요. 늘리는 건 괜찮아요.',
-      );
+      expect(text(container)).toContain('신청이 시작됐거나 신청자가 있는 행사는 정원을 늘릴 수만 있고 줄일 수 없어요.');
       expect(field('참가비 (원)').value).toBe('30000');
       expect(field('결제 기한 (분)').value).toBe('15');
       expect(field('숙박 행사예요')).toHaveProperty('checked', true);
@@ -561,7 +559,7 @@ describe('관리자 행사 등록·수정 화면', () => {
 
       const alert = container.querySelector('[role="alert"]');
       expect(text(alert)).toContain('행사를 수정하지 못했어요');
-      expect(text(alert)).toContain('상태가 바뀌어 지금은 할 수 없어요.');
+      expect(text(alert)).toContain('상태가 변경돼 지금은 처리할 수 없어요.');
     });
 
     it('취소한 행사를 열면 폼 대신 안내와 목록 링크를 보여 준다', async () => {

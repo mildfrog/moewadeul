@@ -43,7 +43,7 @@ export function SpotPreviewBoard({ spotId, onClose }: SpotPreviewBoardProps) {
 
   return (
     <section
-      aria-label="고른 장소 정보"
+      aria-label="선택한 장소 정보"
       className="pointer-events-auto w-[22.5rem] overflow-hidden rounded-sheet bg-surface shadow-raise"
     >
       <div className="flex items-start gap-2 pt-4 pr-2 pb-3 pl-5 text-ink">
@@ -97,7 +97,7 @@ export function SpotPreviewBoard({ spotId, onClose }: SpotPreviewBoardProps) {
           <div className="px-3 pt-3 pb-3">
             <Link to={`/spots/${detail.spotId}`} className={`${buttonClassName('primary')} w-full`}>
               {detail.recruitingBasecamps.length > 0
-                ? `모집 중인 베이스캠프 ${detail.recruitingBasecamps.length}개와 자세히 보기`
+                ? `모집 중인 베이스캠프 ${detail.recruitingBasecamps.length}개 · 자세히 보기`
                 : '자세히 보기'}
             </Link>
           </div>
@@ -137,11 +137,11 @@ function Row({
 
 function ParkRow({ detail }: { detail: SpotDetail }) {
   const warning = detail.parkWarning;
-  if (!warning.warned) return <Row label="공원 경계" value="겹치는 공원 경계가 없어요" />;
+  if (!warning.warned) return <Row label="공원 구역" value="자연공원 구역 밖" />;
   const source = [warning.areaName, warning.source, warning.sourceDate && `${warning.sourceDate} 기준`]
     .filter(Boolean)
     .join(' · ');
-  return <Row label="공원 경계" tone="warning" value="공원 경계 안일 수 있어요" source={source || null} />;
+  return <Row label="공원 구역" tone="warning" value="자연공원 구역 주의" source={source || null} />;
 }
 
 function OperationRow({ detail }: { detail: SpotDetail }) {
@@ -152,9 +152,7 @@ function OperationRow({ detail }: { detail: SpotDetail }) {
       .join(' · ');
     let value = '운영 중';
     if (publicDetail.closedNow) {
-      value = publicDetail.closedUntil
-        ? `${formatLocalDate(publicDetail.closedUntil)}까지 휴장`
-        : '지금은 휴장 기간이에요';
+      value = publicDetail.closedUntil ? `${formatLocalDate(publicDetail.closedUntil)}까지 휴장` : '휴장 중';
     } else if (publicDetail.operatingStatus === null) {
       value = '운영 정보 없음';
     }
@@ -164,8 +162,8 @@ function OperationRow({ detail }: { detail: SpotDetail }) {
     return (
       <Row
         label="박지"
-        value={`회원 제보 · 확인 ${detail.bakji.confirmationCount}회`}
-        source={`제보한 회원 ${detail.bakji.reporter.nickname}`}
+        value={`회원 제보 · 현장 확인 ${detail.bakji.confirmationCount}회`}
+        source={`제보자 ${detail.bakji.reporter.nickname}`}
       />
     );
   }
@@ -187,7 +185,7 @@ function WeatherRow({ weather: state }: { weather: SpotWeatherState }) {
     );
   }
   const weather = state.weather;
-  if (weather === null) return <Row label="날씨" value="날씨 정보를 불러오지 못했어요" />;
+  if (weather === null) return <Row label="날씨" value="예보 없음" />;
   const first = weather.shortTerm[0];
   const parts: string[] = [];
   if (first) {
@@ -208,12 +206,12 @@ function WeatherRow({ weather: state }: { weather: SpotWeatherState }) {
 
 function PeopleRow({ detail }: { detail: SpotDetail }) {
   const [next] = detail.expectedPeople;
-  if (!next) return <Row label="예상 인원" value="아직 예상 인원이 없어요" />;
+  if (!next) return <Row label="예상 인원" value="예정 인원 없음" />;
   return (
     <Row
       label="예상 인원"
-      value={<span className="tabular-nums">{`${formatLocalDate(next.date)} 밤 ${next.count}명`}</span>}
-      source="확정 멤버·행사 참가자·혼자 가는 일정을 합친 인원"
+      value={<span className="tabular-nums">{`${formatLocalDate(next.date)} · ${next.count}명`}</span>}
+      source="베이스캠프·공식 행사·개인 일정 합산"
     />
   );
 }

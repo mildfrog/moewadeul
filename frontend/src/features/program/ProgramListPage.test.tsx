@@ -79,7 +79,7 @@ describe('공식 행사 목록 화면', () => {
 
     const link = container.querySelector<HTMLAnchorElement>('a[href="/programs/3"]');
     expect(link?.textContent).toContain('가을 백패킹 입문');
-    expect(link?.textContent).toContain('신청 받는 중');
+    expect(link?.textContent).toContain('모집 중');
     expect(link?.textContent).toContain('숙박');
     expect(link?.textContent).toContain('설악산');
     expect(link?.textContent).toContain('4/10');
@@ -100,7 +100,7 @@ describe('공식 행사 목록 화면', () => {
 
     await render();
 
-    expect(container.textContent).toContain('지금 볼 수 있는 행사가 없어요');
+    expect(container.textContent).toContain('예정된 행사가 없어요');
     expect(button('전체 보기')).toBeUndefined();
   });
 
@@ -114,7 +114,7 @@ describe('공식 행사 목록 화면', () => {
     await act(async () => button('마감')?.click());
 
     expect(listPrograms).toHaveBeenLastCalledWith('CLOSED', 0, expect.anything());
-    expect(container.textContent).toContain('해당하는 행사가 없어요');
+    expect(container.textContent).toContain('조건에 맞는 행사가 없어요');
     expect(container.textContent).not.toContain('행사1');
 
     await act(async () => button('전체 보기')?.click());
@@ -145,9 +145,9 @@ describe('공식 행사 목록 화면', () => {
     await render();
 
     expect(container.textContent).toContain('행사를 불러오지 못했어요');
-    expect(container.textContent).toContain('일시적인 문제가 생겼어요');
+    expect(container.textContent).toContain('일시적인 오류가 발생했어요');
     expect(container.textContent).toContain('trace-77');
-    expect(container.textContent).not.toContain('지금 볼 수 있는 행사가 없어요');
+    expect(container.textContent).not.toContain('예정된 행사가 없어요');
 
     await act(async () => button('다시 불러오기')?.click());
 

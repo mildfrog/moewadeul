@@ -11,7 +11,7 @@ const IMAGE_TYPES: readonly string[] = ['image/jpeg', 'image/png', 'image/webp']
 
 const MAX_CONCURRENT_UPLOADS = 3;
 
-const REENCODE_FAILED = '이 사진은 올릴 수 없어요. 빼고 다른 사진을 골라 주세요.';
+const REENCODE_FAILED = '이 사진은 올릴 수 없어요. 삭제한 뒤 다른 사진을 선택해 주세요.';
 
 export type UploadImageItem = {
   key: string;
@@ -125,13 +125,13 @@ export function useImageUploads({
     let room = slotsLeft;
     for (const file of files) {
       if (!IMAGE_TYPES.includes(file.type)) {
-        rejected.push(`${file.name}: JPEG, PNG, WebP 파일만 올릴 수 있어요. 다른 파일을 골라 주세요.`);
+        rejected.push(`${file.name}: JPEG, PNG, WebP 파일만 올릴 수 있어요.`);
       } else if (file.size > MAX_IMAGE_BYTES) {
-        rejected.push(`${file.name}: 5MB 이하 파일만 올릴 수 있어요. 더 작은 파일을 골라 주세요.`);
+        rejected.push(`${file.name}: 5MB 이하 파일만 올릴 수 있어요.`);
       } else if (file.size === 0) {
-        rejected.push(`${file.name}: 비어 있는 파일이에요. 다른 파일을 골라 주세요.`);
+        rejected.push(`${file.name}: 비어 있는 파일이에요.`);
       } else if (room <= 0) {
-        rejected.push(`${file.name}: 사진은 ${max}장까지 올릴 수 있어요. 다른 사진을 빼고 올려 주세요.`);
+        rejected.push(`${file.name}: 사진은 최대 ${max}장까지 올릴 수 있어요.`);
       } else {
         room -= 1;
         accepted.push({ key: `new-${nextKey++}`, file, status: 'uploading' });

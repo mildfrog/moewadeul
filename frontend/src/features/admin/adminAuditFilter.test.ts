@@ -53,7 +53,7 @@ describe('감사 기록 조건 변환', () => {
   it('종료일이 시작일보다 앞서면 오류다', () => {
     expect(toAuditQuery({ ...EMPTY_AUDIT_FORM, startDate: '2026-11-05', endDate: '2026-11-04' })).toEqual({
       ok: false,
-      errors: { endDate: '종료일은 시작일과 같거나 뒤여야 해요.' },
+      errors: { endDate: '종료일은 시작일보다 빠를 수 없어요.' },
     });
   });
 

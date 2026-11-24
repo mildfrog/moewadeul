@@ -146,7 +146,7 @@ describe('커뮤니티 글 상세 화면', () => {
     await open();
 
     expect(container.textContent).toContain('글을 불러오지 못했어요');
-    expect(container.textContent).toContain('일시적인 문제가 생겼어요');
+    expect(container.textContent).toContain('일시적인 오류가 발생했어요');
     expect(container.textContent).not.toContain('바람이 거셌지만');
 
     await act(async () => button('다시 불러오기')?.click());

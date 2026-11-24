@@ -40,9 +40,9 @@ export function ImageUploadField({ uploads, inputId, error, disabled, className 
           <li key={image.key} className="flex min-w-0 flex-col gap-1">
             <ImagePreview file={image.file} url={image.url} alt={`올린 사진 ${index + 1}`} />
             <p className="text-xs text-ink-muted">
-              {image.status === 'uploading' && '올리는 중이에요'}
-              {image.status === 'done' && <span className="text-accent-deep">올렸어요</span>}
-              {image.status === 'failed' && <span className="text-danger">올리지 못했어요</span>}
+              {image.status === 'uploading' && '업로드 중'}
+              {image.status === 'done' && <span className="text-accent-deep">완료</span>}
+              {image.status === 'failed' && <span className="text-danger">실패</span>}
             </p>
             {image.status === 'failed' && image.error && (
               <p role="alert" className="break-words text-xs text-danger">
@@ -74,12 +74,12 @@ export function ImageUploadField({ uploads, inputId, error, disabled, className 
               )}
               <Button
                 variant="danger-outline"
-                aria-label={`사진 ${index + 1}번 빼기`}
+                aria-label={`사진 ${index + 1}번 삭제`}
                 className={['whitespace-nowrap px-1 text-sm', index > 0 ? '' : 'col-span-2'].join(' ')}
                 onClick={() => uploads.remove(image.key)}
                 disabled={disabled}
               >
-                빼기
+                삭제
               </Button>
             </div>
           </li>

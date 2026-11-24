@@ -8,7 +8,7 @@ import { useRequireAuth } from '../../app/session/useRequireAuth';
 import { WithdrawalSection } from './WithdrawalSection';
 
 const TITLE = '계정 설정';
-const DESCRIPTION = '프로필과 비밀번호를 바꾸거나 회원 탈퇴를 할 수 있어요.';
+const DESCRIPTION = '프로필 정보와 비밀번호를 관리하거나 회원 탈퇴를 진행할 수 있어요.';
 
 export function AccountSettingsPage() {
   const session = useRequireAuth('/me/settings');

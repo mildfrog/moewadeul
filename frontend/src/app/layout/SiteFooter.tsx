@@ -20,7 +20,7 @@ export function SiteFooter() {
             <BrandMark className="text-xl" />
           </Link>
           <p className="max-w-xs text-sm text-ink-muted">
-            잘 수 있는 곳을 찾고 믿을 수 있는 사람과 함께 가는 백패킹 서비스예요.
+            안심할 수 있는 박지를 찾고, 믿을 수 있는 사람과 함께 떠나는 백패킹 서비스예요.
           </p>
         </div>
 
@@ -87,8 +87,8 @@ export function SiteFooter() {
         </p>
         <div className="mx-auto flex max-w-screen-xl flex-col gap-2 px-4 pt-3 pb-10 text-[0.9375rem] text-ink-muted md:flex-row md:items-center md:justify-between">
           <p className="max-w-[72ch]">
-            공원 경계는 법적 효력이 없는 참고 자료예요. 야영 중에 생긴 일에는 책임지지 않아요. 본인확인과 결제는
-            시연용이라 실제로 처리되지 않아요. 자세한 내용은 이용약관에서 확인해 주세요.
+            공원 경계는 참고용 자료로 법적 효력이 없으며, 야영 중 발생하는 사고에 대해서는 책임지지 않아요. 본인확인과
+            결제는 시연용이라 실제로 처리되지 않으며, 자세한 내용은 이용약관에서 확인할 수 있어요.
           </p>
           <p className="flex items-center gap-3">
             <span>© 2026 뫼와들</span>

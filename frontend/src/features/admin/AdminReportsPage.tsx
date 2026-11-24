@@ -77,12 +77,12 @@ function ReportList() {
       )}
       {current === null && showSkeleton && <Skeleton className="h-40 w-full" />}
       {current !== null && current.items.length === 0 && !current.error && (
-        <EmptyState framed title="조건에 맞는 신고가 없어요" description="처리 상태나 긴급 조건을 바꿔 주세요." />
+        <EmptyState framed title="조건에 맞는 신고가 없어요" description="처리 상태나 긴급 필터를 변경해 보세요." />
       )}
       {current !== null && current.items.length > 0 && (
         <div className="rounded-sheet bg-fill p-1.5">
           <div aria-hidden="true" className={`hidden py-2.5 text-sm font-semibold text-ink-muted md:grid ${ROW_GRID}`}>
-            <span>우선</span>
+            <span>우선순위</span>
             <span>사유</span>
             <span>신고한 회원 → 대상</span>
             <span>상태</span>

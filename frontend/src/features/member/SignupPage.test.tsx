@@ -120,7 +120,7 @@ describe('회원가입 화면의 만 14세 확인과 약관 안내', () => {
   });
 
   it('이용약관과 개인정보 처리방침 링크가 안내 문구 안에 있다', () => {
-    expect(container.textContent).toContain('가입하면 이용약관과 개인정보 처리방침에 동의하게 돼요.');
+    expect(container.textContent).toContain('가입 시 이용약관과 개인정보 처리방침에 동의한 것으로 간주해요.');
     expect(link('이용약관')?.getAttribute('href')).toBe('/terms');
     expect(link('개인정보 처리방침')?.getAttribute('href')).toBe('/privacy');
   });

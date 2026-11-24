@@ -20,7 +20,7 @@ export const BASECAMP_STATUS_GUIDE: Record<BasecampStatus, string> = {
   CANCELED: '취소된 베이스캠프예요.',
 };
 
-export const OFF_PLATFORM_PAYMENT_REMINDER = '다른 곳으로 돈을 보내 달라고 하면 신고해 주세요.';
+export const OFF_PLATFORM_PAYMENT_REMINDER = '외부 계좌 이체 등 금전을 요구하면 신고해 주세요.';
 
 export const AGE_GROUP_STEPS = [20, 30, 40, 50, 60] as const;
 
@@ -54,22 +54,22 @@ type UnmetReasonText = {
   guide?: string;
 };
 
-const IDENTITY_VALUE_GUIDE = '연령대와 성별은 본인확인한 정보로만 따져요.';
+const IDENTITY_VALUE_GUIDE = '연령대와 성별은 본인확인된 정보를 기준으로 적용돼요.';
 
 const UNMET_REASON_TEXT: Record<JoinUnmetReason, UnmetReasonText> = {
-  TRUST_LEVEL: { reason: '필요한 신뢰 단계에 못 미쳐요.' },
+  TRUST_LEVEL: { reason: '필요한 신뢰 단계에 도달하지 못했어요.' },
   AGE_GROUP: { reason: '연령대 조건에 맞지 않아요.', guide: IDENTITY_VALUE_GUIDE },
   GENDER: { reason: '성별 조건에 맞지 않아요.', guide: IDENTITY_VALUE_GUIDE },
-  DATE_CONFLICT: { reason: '같은 날짜에 이미 합류한 다른 베이스캠프가 있어요.' },
-  ALREADY_JOINED: { reason: '이미 신청했거나 합류한 베이스캠프예요.' },
-  REAPPLY_NOT_ALLOWED: { reason: '거절되거나 내보내졌거나 직접 나간 적이 있어 다시 신청할 수 없어요.' },
+  DATE_CONFLICT: { reason: '같은 날짜에 이미 참여 중인 베이스캠프가 있어요.' },
+  ALREADY_JOINED: { reason: '이미 신청했거나 참여 중인 베이스캠프예요.' },
+  REAPPLY_NOT_ALLOWED: { reason: '거절되었거나 퇴장·탈퇴한 이력이 있어 다시 신청할 수 없어요.' },
 };
 
 export function unmetReasonText(reason: JoinUnmetReason, myTrustLevel: number | null): UnmetReasonText {
   if (reason === 'TRUST_LEVEL' && myTrustLevel !== null) {
     return myTrustLevel === 0
       ? { reason: '합류하려면 본인확인이 필요해요.' }
-      : { reason: '필요한 신뢰 단계에 못 미쳐요.', guide: '동행을 마치고 동행 후기를 받으면 신뢰 단계가 올라가요.' };
+      : { reason: '필요한 신뢰 단계에 도달하지 못했어요.', guide: '동행을 마치고 후기를 받으면 신뢰 단계가 올라가요.' };
   }
   return UNMET_REASON_TEXT[reason];
 }
@@ -93,7 +93,7 @@ export function profileSummary(profile: Omit<BasecampApplicant, 'memberId' | 'ni
     parts.push(`${GENDER_LABELS[profile.gender]} ${profile.genderVerified ? '본인확인' : '직접 입력'}`);
   }
   if (profile.completedCompanions !== undefined) {
-    parts.push(`완료한 동행 ${profile.completedCompanions}회`);
+    parts.push(`동행 ${profile.completedCompanions}회`);
   }
   return parts;
 }

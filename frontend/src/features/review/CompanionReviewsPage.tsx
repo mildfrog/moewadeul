@@ -42,7 +42,7 @@ const COMMENT_MAX = 300;
 type Tab = 'pending' | 'received';
 
 const TAB_OPTIONS: ReadonlyArray<{ value: Tab; label: string }> = [
-  { value: 'pending', label: '쓸 후기' },
+  { value: 'pending', label: '작성할 후기' },
   { value: 'received', label: '받은 후기' },
 ];
 
@@ -133,7 +133,7 @@ function PendingTab({ trustLevel }: { trustLevel: number }) {
   if ('error' in current) {
     return (
       <div className="flex flex-col gap-3">
-        <ErrorNotice title="쓸 후기를 불러오지 못했어요" error={current.error.cause} />
+        <ErrorNotice title="작성할 후기를 불러오지 못했어요" error={current.error.cause} />
         <div>
           <Button variant="secondary" onClick={() => setAttempt((value) => value + 1)}>
             다시 불러오기
@@ -153,8 +153,8 @@ function PendingTab({ trustLevel }: { trustLevel: number }) {
       {current.items.length === 0 ? (
         <EmptyState
           framed
-          title="쓸 후기가 없어요"
-          description="함께 다녀온 베이스캠프가 완료되면 14일 안에 동행 후기를 쓸 수 있어요."
+          title="작성할 후기가 없어요"
+          description="베이스캠프 일정을 마치면 14일 이내에 동행 후기를 남길 수 있어요."
         />
       ) : (
         current.items.map((review) => (
@@ -198,7 +198,7 @@ function PendingTab({ trustLevel }: { trustLevel: number }) {
 
 function deadlineText(deadline: string): string {
   const days = daysUntilKst(deadline);
-  if (days < 0) return '기한이 지났어요';
+  if (days < 0) return '기한 만료';
   return days === 0 ? '오늘 마감' : `D-${days}`;
 }
 
@@ -263,7 +263,7 @@ function WriteDialog({
           disabled={submitting}
         />
         <fieldset className="flex min-w-0 flex-col gap-1">
-          <legend className="mb-1 text-sm font-medium text-ink">어울리는 태그 (선택)</legend>
+          <legend className="mb-1 text-sm font-medium text-ink">동행 태그 (선택)</legend>
           {[...POSITIVE_COMPANION_TAGS, ...NEGATIVE_COMPANION_TAGS].map((tag) => (
             <Checkbox
               key={tag}
@@ -284,16 +284,16 @@ function WriteDialog({
           onChange={(event) => setComment(event.target.value)}
         />
         <Notice tone="info" title="남긴 뒤에는 수정하거나 삭제할 수 없어요">
-          태그와 한마디는 내 닉네임 없이 상대 프로필에 공개돼요. 이메일 인증을 마친 회원이 볼 수 있어요.
+          태그와 한마디는 익명으로 상대 프로필에 공개되며, 이메일 인증을 마친 회원만 볼 수 있어요.
         </Notice>
         <div className="flex flex-wrap items-start justify-end gap-2">
           <Button variant="secondary" disabled={submitting} onClick={onClose}>
-            닫기
+            취소
           </Button>
           <Button
             loading={submitting}
             disabled={rejoin === null}
-            disabledReason={rejoin === null ? '다시 동행하고 싶은지 골라 주세요.' : undefined}
+            disabledReason={rejoin === null ? '재동행 의사를 선택해 주세요.' : undefined}
             onClick={() => void submit()}
           >
             후기 남기기
@@ -330,7 +330,11 @@ function ReceivedTab() {
         </div>
       )}
       {state.items.length === 0 && !state.error ? (
-        <EmptyState framed title="받은 후기가 없어요" description="함께 다녀온 멤버가 후기를 남기면 여기에 보여요." />
+        <EmptyState
+          framed
+          title="받은 후기가 없어요"
+          description="함께 다녀온 멤버가 후기를 남기면 이곳에서 확인할 수 있어요."
+        />
       ) : (
         state.items.map((item, index) =>
           item.revealed ? (
@@ -343,7 +347,7 @@ function ReceivedTab() {
                   {item.reviewer.nickname}
                 </Link>
                 <StatusText tone={item.rejoinWanted ? 'accent' : 'neutral'}>
-                  {item.rejoinWanted ? '다시 동행하고 싶어요' : '다시 동행하고 싶지는 않아요'}
+                  {item.rejoinWanted ? '재동행 희망' : '재동행 비희망'}
                 </StatusText>
               </div>
               {item.tags.length > 0 && (

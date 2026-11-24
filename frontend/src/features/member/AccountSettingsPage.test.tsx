@@ -151,7 +151,7 @@ describe('계정 설정 화면', () => {
     await type('nickname', '새벽능선');
     await act(async () => button('저장')?.click());
 
-    expect(container.textContent).toContain('다른 회원이 쓰는 닉네임이에요');
+    expect(container.textContent).toContain('이미 사용 중인 닉네임이에요');
     expect(container.querySelector('[role="status"]')).toBeNull();
   });
 

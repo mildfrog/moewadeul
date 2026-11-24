@@ -114,7 +114,7 @@ describe('저장 알림 트레이', () => {
     await startSaveAndLeave();
     await act(async () => settleSave.reject(new ApiError(0, 'NETWORK_ERROR', null)));
 
-    expect(tray()?.textContent).toContain('저장됐는지 확인하지 못했어요.');
+    expect(tray()?.textContent).toContain('저장됐는지 확인하지 못했어요');
     expect(tray()?.textContent).toContain('다시 저장하기 전에 먼저 확인해 주세요.');
     expect(tray()?.textContent).not.toContain('글을 올리지 못했어요.');
     expect(tray()?.querySelector('a')?.getAttribute('href')).toBe('/community');
