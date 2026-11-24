@@ -4,8 +4,9 @@
 
     <!-- MySQL은 SRID 4326 도형의 내부 저장 형식에서 x를 경도, y를 위도로 읽는다. 그래서 점을 만들 때 경도를 먼저 넘긴다. 반대로 SRID 4326
          WKT 문자열은 위도, 경도 순서라서 이 방식과 섞어 쓰지 않는다.
-         정렬 없이 MIN(id)로 고르는 이유는 ORDER BY id LIMIT 1로 고르면 실제 공원 경계 82곳에서 "Out of sort memory" 오류가
-         났기 때문이다. 박지 좌표 400개 가운데 15개가 실패했고, MIN(id)는 같은 좌표에서 성공했다. 오류의 원인은 확인하지 않았다. -->
+         ORDER BY id LIMIT 1 대신 MIN(id)로 고르는 이유는 이렇다. MySQL은 정렬할 행에 WHERE가 읽은 boundary 도형까지 함께 싣는다(옵티마이저
+         추적의 sort_mode가 packed_additional_fields다). 그래서 좌표를 포함하는 경계 하나의 도형이 sort_buffer_size(기본 256KB)보다 크면
+         "Out of sort memory" 오류가 난다. 실제 공원 경계 82곳 가운데 14곳이 256KB를 넘고, 가장 큰 경계는 약 1.2MB다. MIN(id)는 정렬하지 않는다. -->
     <select id="selectContainingAreaId" resultType="java.lang.Long">
         SELECT MIN(pa.id)
         FROM protected_area pa
@@ -20,7 +21,9 @@
 
     <!-- 박지마다 경계를 찾는 SELECT를 상관 서브쿼리로 붙인 UPDATE 한 문장으로 판정하면, EXPLAIN에서 서브쿼리가 공간 인덱스 대신 기본 키 인덱스를
          훑는다. 실제 공원 경계 82곳에서 박지 200건에 20.7초가 걸렸다. 그래서 서비스가 이 SELECT로 박지 좌표를 읽고,
-         박지 한 건씩 공간 인덱스를 쓰는 selectContainingAreaId로 경계를 찾는다. -->
+         박지 한 건씩 공간 인덱스를 쓰는 selectContainingAreaId로 경계를 찾는다.
+         박지 좌표 묶음을 파생 테이블로 만들어 경계와 조인하면 공간 인덱스를 쓰지만, 박지 1,000건과 5,000건에서 건별 조회와 시간 차이가 없었다.
+         시간 대부분이 왕복이 아니라 큰 경계 도형의 포함 계산이기 때문이다. -->
     <select id="selectBakjiPoints" resultType="com.moewadeul.spot.infra.park.BakjiPointRow">
         SELECT s.id AS id,
                ST_Latitude(s.location) AS lat,

@@ -17,6 +17,7 @@ import com.moewadeul.common.security.LoginMember;
 import com.moewadeul.common.security.SecurityConfig;
 import com.moewadeul.common.trace.TraceIdFilter;
 import com.moewadeul.common.transaction.RowLockWritePermits;
+import com.moewadeul.common.transaction.RowLockWritesProperties;
 import com.moewadeul.community.application.report.CommunityReportCommand;
 import com.moewadeul.community.application.report.CommunityReportService;
 import com.moewadeul.community.domain.CommunityErrorCode;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
@@ -38,6 +40,7 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+@EnableConfigurationProperties(RowLockWritesProperties.class)
 @WebMvcTest(CommunityReportController.class)
 @Import({
     GlobalExceptionHandler.class,
