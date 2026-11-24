@@ -18,13 +18,14 @@ import org.junit.jupiter.api.Test;
 class RowLockWritePermitsTest {
 
     private final SimpleMeterRegistry registry = new SimpleMeterRegistry();
-    private final RowLockWritePermits permits = new RowLockWritePermits(registry, Duration.ofMillis(50));
+    private final RowLockWritesProperties properties = new RowLockWritesProperties(6, Duration.ofMillis(50));
+    private final RowLockWritePermits permits = new RowLockWritePermits(registry, properties);
 
     @Test
     @DisplayName("[NFR-09] 허가가 모두 쓰이는 동안 호출은 RESOURCE_BUSY로 거절되고, 거절 수와 사용 수 지표에 그대로 나온다")
     void rejectionAndInUseAreVisibleInMetrics() throws Exception {
         // given
-        int held = RowLockWritePermits.MAX_CONCURRENT_WRITES;
+        int held = properties.maxConcurrentWrites();
         CountDownLatch acquired = new CountDownLatch(held);
         CountDownLatch release = new CountDownLatch(1);
         ExecutorService holders = Executors.newFixedThreadPool(held);
