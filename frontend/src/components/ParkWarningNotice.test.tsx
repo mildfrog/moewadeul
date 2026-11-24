@@ -11,7 +11,7 @@ describe('공원 구역 주의', () => {
           areaName: '설악산국립공원',
           source: 'KDPA',
           sourceDate: '2025-01-01',
-          notice: '공원 경계는 참고 자료예요.',
+          notice: '공원 경계는 참고용 자료예요.',
           guide: '이곳에서는 야영하지 마세요.',
         }}
       />,
@@ -19,7 +19,7 @@ describe('공원 구역 주의', () => {
 
     expect(html).toContain('설악산국립공원');
     expect(html).toContain('이곳에서는 야영하지 마세요.');
-    expect(html).toContain('공원 경계는 참고 자료예요.');
+    expect(html).toContain('공원 경계는 참고용 자료예요.');
     expect(html).toContain('출처');
     expect(html).toContain('한국보호지역통합DB(KDPA)');
     expect(html).toContain('기준일');
@@ -30,7 +30,8 @@ describe('공원 구역 주의', () => {
   it('[SF-05] 서버가 안내 문구를 주지 않아도 야영 금지와 과태료 안내를 보여 준다', () => {
     const html = renderToStaticMarkup(<ParkWarningNotice warning={{ warned: true }} />);
 
-    expect(html).toContain('과태료가 부과될 수 있어요');
+    expect(html).toContain('공원 경계는 참고용 자료예요. 정확한 경계는 공식 고시 도면을 확인해 주세요.');
+    expect(html).toContain('자연공원 내 지정 야영장 외 구역에서는 야영과 취사가 금지되며 과태료가 부과될 수 있어요.');
     expect(html).toContain('가까운 지정 야영장을 이용해 주세요');
   });
 
