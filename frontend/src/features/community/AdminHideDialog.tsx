@@ -43,7 +43,7 @@ export function AdminHideDialog({ noun, nickname, hide, onClose, onHidden }: Adm
               <ErrorNotice
                 title={UNCONFIRMED_TITLE}
                 error={error}
-                message={`${noun}이 숨겨졌는지 확인하지 못했어요. 화면을 새로 열어 확인해 주세요.`}
+                message={`${noun}이 숨겨졌는지 확인하지 못했어요. 새로고침해 확인해 주세요.`}
               />
             ) : (
               <ErrorNotice title={`${noun}을 숨기지 못했어요`} error={error} />

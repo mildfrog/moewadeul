@@ -57,7 +57,7 @@ export function MemberProfilePage({ memberId }: { memberId: number }) {
   } else if ('profile' in current) {
     body = <ProfileContent profile={current.profile} />;
   } else if (current.error instanceof ApiError && current.error.code === 'NOT_FOUND') {
-    body = <EmptyState framed title="회원을 찾을 수 없어요" description="탈퇴했거나 주소가 잘못됐어요." />;
+    body = <EmptyState framed title="회원을 찾을 수 없어요" description="탈퇴한 회원이거나 잘못된 주소예요." />;
   } else {
     body = (
       <div className="flex flex-col gap-3">
@@ -100,7 +100,7 @@ function ProfileContent({ profile }: { profile: MemberProfile }) {
       <>
         {board}
         <PageCard title="프로필">
-          <p className="text-base text-ink-muted">로그인하면 이 회원의 신뢰 단계와 동행 기록을 볼 수 있어요.</p>
+          <p className="text-base text-ink-muted">로그인하면 이 회원의 신뢰 단계와 동행 기록을 확인할 수 있어요.</p>
           <Link
             to={withNext('/login', pathname)}
             className="inline-flex min-h-11 items-center self-start font-semibold text-accent underline underline-offset-2"
@@ -134,7 +134,7 @@ function ProfileContent({ profile }: { profile: MemberProfile }) {
           ]}
         />
         <p className="text-sm text-ink-muted">
-          베이스캠프의 연령·성별 조건은 본인확인한 정보로만 따져요. 직접 입력한 정보는 참고로만 봐 주세요.
+          베이스캠프의 연령·성별 조건은 본인확인된 정보를 기준으로 적용되며, 직접 입력한 정보는 참고용이에요.
         </p>
         {isMe && (
           <Link to="/me" className="inline-flex min-h-11 items-center self-start text-sm font-semibold text-accent">
@@ -148,7 +148,7 @@ function ProfileContent({ profile }: { profile: MemberProfile }) {
           items={[
             { label: '완료한 동행', value: <Figure value={profile.completedCompanions ?? 0} unit="회" /> },
             {
-              label: '"다시 동행하고 싶어요"',
+              label: '재동행 희망률',
               value:
                 summary?.rejoinRate === null || summary === undefined ? (
                   '받은 후기 없음'
@@ -172,8 +172,8 @@ function ProfileContent({ profile }: { profile: MemberProfile }) {
 }
 
 function verifiedValue(label: string | null, verified: boolean | undefined): string {
-  if (label === null) return '밝히지 않음';
-  return `${label} · ${verified ? '본인확인됨' : '직접 입력'}`;
+  if (label === null) return '비공개';
+  return `${label} · ${verified ? '본인확인 완료' : '직접 입력'}`;
 }
 
 function Figure({ value, unit }: { value: number; unit: string }) {

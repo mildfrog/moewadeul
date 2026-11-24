@@ -190,18 +190,18 @@ describe('ApiError 문구', () => {
       fieldErrors: [{ field: 'title', reason: '제목을 적어 주세요.' }],
     });
 
-    expect(error.message).toBe('입력한 내용에 맞지 않는 곳이 있어요. 표시된 칸을 수정해 주세요.');
+    expect(error.message).toBe('입력한 내용을 다시 확인해 주세요.');
   });
 
   it('INVALID_INPUT이어도 서버 문구가 비어 있으면 표 문구를 보인다', () => {
     const error = new ApiError(400, 'INVALID_INPUT', { code: 'INVALID_INPUT', message: '' });
 
-    expect(error.message).toBe('입력한 내용에 맞지 않는 곳이 있어요. 표시된 칸을 수정해 주세요.');
+    expect(error.message).toBe('입력한 내용을 다시 확인해 주세요.');
   });
 
   it('다른 코드는 표 문구가 서버 문구보다 먼저다', () => {
     const error = new ApiError(404, 'NOT_FOUND', { code: 'NOT_FOUND', message: 'server text' });
 
-    expect(error.message).toBe('찾는 내용이 없거나 삭제됐어요. 목록에서 다시 골라 주세요.');
+    expect(error.message).toBe('찾는 내용이 없거나 삭제됐어요.');
   });
 });

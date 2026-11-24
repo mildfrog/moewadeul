@@ -52,8 +52,8 @@ function EmailDomains() {
   return (
     <section className="flex flex-col gap-6" aria-label="가입 차단 도메인">
       <p className="text-base text-ink-muted">
-        공개된 일회용 이메일 목록에 더해, 여기에 넣은 도메인과 그 하위 도메인의 이메일로는 가입할 수 없어요. 이미 가입한
-        회원에게는 영향이 없어요.
+        기본 일회용 이메일 차단 목록 외에 직접 추가한 도메인과 하위 도메인으로도 가입할 수 없어요. 기존 회원에게는
+        영향이 없어요.
       </p>
       <AddDomainForm onAdded={reload} />
       {list?.error != null && (
@@ -68,7 +68,11 @@ function EmailDomains() {
       )}
       {list === null && showSkeleton && <Skeleton className="h-40 w-full" />}
       {list?.items?.length === 0 && (
-        <EmptyState framed title="직접 추가한 도메인이 없어요" description="추가한 도메인이 여기에 모여요." />
+        <EmptyState
+          framed
+          title="직접 추가한 도메인이 없어요"
+          description="위 입력란에서 차단할 도메인을 추가할 수 있어요."
+        />
       )}
       {list?.items != null && list.items.length > 0 && (
         <ul className="flex flex-col gap-2" aria-label="추가한 도메인">
@@ -163,7 +167,7 @@ function DomainRow({ item, onDeleted }: { item: AdminDisposableEmailDomain; onDe
         <div className="flex min-w-0 flex-col">
           <span className="break-all font-mono text-base text-ink">{item.domain}</span>
           <span className="text-sm text-ink-muted">
-            추가한 때 <span className="font-mono tabular-nums">{formatKstDateTime(item.createdAt)}</span>
+            등록일시 <span className="font-mono tabular-nums">{formatKstDateTime(item.createdAt)}</span>
           </span>
         </div>
         <Button variant="secondary" disabled={busy} onClick={() => setConfirm(true)}>

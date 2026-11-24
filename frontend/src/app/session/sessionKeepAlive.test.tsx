@@ -117,6 +117,6 @@ describe('세션 유지', () => {
 
     // then
     expect(probe()).toBe('anonymous');
-    expect(container.textContent?.split('로그인이 만료되었습니다.').length).toBe(2);
+    expect(container.textContent?.split('로그인이 만료됐어요').length).toBe(2);
   });
 });

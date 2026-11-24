@@ -8,8 +8,8 @@ export function ProgramAside() {
     <>
       <AsideSection title="신청 안내">
         <ul className="list-disc pl-5">
-          <li>선착순으로 받아요. 한 사람당 한 번만 신청할 수 있어요.</li>
-          <li>신청한 뒤 보통 15분 안에 결제해야 확정돼요.</li>
+          <li>선착순으로 모집하며, 1인당 1회만 신청할 수 있어요.</li>
+          <li>신청 후 지정된 시간(기본 15분) 내에 결제해야 확정돼요.</li>
           <li>
             숙박 행사는{' '}
             <Link to="/identity-verification" className={TEXT_LINK_CLASS}>

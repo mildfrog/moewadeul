@@ -65,7 +65,7 @@ describe('회원 신고 대화상자', () => {
     await act(async () => submit?.click());
 
     expect(container.textContent).toContain('신고를 접수했어요');
-    expect(container.textContent).toContain('급히 알릴 일이 있으면 moewadeul@gmail.com으로 메일을 보내 주세요.');
+    expect(container.textContent).toContain('긴급한 문의는 moewadeul@gmail.com으로 메일을 보내 주세요.');
     expect(container.querySelector('a')?.getAttribute('href')).toBe('mailto:moewadeul@gmail.com');
   });
 });

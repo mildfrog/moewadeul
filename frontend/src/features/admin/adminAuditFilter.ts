@@ -75,7 +75,7 @@ export function toAuditQuery(form: AuditFilterForm): AuditFilterResult {
   const from = form.startDate === '' ? undefined : (kstDayStartIso(form.startDate) ?? undefined);
   const to = form.endDate === '' ? undefined : (kstNextDayStartIso(form.endDate) ?? undefined);
   if (form.startDate !== '' && form.endDate !== '' && form.endDate < form.startDate) {
-    errors.endDate = '종료일은 시작일과 같거나 뒤여야 해요.';
+    errors.endDate = '종료일은 시작일보다 빠를 수 없어요.';
   }
 
   if (errors.adminId !== undefined || errors.endDate !== undefined) return { ok: false, errors };

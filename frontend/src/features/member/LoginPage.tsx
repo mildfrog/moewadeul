@@ -130,16 +130,16 @@ export function LoginPage() {
           error={fieldErrors.password}
         />
         <Link to="/password-reset" className={`${FOOTER_LINK_CLASS} -my-2 self-end text-sm`}>
-          비밀번호를 잊었나요?
+          비밀번호를 잊으셨나요?
         </Link>
         {formError && (
           <div role="alert">
-            <ErrorNotice title="로그인하지 못했어요" error={formError.message} traceId={formError.traceId}>
+            <ErrorNotice title="로그인에 실패했어요" error={formError.message} traceId={formError.traceId}>
               {formError.detail && <p className="mt-1">{formError.detail}</p>}
               {formError.suspended && (
                 <p className="mt-1">
-                  제재에 이의가 있으면 <MailLink />
-                  으로 알려 주세요.
+                  제재에 이의가 있다면 <MailLink />
+                  으로 문의해 주세요.
                 </p>
               )}
             </ErrorNotice>

@@ -61,10 +61,10 @@ describe('첫 화면', () => {
     await open();
 
     const title = container.querySelector('h1')?.textContent ?? '';
-    expect(title).toContain('잘 곳과 함께 갈 사람을');
+    expect(title).toContain('박지와 함께 갈 사람을');
     expect(title).toContain('한 번에 찾아요');
     expect(link('지도 열기')?.getAttribute('href')).toBe('/map');
-    expect(document.title).toBe('뫼와들 · 잘 곳과 함께 갈 사람을 한 번에 찾아요');
+    expect(document.title).toBe('뫼와들 · 박지와 함께 갈 사람을 한 번에 찾아요');
   });
 
   it('주요 서비스로 가는 링크가 모두 있다', async () => {
@@ -85,14 +85,14 @@ describe('첫 화면', () => {
 
   it('열린 공식 행사가 있으면 상단에 제목과 남은 자리가 보이고, 없으면 안내 막대가 없다', async () => {
     await open();
-    expect(container.textContent).not.toContain('신청을 받고 있어요');
+    expect(container.textContent).not.toContain('모집 중');
 
     announcement.program = { programId: 7, title: '가을 능선 걷기', remainingSeats: 3 };
     await open();
 
     const bar = [...container.querySelectorAll('a')].find((element) => element.textContent?.includes('가을 능선 걷기'));
-    expect(bar?.textContent).toContain('신청을 받고 있어요');
-    expect(bar?.textContent).toContain('남은 자리 3');
+    expect(bar?.textContent).toContain('모집 중');
+    expect(bar?.textContent).toContain('남은 자리 3석');
     expect(bar?.getAttribute('href')).toBe('/programs/7');
   });
 

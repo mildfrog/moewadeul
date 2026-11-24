@@ -57,16 +57,16 @@ export function BakjiFields({
           {draft === null ? (
             <p className="text-base text-ink">
               {onUseMapCenter
-                ? '지도를 누르거나, 지도를 옮긴 뒤 아래 버튼을 눌러 박지 위치를 찍어 주세요'
-                : '지도를 눌러 박지 위치를 찍어 주세요'}
+                ? '지도를 클릭하거나, 지도 중심을 맞춘 뒤 아래 버튼으로 위치를 지정해 주세요.'
+                : '지도를 클릭해 박지 위치를 지정해 주세요.'}
             </p>
           ) : (
             <>
               <LocationLabel position={draft} />
               <p className="text-sm text-ink-muted">
                 {onUseMapCenter
-                  ? '지도를 다시 누르거나 버튼을 다시 누르면 위치가 바뀌어요.'
-                  : '지도를 다시 누르면 위치가 바뀌어요.'}
+                  ? '지도나 버튼을 다시 누르면 위치가 변경돼요.'
+                  : '지도를 다시 클릭하면 위치가 변경돼요.'}
               </p>
             </>
           )}
@@ -74,7 +74,7 @@ export function BakjiFields({
         {onUseMapCenter && (
           <div>
             <Button type="button" variant="secondary" onClick={onUseMapCenter}>
-              지도 가운데를 위치로 쓰기
+              현재 지도 중심으로 지정
             </Button>
           </div>
         )}
@@ -127,7 +127,7 @@ export function BakjiFields({
         error={fieldErrors.signalLevel}
       />
       <ChoiceGroup
-        legend="바닥 (선택)"
+        legend="바닥 재질 (선택)"
         name="groundType"
         options={groundOptions}
         value={values.groundType}
@@ -171,9 +171,9 @@ export function BakjiResultView({
       {duplicateCandidates.length > 0 && (
         <section aria-labelledby="duplicate-title" className="flex flex-col gap-2">
           <h3 id="duplicate-title" className="text-[1.0625rem] font-extrabold text-ink">
-            50m 안에 비슷한 박지가 있어요
+            50m 이내에 이미 등록된 박지가 있어요
           </h3>
-          <p className="text-sm text-ink">같은 곳이라면 아래 박지의 정보를 확인해 주세요.</p>
+          <p className="text-sm text-ink">같은 장소라면 아래 박지 정보를 확인해 주세요.</p>
           <ul className="flex flex-col gap-0.5 rounded-sheet bg-fill p-1.5">
             {duplicateCandidates.map((candidate) => (
               <li key={candidate.spotId}>

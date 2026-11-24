@@ -42,7 +42,7 @@ export function BasecampListPanel({
     <div className="flex flex-col">
       {spotFilterId !== null && (
         <div className="mx-2 mb-1 flex items-center justify-between gap-2 rounded-row bg-fill py-1 pr-1 pl-4 lg:mx-3">
-          <p className="min-w-0 truncate text-sm text-ink">{filteredSpotName ?? '고른 장소'} 베이스캠프만 보여요</p>
+          <p className="min-w-0 truncate text-sm text-ink">{filteredSpotName ?? '선택한 장소'} 베이스캠프만 보여요</p>
           <Button variant="ghost" onClick={onClearSpotFilter} className="shrink-0 px-3">
             모든 장소 보기
           </Button>
@@ -79,15 +79,15 @@ export function BasecampListPanel({
             <EmptyState
               title={
                 filtered && spotFilterId === null
-                  ? '조건에 맞는 베이스캠프가 없어요'
+                  ? '필터에 맞는 베이스캠프가 없어요'
                   : '이 지역에는 모집 중인 베이스캠프가 없어요'
               }
               description={
                 spotFilterId !== null
                   ? undefined
                   : filtered
-                    ? '조건을 줄이거나 지도를 다른 곳으로 옮겨 주세요.'
-                    : '지도를 다른 곳으로 옮겨 주세요. 장소를 고르면 베이스캠프를 직접 열 수도 있어요.'
+                    ? '필터를 줄이거나 지도를 다른 지역으로 이동해 주세요.'
+                    : '다른 지역을 둘러보거나, 장소를 선택해 직접 베이스캠프를 열어 보세요.'
               }
             />
           )}

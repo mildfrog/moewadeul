@@ -155,15 +155,15 @@ function scheduleErrors(values: ProgramFormValues, now: Date, mode: ProgramFormM
   }
   const { applyOpenAt, applyCloseAt, startAt, endAt } = instants;
   if (applyOpenAt !== undefined && applyCloseAt !== undefined && applyCloseAt <= applyOpenAt) {
-    errors.applyCloseAt = '신청 마감은 신청 시작보다 늦어야 해요.';
+    errors.applyCloseAt = '신청 마감은 신청 시작 이후여야 해요.';
   } else if (applyCloseAt !== undefined && startAt !== undefined && applyCloseAt > startAt) {
-    errors.applyCloseAt = '신청 마감은 행사 시작보다 늦을 수 없어요.';
+    errors.applyCloseAt = '신청 마감은 행사 시작 이후로 설정할 수 없어요.';
   }
   if (startAt !== undefined && endAt !== undefined && endAt <= startAt) {
-    errors.endAt = '행사 종료는 행사 시작보다 늦어야 해요.';
+    errors.endAt = '행사 종료는 행사 시작 이후여야 해요.';
   }
   if (mode === 'create' && startAt !== undefined && startAt <= now.getTime()) {
-    errors.startAt = '행사 시작은 지금보다 늦어야 해요.';
+    errors.startAt = '행사 시작은 현재 시각 이후여야 해요.';
   }
   return errors;
 }

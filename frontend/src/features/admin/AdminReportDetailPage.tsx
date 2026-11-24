@@ -49,10 +49,10 @@ const SANCTION_OPTIONS = [
 const LIFT_REASONS: ReadonlyArray<ChoiceOption<SanctionLiftReason> & { description: string }> = [
   {
     value: 'END_EARLY',
-    label: '일찍 해제',
-    description: '기간만 일찍 끝내요. 제재 이력에는 남아 다음 제재 단계와 신뢰 단계에 반영돼요.',
+    label: '조기 해제',
+    description: '기간만 먼저 종료해요. 제재 이력에는 남아 다음 제재 단계와 신뢰 단계에 반영돼요.',
   },
-  { value: 'REVOKE', label: '제재 취소', description: '제재가 잘못 내려졌어요. 제재 이력에서 빠져요.' },
+  { value: 'REVOKE', label: '제재 취소', description: '잘못 적용된 제재를 무효로 해요. 제재 이력에서도 제외돼요.' },
 ];
 
 type Failure = { message: string; error: unknown };
@@ -203,7 +203,7 @@ function ReviewCard({ review }: { review: NonNullable<AdminReportDetail['compani
       {review.comment ? (
         <p className="whitespace-pre-line break-words text-base text-ink">{review.comment}</p>
       ) : (
-        <p className="text-sm text-ink-muted">남긴 코멘트가 없어요.</p>
+        <p className="text-sm text-ink-muted">남긴 한마디가 없어요.</p>
       )}
     </PageCard>
   );
@@ -298,9 +298,9 @@ function TakeActionCard({ detail, onChanged }: { detail: AdminReportDetail; onCh
   const reasonMissing = hasSanction && trimmedReason.length === 0;
   const nothingChosen = !hasSanction && !hideReview;
   const disabledReason = nothingChosen
-    ? '조치하려면 제재를 고르거나 신고된 후기 숨기기를 켜 주세요.'
+    ? '조치하려면 제재를 선택하거나 신고된 후기 숨기기를 체크해 주세요.'
     : reasonMissing
-      ? '제재 사유를 적어 주세요.'
+      ? '제재 사유를 입력해 주세요.'
       : undefined;
 
   async function submit() {
@@ -327,8 +327,7 @@ function TakeActionCard({ detail, onChanged }: { detail: AdminReportDetail; onCh
   return (
     <PageCard title="처리">
       <p className="text-sm text-ink-muted">
-        제재 단계는 이전 제재 이력에 따라 정해져요. 고른 단계가 맞지 않으면 저장되지 않아요. 오류 안내에 맞춰 다시 골라
-        주세요. 심각한 위반이면 영구 정지를 바로 고를 수 있어요.
+        제재 단계는 이전 이력에 따라 순서대로 적용돼요. 중대한 위반에는 영구 정지를 바로 선택할 수 있어요.
       </p>
       {formError && (
         <div role="alert">
@@ -391,8 +390,8 @@ function TakeActionCard({ detail, onChanged }: { detail: AdminReportDetail; onCh
             <p className="text-base text-ink">
               {detail.target.nickname}님에게 {SANCTION_TYPE_LABELS[sanction as ConfirmableSanctionType]}를 확정해요.
               {sanction === 'WARNING'
-                ? ' 경고만으로 활동이 막히지는 않지만 다음 제재 단계에 반영돼요.'
-                : ' 정지는 확정하는 즉시 적용되고 이 회원은 진행 중인 베이스캠프에서도 빠져요.'}
+                ? ' 경고만으로 활동이 제한되지는 않지만 다음 제재 단계에 반영돼요.'
+                : ' 정지는 즉시 적용되며, 진행 중인 베이스캠프에서도 제외돼요.'}
             </p>
             <div className="flex flex-wrap justify-end gap-2">
               <Button variant="secondary" disabled={busy} onClick={() => setConfirmAction(false)}>
@@ -553,7 +552,7 @@ function LiftDialog({
     <Dialog title="제재를 해제할까요?" onClose={() => !busy && onClose()}>
       <div className="flex flex-col gap-4">
         <p className="text-base text-ink">
-          {SANCTION_TYPE_LABELS[sanction.type]}를 해제해요. 이미 빠진 베이스캠프와 취소된 결제 대기 신청은 되돌아가지
+          {SANCTION_TYPE_LABELS[sanction.type]}를 해제해요. 이미 제외된 베이스캠프와 취소된 결제 대기 신청은 복구되지
           않아요.
         </p>
         <ChoiceGroup

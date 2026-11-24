@@ -31,7 +31,7 @@ export const GROUND_OPTIONS: ChoiceOption<GroundChoice>[] = [
 ];
 
 export const GROUND_OPTIONS_WITH_KEEP: ChoiceOption<GroundChoice>[] = [
-  { value: 'KEEP', label: '바꾸지 않음' },
+  { value: 'KEEP', label: '기존 유지' },
   ...GROUND_OPTIONS,
 ];
 
@@ -40,10 +40,10 @@ export const PRIMARY_LINK_CLASS =
 
 export function requiredFieldErrors(draft: LatLng | null, values: BakjiFormValues): FieldErrors {
   const errors: FieldErrors = {};
-  if (draft === null) errors.location = '지도를 눌러 박지 위치를 찍어 주세요.';
-  if (values.name.trim() === '') errors.name = '박지 이름을 적어 주세요.';
-  if (values.hasWater === null) errors.hasWater = '식수가 있는지 골라 주세요.';
-  if (values.hasToilet === null) errors.hasToilet = '화장실이 있는지 골라 주세요.';
+  if (draft === null) errors.location = '지도에서 박지 위치를 지정해 주세요.';
+  if (values.name.trim() === '') errors.name = '박지 이름을 입력해 주세요.';
+  if (values.hasWater === null) errors.hasWater = '식수 유무를 선택해 주세요.';
+  if (values.hasToilet === null) errors.hasToilet = '화장실 유무를 선택해 주세요.';
   return errors;
 }
 

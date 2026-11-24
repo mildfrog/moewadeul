@@ -80,7 +80,9 @@ function MemoryReview() {
         <EmptyState
           framed
           title={tab === 'PENDING_REVIEW' ? '검토를 기다리는 기록이 없어요' : '숨긴 기록이 없어요'}
-          description={tab === 'PENDING_REVIEW' ? '신고가 쌓인 기록이 여기에 모여요.' : '숨긴 기록이 여기에 모여요.'}
+          description={
+            tab === 'PENDING_REVIEW' ? '신고가 누적된 기록이 표시돼요.' : '검토 후 숨김 처리한 기록이 표시돼요.'
+          }
         />
       )}
       {current !== null && current.items.length > 0 && (
@@ -151,7 +153,7 @@ function MemoryCard({
       <AdminReviewPhotos images={item.images} onReload={onReload} />
       {item.content && <p className="whitespace-pre-line break-words text-base text-ink">{item.content}</p>}
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-        <dt className="text-ink-muted">대략 위치</dt>
+        <dt className="text-ink-muted">대략적 위치</dt>
         <dd className="text-ink">
           <ApproxLocationLabel position={{ lat: item.approxLat, lng: item.approxLng }} />
         </dd>

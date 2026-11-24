@@ -213,7 +213,7 @@ export function CommunityComments({ postId, count, onChanged }: CommunityComment
           onClose={() => setAdminHiding(null)}
           onHidden={() => {
             setAdminHiding(null);
-            refreshAfterChange('댓글을 숨겼어요. 관리자 화면의 커뮤니티 검토 숨김 탭에서 복구할 수 있어요.');
+            refreshAfterChange('댓글을 숨겼어요. 관리자 숨김 탭에서 복구할 수 있어요.');
           }}
         />
       )}
@@ -274,7 +274,7 @@ function CommentItem({
   const session = useSession();
 
   if (comment.deleted) {
-    return <p className="text-base text-ink-subtle">삭제된 댓글이에요</p>;
+    return <p className="text-base text-ink-subtle">삭제된 댓글이에요.</p>;
   }
 
   const signedIn = session.status === 'authenticated' && session.me !== null;
@@ -361,7 +361,7 @@ function CommentItem({
             }
             className="px-2"
           >
-            관리자 숨기기
+            숨김 처리
           </Button>
         )}
       </div>
@@ -478,7 +478,7 @@ function DeleteCommentDialog({
   return (
     <Dialog title="댓글을 삭제할까요?" onClose={onClose}>
       <div className="flex flex-col gap-4">
-        <p className="text-base text-ink">삭제한 댓글은 되돌릴 수 없어요. 달린 답글은 그대로 남아요.</p>
+        <p className="text-base text-ink">삭제한 댓글은 되돌릴 수 없어요. 답글은 그대로 남아요.</p>
         {error && (
           <div role="alert">
             <Notice tone="danger" title="삭제하지 못했어요">

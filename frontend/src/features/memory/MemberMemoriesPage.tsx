@@ -54,7 +54,7 @@ export function MemberMemoriesPage({ memberId }: { memberId: number }) {
   const memories = current && 'memories' in current ? current.memories : null;
   const showSkeleton = useDelayedFlag(current === null);
   const name = nickname?.memberId === memberId ? nickname.value : null;
-  const title = name ? `${name}님의 기록` : '회원의 기록';
+  const title = name ? `${name}님의 기록` : '회원 기록';
 
   useDocumentTitle(`${title} · 뫼와들`);
 
@@ -98,8 +98,8 @@ export function MemberMemoriesPage({ memberId }: { memberId: number }) {
         <HubLayout title="회원을 찾을 수 없어요" width="narrow">
           <EmptyState
             framed
-            title="탈퇴했거나 주소가 잘못됐어요"
-            description="피드 메뉴에서 다른 회원의 기록을 볼 수 있어요."
+            title="탈퇴한 회원이거나 잘못된 주소예요"
+            description="피드에서 다른 회원의 기록을 둘러볼 수 있어요."
           />
         </HubLayout>
       );
@@ -115,13 +115,11 @@ export function MemberMemoriesPage({ memberId }: { memberId: number }) {
       </div>
     );
   } else if (items.length === 0) {
-    body = (
-      <EmptyState framed title="공개한 기록이 아직 없어요" description="이 회원이 기록을 공개하면 여기에 보여요." />
-    );
+    body = <EmptyState framed title="아직 공개된 기록이 없어요" description="공개로 설정된 기록이 이곳에 표시돼요." />;
   } else {
     body = (
       <>
-        <p className="text-sm text-ink-muted">정확한 위치 대신 약 1km 범위의 대략적인 위치만 보여요.</p>
+        <p className="text-sm text-ink-muted">정확한 좌표 대신 약 1km 범위의 대략적인 위치만 표시돼요.</p>
         <MemoryMapGrid items={items} />
       </>
     );

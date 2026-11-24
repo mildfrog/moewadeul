@@ -77,7 +77,7 @@ describe('다른 회원의 기록 화면', () => {
 
     expect(container.textContent).toContain('별바라기님의 기록');
     expect(document.title).toBe('별바라기님의 기록 · 뫼와들');
-    expect(container.textContent).toContain('정확한 위치 대신 약 1km 범위의 대략적인 위치만 보여요.');
+    expect(container.textContent).toContain('정확한 좌표 대신 약 1km 범위의 대략적인 위치만 표시돼요.');
     const first = container.querySelector('a[href="/memories/11"]');
     expect(first?.textContent).toContain('장소11, 10월 3일 (토), 1박, 사진 2장');
     expect(container.querySelector('a[href="/memories/12"]')?.textContent).toContain('다녀온 곳, 10월 3일 (토), 당일');
@@ -91,7 +91,7 @@ describe('다른 회원의 기록 화면', () => {
 
     await render();
 
-    expect(container.textContent).toContain('회원의 기록');
+    expect(container.textContent).toContain('회원 기록');
     expect(container.querySelector('a[href="/memories/11"]')).not.toBeNull();
   });
 
@@ -100,7 +100,7 @@ describe('다른 회원의 기록 화면', () => {
 
     await render();
 
-    expect(container.textContent).toContain('공개한 기록이 아직 없어요');
+    expect(container.textContent).toContain('아직 공개된 기록이 없어요');
     expect(container.textContent).not.toContain('정확한 위치 대신');
   });
 
@@ -126,7 +126,7 @@ describe('다른 회원의 기록 화면', () => {
     await render();
 
     expect(container.textContent).toContain('회원을 찾을 수 없어요');
-    expect(container.textContent).toContain('탈퇴했거나 주소가 잘못됐어요');
+    expect(container.textContent).toContain('탈퇴한 회원이거나 잘못된 주소예요');
     expect(button('다시 불러오기')).toBeUndefined();
   });
 

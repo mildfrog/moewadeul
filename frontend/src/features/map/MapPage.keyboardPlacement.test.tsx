@@ -96,14 +96,16 @@ describe('박지 제보 위치를 키보드로 찍기', () => {
   const button = (name: string) =>
     [...container.querySelectorAll('button')].find((element) => element.textContent === name);
 
-  it('지도를 누르지 않아도 버튼으로 지도 가운데를 위치로 찍는다', async () => {
-    expect(container.textContent).toContain('지도를 누르거나, 지도를 옮긴 뒤 아래 버튼을 눌러 박지 위치를 찍어 주세요');
+  it('지도를 누르지 않아도 버튼으로 지도 중심을 위치로 찍는다', async () => {
+    expect(container.textContent).toContain(
+      '지도를 클릭하거나, 지도 중심을 맞춘 뒤 아래 버튼으로 위치를 지정해 주세요.',
+    );
 
-    await act(async () => button('지도 가운데를 위치로 쓰기')?.click());
+    await act(async () => button('현재 지도 중심으로 지정')?.click());
 
     expect(view.showDraft).toHaveBeenLastCalledWith(MAP_CENTER);
     expect(container.textContent).toContain('37.50000, 127.25000');
-    expect(container.textContent).toContain('지도를 다시 누르거나 버튼을 다시 누르면 위치가 바뀌어요.');
+    expect(container.textContent).toContain('지도나 버튼을 다시 누르면 위치가 변경돼요.');
   });
 
   it('휴대폰에서 시트가 지도를 다 덮으면 가운데 버튼을 숨긴다', async () => {
@@ -111,17 +113,17 @@ describe('박지 제보 위치를 키보드로 찍기', () => {
       [...container.querySelectorAll('button')].find((element) =>
         element.getAttribute('aria-label')?.startsWith('패널 크기 바꾸기'),
       );
-    expect(sheetToggle()?.getAttribute('aria-label')).toBe('패널 크기 바꾸기, 지금 절반');
+    expect(sheetToggle()?.getAttribute('aria-label')).toBe('패널 크기 바꾸기, 현재 절반');
 
     await act(async () => sheetToggle()?.click());
 
-    expect(sheetToggle()?.getAttribute('aria-label')).toBe('패널 크기 바꾸기, 지금 전체');
-    expect(button('지도 가운데를 위치로 쓰기')).toBeUndefined();
-    expect(container.textContent).toContain('지도를 눌러 박지 위치를 찍어 주세요');
+    expect(sheetToggle()?.getAttribute('aria-label')).toBe('패널 크기 바꾸기, 현재 전체');
+    expect(button('현재 지도 중심으로 지정')).toBeUndefined();
+    expect(container.textContent).toContain('지도를 클릭해 박지 위치를 지정해 주세요.');
 
     await act(async () => sheetToggle()?.click());
 
-    expect(button('지도 가운데를 위치로 쓰기')).toBeDefined();
+    expect(button('현재 지도 중심으로 지정')).toBeDefined();
   });
 
   it('지도 칸 하나만 지도라는 이름으로 읽힌다', () => {
@@ -134,7 +136,7 @@ describe('박지 제보 위치를 키보드로 찍기', () => {
     const field = (label: string) =>
       [...container.querySelectorAll('label')].find((element) => element.textContent === label)
         ?.control as HTMLInputElement;
-    await act(async () => button('지도 가운데를 위치로 쓰기')?.click());
+    await act(async () => button('현재 지도 중심으로 지정')?.click());
     await act(async () => {
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set?.call(field('이름'), '솔숲 박지');
       field('이름').dispatchEvent(new Event('input', { bubbles: true }));

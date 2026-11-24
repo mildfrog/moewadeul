@@ -58,7 +58,7 @@ export const GROUND_TYPE_LABELS: Record<GroundType, string> = {
 
 export const REPORT_REASON_LABELS: Record<BakjiReportReason, string> = {
   ILLEGAL_AREA: '야영이 금지된 곳',
-  CLOSED: '더는 야영할 수 없는 곳',
+  CLOSED: '더 이상 야영할 수 없는 곳',
   FALSE_INFO: '정보가 사실과 다른 곳',
 };
 

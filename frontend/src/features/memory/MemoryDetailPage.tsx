@@ -109,7 +109,7 @@ export function MemoryDetailPage({ memoryId }: { memoryId: number }) {
         <EmptyState
           framed
           title="삭제됐거나 볼 수 없는 기록이에요"
-          description="나만 보기 기록은 남긴 사람만 열 수 있어요."
+          description="비공개 기록은 작성자만 볼 수 있어요."
         />
       </HubLayout>
     );
@@ -208,8 +208,8 @@ function HiddenStatusNotice({ status }: { status: MemoryDetail['status'] }) {
     <Notice tone="warning" title={reviewing ? '신고가 쌓여 검토 중인 기록이에요' : '관리자가 숨긴 기록이에요'}>
       <p>
         {reviewing
-          ? '관리자가 검토하는 동안 다른 사람에게 보이지 않아요. 수정과 삭제는 할 수 있어요.'
-          : '다른 사람에게 보이지 않아요. 공개로 바꿔도 마찬가지예요. 수정과 삭제는 할 수 있어요.'}
+          ? '관리자 검토 중에는 다른 회원에게 표시되지 않아요. 수정·삭제는 가능해요.'
+          : '숨김 처리되어 다른 회원에게 표시되지 않아요. 수정·삭제는 가능해요.'}
       </p>
     </Notice>
   );
@@ -228,13 +228,13 @@ function MemoryContent({ memory, onImageError }: { memory: MemoryDetail; onImage
       <article className="divide-y-4 divide-canvas overflow-hidden rounded-sheet bg-fill">
         {position !== null && (
           <div className="flex flex-col gap-1 px-5 py-4">
-            <p className="text-sm text-ink-muted">다녀온 곳 (정확한 위치, 나만 봐요)</p>
+            <p className="text-sm text-ink-muted">다녀온 곳 (정확한 위치 · 나만 보기)</p>
             <LocationLabel position={position} />
           </div>
         )}
         {position === null && approxPosition !== null && (
           <div className="flex flex-col gap-1 px-5 py-4">
-            <p className="text-sm text-ink-muted">다녀온 곳 (대략 위치)</p>
+            <p className="text-sm text-ink-muted">다녀온 곳 (대략적인 위치)</p>
             <ApproxLocationLabel position={approxPosition} />
           </div>
         )}
@@ -247,7 +247,7 @@ function MemoryContent({ memory, onImageError }: { memory: MemoryDetail; onImage
           </div>
         )}
         {!memory.content && memory.images.length === 0 && (
-          <p className="px-5 py-5 text-sm text-ink-muted">사진도 글도 없는 기록이에요.</p>
+          <p className="px-5 py-5 text-sm text-ink-muted">등록된 글이나 사진이 없어요.</p>
         )}
         {likeable && (
           <div className="px-5 py-4">

@@ -69,7 +69,7 @@ export function CommentCard({ item, ...rest }: CardProps<AdminCommunityComment>)
           label: '달린 글',
           value: (
             <>
-              글 번호 <span className="font-mono tabular-nums">{item.postId}</span>
+              #<span className="font-mono tabular-nums">{item.postId}</span>
               {' · '}
               <PostLink postId={item.postId} postStatus={item.postStatus} />
             </>
@@ -111,7 +111,7 @@ function PostLink({ postId, postStatus }: { postId: number; postStatus: AdminCom
         </>
       );
     case 'DELETED':
-      return <>작성자가 지운 글이에요.</>;
+      return <>작성자가 삭제한 글이에요.</>;
   }
 }
 

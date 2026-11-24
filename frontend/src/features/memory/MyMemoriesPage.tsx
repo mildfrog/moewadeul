@@ -95,7 +95,7 @@ export function MyMemoriesPage() {
       <EmptyState
         framed
         title="아직 남긴 기록이 없어요"
-        description="지도에서 다녀온 곳을 길게 누르거나(컴퓨터는 우클릭) 장소 상세에서 기록을 남길 수 있어요."
+        description="지도에서 다녀온 곳을 길게 누르거나 우클릭하고, 장소 상세에서도 기록을 남길 수 있어요."
         action={
           <Link to="/map" className={SECONDARY_LINK_CLASS}>
             지도에서 기록 남기기

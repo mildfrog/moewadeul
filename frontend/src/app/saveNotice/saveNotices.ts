@@ -43,7 +43,7 @@ function replaceSaveNotice(id: number, notice: SaveNoticeBody): void {
 export function addSessionExpiredNotice(): void {
   addSaveNotice({
     state: 'failed',
-    title: '로그인이 만료되었습니다.',
+    title: '로그인이 만료됐어요',
     body: '다시 로그인해 주세요.',
     link: { to: '/login', label: '로그인하기' },
   });
@@ -77,7 +77,7 @@ function failedNotice<T>(error: unknown, copy: SaveCopy<T>): SaveNoticeBody {
   if (isOutcomeUnknown(error)) {
     return {
       state: 'failed',
-      title: '저장됐는지 확인하지 못했어요.',
+      title: '저장됐는지 확인하지 못했어요',
       body: '다시 저장하기 전에 먼저 확인해 주세요.',
       link: copy.checkAt,
     };

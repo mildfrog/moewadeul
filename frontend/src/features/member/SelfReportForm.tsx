@@ -19,12 +19,12 @@ type GenderChoice = SelfGender | typeof NOT_SET;
 
 const AGE_OPTIONS: ReadonlyArray<ChoiceOption<AgeChoice>> = [
   ...(Object.keys(AGE_GROUP_LABELS) as SelfAgeGroup[]).map((value) => ({ value, label: AGE_GROUP_LABELS[value] })),
-  { value: NOT_SET, label: '밝히지 않음' },
+  { value: NOT_SET, label: '비공개' },
 ];
 
 const GENDER_OPTIONS: ReadonlyArray<ChoiceOption<GenderChoice>> = [
   ...(Object.keys(GENDER_LABELS) as SelfGender[]).map((value) => ({ value, label: GENDER_LABELS[value] })),
-  { value: NOT_SET, label: '밝히지 않음' },
+  { value: NOT_SET, label: '비공개' },
 ];
 
 const UNVERIFIED_REASON = '이메일 인증을 마치면 수정할 수 있어요';
@@ -104,8 +104,8 @@ export function SelfReportForm({ me, onSaved }: { me: Me; onSaved: () => void })
     <PageCard title="프로필 정보">
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
         <p className="text-sm text-ink-muted">
-          연령대와 성별은 직접 고르는 정보예요. 다른 회원에게는 '직접 입력'으로 표시돼요. 베이스캠프의 연령·성별 조건은
-          본인확인한 정보로만 따져요.
+          직접 입력한 연령대와 성별은 프로필에 &apos;직접 입력&apos;으로 표시되며, 베이스캠프 합류 조건은 본인확인된
+          정보를 기준으로 적용돼요.
         </p>
         {formError && (
           <div role="alert">
@@ -120,7 +120,7 @@ export function SelfReportForm({ me, onSaved }: { me: Me; onSaved: () => void })
           disabled={unverified}
           onChange={(event) => setNickname(event.target.value)}
           error={fieldErrors.nickname}
-          hint="2~20자로 정해 주세요. 앞뒤 공백과 연속된 공백은 쓸 수 없어요."
+          hint="2~20자 (앞뒤·연속 공백 불가)"
         />
         <ChoiceGroup
           legend="연령대"

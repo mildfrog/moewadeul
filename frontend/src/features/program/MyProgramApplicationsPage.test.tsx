@@ -112,7 +112,7 @@ describe('내 행사 신청 화면', () => {
     expect(text(1)).toContain('결제 대기');
     expect(text(1)).toMatch(/남은 시간\s*\d{2}:\d{2}/);
     expect(text(2)).toContain('취소 사유: 직접 취소');
-    expect(text(3)).toContain('결제 기한이 지났어요');
+    expect(text(3)).toContain('결제 기한 만료');
   });
 
   it('신청한 행사가 없으면 안내와 공식 행사 보기 링크가 나온다', async () => {
@@ -124,7 +124,7 @@ describe('내 행사 신청 화면', () => {
     expect(link('공식 행사 보기')?.getAttribute('href')).toBe('/programs');
   });
 
-  it('상태 탭을 누르면 그 상태의 신청만 다시 불러오고, 결과가 없으면 해당하는 신청이 없다고 알린다', async () => {
+  it('상태 탭을 누르면 그 상태의 신청만 다시 불러오고, 결과가 없으면 조건에 맞는 신청 내역이 없다고 알린다', async () => {
     vi.mocked(listMyProgramApplications).mockImplementation(async (status) =>
       status === 'CANCELED' ? page([]) : page([application(1)]),
     );
@@ -134,7 +134,7 @@ describe('내 행사 신청 화면', () => {
     await act(async () => button('취소')?.click());
 
     expect(listMyProgramApplications).toHaveBeenLastCalledWith('CANCELED', 0, expect.anything());
-    expect(container.textContent).toContain('해당하는 신청이 없어요');
+    expect(container.textContent).toContain('조건에 맞는 신청 내역이 없어요');
     expect(container.textContent).not.toContain('행사1');
     expect(link('공식 행사 보기')).toBeUndefined();
   });

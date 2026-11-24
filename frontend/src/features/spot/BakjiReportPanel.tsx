@@ -63,7 +63,7 @@ export function BakjiReportPanel({
         warnedNote={
           nextBasecamp && (
             <p className="text-base font-semibold text-danger">
-              이 박지에서는 베이스캠프를 열 수 없어요. 다른 장소를 골라 주세요.
+              이 박지에서는 베이스캠프를 열 수 없어요. 다른 장소를 선택해 주세요.
             </p>
           )
         }
@@ -81,7 +81,7 @@ export function BakjiReportPanel({
     body = (
       <EmptyState
         title="로그인하면 박지를 제보할 수 있어요"
-        description="제보한 박지는 지도에 바로 올라가요. 다른 회원이 다녀와서 확인하거나 문제를 신고해요."
+        description="제보한 박지는 지도에 바로 등록되며, 다른 회원의 현장 확인과 제보로 정보가 유지돼요."
         action={
           <Link to={withNext('/login', `${location.pathname}${location.search}`)} className={PRIMARY_LINK_CLASS}>
             로그인
@@ -181,8 +181,8 @@ function ReportForm({
       <h2 className="text-xl font-bold tracking-tight text-ink">박지 제보</h2>
 
       {nextBasecamp && (
-        <Notice tone="info" title="50m 안에 장소가 없어요">
-          <p>이 위치를 박지로 먼저 제보해 주세요. 등록되면 이어서 이 박지에서 베이스캠프를 열 수 있어요.</p>
+        <Notice tone="info" title="50m 이내에 등록된 장소가 없어요">
+          <p>이 위치를 박지로 먼저 제보해 주세요. 등록 후 바로 베이스캠프를 열 수 있어요.</p>
         </Notice>
       )}
 

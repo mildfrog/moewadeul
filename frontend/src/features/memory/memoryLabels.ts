@@ -9,7 +9,7 @@ const MEMORY_MAX_NIGHTS = 30;
 
 export const VISIBILITY_OPTIONS: ReadonlyArray<ChoiceOption<MemoryVisibility>> = [
   { value: 'PRIVATE', label: '나만 보기' },
-  { value: 'PUBLIC', label: '모두에게 공개' },
+  { value: 'PUBLIC', label: '전체 공개' },
 ];
 
 export const VISIBILITY_LABEL: Record<MemoryVisibility, string> = {

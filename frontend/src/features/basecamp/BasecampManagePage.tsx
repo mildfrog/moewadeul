@@ -203,7 +203,7 @@ export function BasecampManagePage({ basecampId }: { basecampId: number }) {
             detail={view}
             onSaved={() => {
               setError(null);
-              setDone('연락 수단을 저장했어요.');
+              setDone('연락처를 저장했어요.');
               reload();
             }}
           />
@@ -215,7 +215,7 @@ export function BasecampManagePage({ basecampId }: { basecampId: number }) {
           <Dialog title="베이스캠프 확정" onClose={() => !submitting && setDialog(null)}>
             <div className="flex flex-col gap-4">
               <p className="text-base text-ink">
-                확정하면 새 신청을 받지 않고 대기 중인 신청은 모두 사라져요. 되돌릴 수 없어요.
+                확정하면 새 신청을 받지 않으며, 대기 중인 신청은 자동으로 거절돼요. 확정 후에는 되돌릴 수 없어요.
               </p>
               <DialogButtons
                 submitting={submitting}
@@ -231,7 +231,7 @@ export function BasecampManagePage({ basecampId }: { basecampId: number }) {
         {dialog?.kind === 'cancel' && (
           <Dialog title="베이스캠프 취소" onClose={() => !submitting && setDialog(null)}>
             <div className="flex flex-col gap-4">
-              <p className="text-base text-ink">취소하면 멤버에게 알림이 가요. 되돌릴 수 없어요.</p>
+              <p className="text-base text-ink">취소하면 멤버들에게 알림이 전송되며 되돌릴 수 없어요.</p>
               <DialogButtons
                 submitting={submitting}
                 danger
@@ -248,7 +248,8 @@ export function BasecampManagePage({ basecampId }: { basecampId: number }) {
           <Dialog title="합류 신청 거절" onClose={() => !submitting && setDialog(null)}>
             <div className="flex flex-col gap-4">
               <p className="text-base text-ink">
-                {dialog.application.applicant.nickname}님의 신청을 거절할까요? 거절하면 다시 신청할 수 없어요.
+                {dialog.application.applicant.nickname}님의 신청을 거절할까요? 거절된 회원은 이 베이스캠프에 다시 신청할
+                수 없어요.
               </p>
               <DialogButtons
                 submitting={submitting}
@@ -270,10 +271,10 @@ export function BasecampManagePage({ basecampId }: { basecampId: number }) {
           <Dialog title="멤버 내보내기" onClose={() => !submitting && setDialog(null)}>
             <div className="flex flex-col gap-4">
               <p className="text-base text-ink">
-                {dialog.member.nickname}님을 내보낼까요? 내보낸 회원은 다시 신청할 수 없어요.
+                {dialog.member.nickname}님을 내보낼까요? 내보낸 멤버는 이 베이스캠프에 다시 신청할 수 없어요.
               </p>
               <ChoiceGroup
-                legend="내보내는 이유"
+                legend="내보내는 사유"
                 name="kickReason"
                 options={KICK_OPTIONS}
                 value={kickReason}
@@ -284,7 +285,7 @@ export function BasecampManagePage({ basecampId }: { basecampId: number }) {
                 submitting={submitting}
                 danger
                 confirmLabel="내보내기"
-                confirmDisabledReason={kickReason === null ? '내보내는 이유를 골라 주세요.' : undefined}
+                confirmDisabledReason={kickReason === null ? '사유를 선택해 주세요.' : undefined}
                 onBack={() => setDialog(null)}
                 onConfirm={() => {
                   if (kickReason === null) return;
@@ -329,7 +330,7 @@ function DialogButtons({
   return (
     <div className="flex flex-wrap items-start justify-end gap-2">
       <Button variant="secondary" disabled={submitting} onClick={onBack}>
-        닫기
+        취소
       </Button>
       <Button
         variant={danger ? 'danger' : 'primary'}
@@ -586,12 +587,12 @@ function MembersCard({ detail, onKick }: { detail: BasecampDetail; onKick: (memb
 }
 
 function validateContact(value: string): string | null {
-  if (value === '') return '연락 수단을 적어 주세요.';
-  if (value.length > CONTACT_MAX) return `${CONTACT_MAX}자 이하로 적어 주세요.`;
+  if (value === '') return '연락처를 입력해 주세요.';
+  if (value.length > CONTACT_MAX) return `${CONTACT_MAX}자 이하로 입력해 주세요.`;
   try {
-    return new URL(value).protocol === 'https:' ? null : 'https://로 시작하는 주소를 적어 주세요.';
+    return new URL(value).protocol === 'https:' ? null : 'https://로 시작하는 링크를 입력해 주세요.';
   } catch {
-    return 'https://로 시작하는 주소를 적어 주세요.';
+    return 'https://로 시작하는 링크를 입력해 주세요.';
   }
 }
 
@@ -628,7 +629,7 @@ function ContactCard({ detail, onSaved }: { detail: BasecampDetail; onSaved: () 
   }
 
   return (
-    <PageCard title="연락 수단">
+    <PageCard title="연락처">
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-3">
         {formError && (
           <div role="alert">
@@ -636,7 +637,7 @@ function ContactCard({ detail, onSaved }: { detail: BasecampDetail; onSaved: () 
           </div>
         )}
         <TextField
-          label="https 주소 (오픈채팅 링크 등)"
+          label="연락처 링크 (오픈채팅 등)"
           name="contactInfo"
           type="url"
           inputMode="url"
@@ -644,7 +645,7 @@ function ContactCard({ detail, onSaved }: { detail: BasecampDetail; onSaved: () 
           maxLength={CONTACT_MAX}
           onChange={(event) => setValue(event.target.value)}
           error={fieldError}
-          hint="확정되면 멤버에게 공개돼요."
+          hint="베이스캠프가 확정되면 멤버들에게 공개돼요."
         />
         <div className="flex justify-end">
           <Button type="submit" loading={submitting}>

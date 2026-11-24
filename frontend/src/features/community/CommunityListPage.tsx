@@ -224,7 +224,7 @@ function SearchBar({ searchType, keyword, onSearch }: SearchBarProps) {
           <span>{error}</span>
         </p>
       )}
-      {!error && keyword !== null && <p className="text-sm text-ink-muted">최근 글 1만 개 안에서 찾았어요.</p>}
+      {!error && keyword !== null && <p className="text-sm text-ink-muted">최근 게시글 기준으로 검색했어요.</p>}
     </form>
   );
 }
@@ -272,8 +272,8 @@ function CommunityAside() {
             에서 구해요.
           </li>
           <li>금전을 요구하는 글은 신고해 주세요.</li>
-          <li>공원 안에서 야영을 권하는 글은 신고 대상이에요.</li>
-          <li>신고가 5건 쌓이면 글이 잠시 내려가고 관리자가 검토해요.</li>
+          <li>불법 야영을 유도하거나 권하는 글은 신고 대상이에요.</li>
+          <li>신고가 누적되면 검토를 위해 임시 숨김 처리돼요.</li>
         </ul>
       </AsideSection>
     </>

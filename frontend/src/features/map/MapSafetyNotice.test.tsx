@@ -13,7 +13,7 @@ describe('지도 첫 방문 안내', () => {
     const root = createRoot(container);
     await act(async () => root.render(<MapSafetyNotice />));
 
-    expect(container.textContent).toContain('박지는 회원이 제보한 곳이에요.');
+    expect(container.textContent).toContain('회원이 제보한 박지');
     expect(container.textContent).toContain('관할 기관에 직접 확인해 주세요.');
 
     await act(async () => container.querySelector('button')?.click());

@@ -46,8 +46,8 @@ const SECTION_CLASS = 'mt-8';
 const SECTION_TITLE_CLASS = 'mb-3 text-[1.1875rem] font-extrabold tracking-[-0.02em] text-ink';
 const BOARD_CLASS = 'overflow-hidden rounded-sheet bg-fill';
 const MESSAGE_MAX = 500;
-const SPOT_UNAVAILABLE_TEXT = '이 장소는 지금 지도에서 볼 수 없어요.';
-const APPLY_CLOSED_BY_SPOT_TEXT = '장소를 지도에서 볼 수 없는 동안에는 합류 신청을 받지 않아요.';
+const SPOT_UNAVAILABLE_TEXT = '현재 지도에서 확인할 수 없는 장소예요.';
+const APPLY_CLOSED_BY_SPOT_TEXT = '지도에서 확인할 수 없는 장소에는 합류를 신청할 수 없어요.';
 
 const CONFIRMED_SAFETY_RULES = [
   '출발 전에 일정을 가족이나 지인에게 알려 주세요.',
@@ -154,13 +154,13 @@ function DetailContent({ detail, onChanged }: { detail: BasecampDetail; onChange
           </h2>
           <dl className="mt-5 grid grid-cols-[1fr_1fr_auto] gap-2 text-ink">
             <div className="rounded-sheet bg-fill px-4 py-3">
-              <dt className="text-[0.8125rem] text-ink-muted">출발</dt>
+              <dt className="text-[0.8125rem] text-ink-muted">출발일</dt>
               <dd className="text-[0.9375rem] font-extrabold whitespace-nowrap tabular-nums">
                 {formatLocalDate(detail.startDate)}
               </dd>
             </div>
             <div className="rounded-sheet bg-fill px-4 py-3">
-              <dt className="text-[0.8125rem] text-ink-muted">돌아오는 날</dt>
+              <dt className="text-[0.8125rem] text-ink-muted">종료일</dt>
               <dd className="text-[0.9375rem] font-extrabold whitespace-nowrap tabular-nums">
                 {formatLocalDate(detail.endDate)}
               </dd>
@@ -221,7 +221,7 @@ function DetailContent({ detail, onChanged }: { detail: BasecampDetail; onChange
             </ul>
           </div>
           {detail.leader.trustLevel === undefined && (
-            <p className="mt-2 text-sm text-ink-muted">로그인하면 멤버의 신뢰 단계와 동행 기록을 볼 수 있어요.</p>
+            <p className="mt-2 text-sm text-ink-muted">로그인하면 멤버의 신뢰 단계와 동행 기록을 확인할 수 있어요.</p>
           )}
         </section>
 
@@ -231,16 +231,16 @@ function DetailContent({ detail, onChanged }: { detail: BasecampDetail; onChange
           </h3>
           <div className={`${BOARD_CLASS} flex items-center justify-between gap-3 px-4 py-3 text-sm`}>
             <span className="text-ink">{joinConditionSummary(detail.joinCondition)}</span>
-            {detail.canApply === true && <StatusText tone="accent">내 조건에 맞아요</StatusText>}
+            {detail.canApply === true && <StatusText tone="accent">합류 조건 충족</StatusText>}
             {detail.canApply === false && (detail.unmetReasons ?? []).length > 0 && (
-              <StatusText tone="warning">내 조건과 달라요</StatusText>
+              <StatusText tone="warning">합류 조건 미충족</StatusText>
             )}
           </div>
         </section>
 
         <section className={SECTION_CLASS} aria-labelledby="basecamp-contact-title">
           <h3 id="basecamp-contact-title" className={SECTION_TITLE_CLASS}>
-            연락 수단
+            연락처
           </h3>
           <ContactInfo contactInfo={detail.contactInfo} isMember={isMember} />
         </section>
@@ -353,7 +353,7 @@ function ContactInfo({ contactInfo, isMember }: { contactInfo: string | undefine
   if (contactInfo === undefined) {
     return (
       <p className="mt-2 text-sm text-ink-muted">
-        {isMember ? '확정되면 연락 수단이 공개돼요.' : '연락 수단은 확정된 멤버에게만 공개돼요.'}
+        {isMember ? '베이스캠프가 확정되면 연락처가 공개돼요.' : '연락처는 확정된 멤버에게만 공개돼요.'}
       </p>
     );
   }
@@ -495,7 +495,7 @@ function ActionArea({ detail, onChanged }: { detail: BasecampDetail; onChanged: 
   } else if (detail.myRelation === 'APPLICANT') {
     content = (
       <>
-        <p className="text-base text-ink">합류 신청을 보냈어요. 캠프 리더가 승인하거나 거절할 때까지 기다려 주세요.</p>
+        <p className="text-base text-ink">합류 신청을 보냈어요. 캠프 리더의 승인을 기다리고 있어요.</p>
         <Button variant="secondary" onClick={() => setDialog('cancel')}>
           신청 취소
         </Button>
@@ -550,7 +550,7 @@ function ActionArea({ detail, onChanged }: { detail: BasecampDetail; onChanged: 
             />
             <div className="flex flex-wrap justify-end gap-2">
               <Button variant="secondary" disabled={submitting} onClick={() => setDialog(null)}>
-                닫기
+                취소
               </Button>
               <Button
                 loading={submitting}
@@ -578,14 +578,14 @@ function ActionArea({ detail, onChanged }: { detail: BasecampDetail; onChanged: 
             {isLateLeave(detail) && (
               <Notice tone="warning" title="출발이 얼마 남지 않았어요">
                 <p>
-                  출발 48시간 안에 나가면 출발 직전 나가기로 기록돼요. 출발 직전 나가기가 180일 안에 3번 쌓이면 신뢰
-                  단계 2에서 빠져요.
+                  출발 48시간 이내에 나가면 출발 직전 취소로 기록돼요. 최근 180일 동안 출발 직전 취소가 3회 누적되면
+                  신뢰 단계 2가 해제돼요.
                 </p>
               </Notice>
             )}
             <div className="flex flex-wrap justify-end gap-2">
               <Button variant="secondary" disabled={submitting} onClick={() => setDialog(null)}>
-                닫기
+                취소
               </Button>
               <Button
                 variant="danger"

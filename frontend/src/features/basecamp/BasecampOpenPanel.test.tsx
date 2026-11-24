@@ -60,7 +60,7 @@ describe('베이스캠프 열기 패널: 저장할 때', () => {
     await type(input('제목'), '설악산 1박 2일');
     await type(input('설명'), '대피소에서 만나요.');
     await type(input('출발일'), start);
-    await type(input('돌아오는 날'), addDaysToLocalDate(start, 1));
+    await type(input('종료일'), addDaysToLocalDate(start, 1));
     await act(async () => container.querySelector<HTMLInputElement>('input[name="capacity"][value="4"]')?.click());
     await act(async () => submitButton()?.click());
   }
@@ -140,7 +140,7 @@ describe('베이스캠프 열기 패널: 저장할 때', () => {
     await saveAndLeave();
     await act(async () => finishSave());
 
-    expect(tray()?.textContent).toContain('저장됐는지 확인하지 못했어요.');
+    expect(tray()?.textContent).toContain('저장됐는지 확인하지 못했어요');
     expect(tray()?.textContent).toContain('다시 저장하기 전에 먼저 확인해 주세요.');
     expect(tray()?.textContent).not.toContain('베이스캠프를 열지 못했어요.');
     expect(tray()?.querySelector('a')?.getAttribute('href')).toBe('/me/basecamps');

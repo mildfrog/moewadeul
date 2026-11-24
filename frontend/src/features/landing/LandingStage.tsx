@@ -48,7 +48,7 @@ function Hero() {
     >
       <div className="relative z-10 mx-auto min-h-[max(44rem,calc(100svh_-_7rem))] max-w-[90rem] px-4 pt-14 lg:px-8 lg:pt-24">
         <h1 id="hero-title" className={`${HERO_TITLE_CLASS} ${title.className}`} style={title.style}>
-          잘 곳과 함께 갈 사람을
+          박지와 함께 갈 사람을
           <br />한 번에 찾아요
         </h1>
         <p className={`mt-6 max-w-[30ch] text-lg text-brand-ink lg:text-xl ${intro.className}`} style={intro.style}>
@@ -74,7 +74,7 @@ function SourcesStrip() {
     <section ref={ref} aria-labelledby="sources-title" className="pb-24 lg:pb-40">
       <div className="mx-auto max-w-[90rem] px-4 lg:px-8">
         <h2 id="sources-title" className={`text-xl font-bold ${title.className}`} style={title.style}>
-          장소와 공원 경계, 날씨는 이 자료로 보여 줘요
+          장소, 공원 경계, 날씨 정보는 아래 공공데이터를 바탕으로 제공해요
         </h2>
       </div>
       <div className={`mt-5 ${strip.className}`} style={strip.style}>
@@ -95,7 +95,7 @@ function StepArt({ className, children }: { className: string; children: ReactNo
 const HOW_STEPS = [
   {
     title: '갈 곳을 골라요',
-    body: '지역을 넣으면 가까운 순으로 박지와 야영장이 나와요. 반경은 50km까지 넓힐 수 있어요.',
+    body: '지역을 입력하면 가까운 순으로 박지와 야영장이 나와요. 반경은 최대 50km까지 넓힐 수 있어요.',
     art: (
       <StepArt className="bg-fill-strong">
         <Contours tone="light" seed={2} />
@@ -106,14 +106,14 @@ const HOW_STEPS = [
             <span className="text-[0.9375rem] text-ink-muted">반경 20km</span>
           </div>
           <FragmentRow number={1} name="명지산 계곡 야영장" meta="공공데이터 · 운영 중" distance="3.2km" />
-          <FragmentRow number={2} name="적목리 강변 박지" meta="회원 제보 · 확인 7명" distance="5.8km" />
+          <FragmentRow number={2} name="적목리 강변 박지" meta="회원 제보 · 현장 확인 7명" distance="5.8km" />
         </div>
       </StepArt>
     ),
   },
   {
     title: '합류를 신청해요',
-    body: '합류 조건을 확인하고 신청해요. 정원은 캠프 리더를 포함해 2명에서 6명이에요.',
+    body: '합류 조건을 확인하고 신청해요. 정원은 캠프 리더 포함 2~6명이에요.',
     art: (
       <StepArt className="bg-fill-strong">
         <Contours tone="light" seed={5} />
@@ -133,7 +133,7 @@ const HOW_STEPS = [
   },
   {
     title: '출발 전날 0시에 확정돼요',
-    body: '두 명 이상이면 확정되고, 확정된 멤버에게만 연락 수단이 보여요.',
+    body: '두 명 이상 모이면 확정되고, 확정된 멤버에게만 연락처가 공개돼요.',
     art: (
       <StepArt className="items-start bg-brand pt-8">
         <MiniScene />
@@ -143,7 +143,7 @@ const HOW_STEPS = [
             <span className={TAG_OK_CLASS}>확정</span>
           </div>
           <p className="mt-0.5 text-[0.9375rem] text-ink-muted">11월 8일 1박 · 멤버 4명</p>
-          <p className="mt-2 rounded-xl bg-fill px-3 py-2 text-[0.9375rem]">다녀온 뒤 7일까지 연락 수단이 보여요.</p>
+          <p className="mt-2 rounded-xl bg-fill px-3 py-2 text-[0.9375rem]">다녀온 뒤 7일까지 연락처가 보여요.</p>
         </div>
       </StepArt>
     ),
@@ -183,15 +183,15 @@ function HowSection() {
 const APPROACH_ITEMS = [
   {
     title: '공원 경계 안인지 확인해요',
-    body: '국립·도립·군립공원 경계 자료로 박지가 공원 안인지 확인하고, 자료의 출처와 기준일을 함께 보여 줘요.',
+    body: '국립·도립·군립공원 경계 자료로 박지 위치를 대조하고, 자료 출처와 기준일을 함께 보여드려요.',
   },
   {
-    title: '동행 기록으로 신뢰 단계를 매겨요',
-    body: '본인확인과 동행 기록으로 단계를 정해요. 기록이 바뀌면 단계도 바로 달라져요.',
+    title: '동행 기록으로 신뢰 단계를 정해요',
+    body: '본인확인과 동행 기록에 따라 단계가 결정되며, 기록이 바뀌면 단계도 바로 반영돼요.',
   },
   {
-    title: '신고하면 바로 막아요',
-    body: '성희롱이나 위협을 신고하면 확인 전이라도 72시간 동안 상대 회원의 이용을 멈춰요. 제재는 경고, 7일, 30일, 영구 정지 순서예요.',
+    title: '신고하면 바로 조치해요',
+    body: '성희롱이나 위협 행위를 신고하면 검토 전이라도 72시간 동안 상대의 이용을 정지해요. 제재는 경고, 7일, 30일, 영구 정지 순으로 적용돼요.',
   },
 ];
 
@@ -268,35 +268,35 @@ const SERVICES = [
   {
     to: '/map',
     name: '박지 지도',
-    body: '공원 경계 경고와 출처·기준일이 붙은 박지, 야영장, 휴양림을 지도에서 찾아요.',
-    tags: ['반경 50km', '경계 경고', '휴장 표시', '날씨·일몰'],
+    body: '공원 구역 주의 표시와 출처·기준일이 함께 제공되는 박지, 야영장, 자연휴양림을 지도에서 찾아요.',
+    tags: ['반경 50km', '공원 구역 주의', '휴장 표시', '날씨·일몰'],
     action: '지도 열기',
   },
   {
     to: '/basecamps',
     name: '베이스캠프',
-    body: '같은 날 같은 곳에서 1박 이상 함께 야영할 사람을 모아요. 정원은 2명에서 6명이에요.',
-    tags: ['합류 조건', '신뢰 단계', '확정 뒤 연락 수단'],
+    body: '같은 날 같은 곳에서 1박 이상 함께 야영할 멤버를 모아요. 정원은 2~6명이에요.',
+    tags: ['합류 조건', '신뢰 단계', '확정 후 연락처 공개'],
     action: '둘러보기',
   },
   {
     to: '/programs',
     name: '공식 행사',
-    body: '관리자가 연 백패킹 행사에 선착순으로 신청하고 결제해요.',
+    body: '뫼와들이 여는 공식 백패킹 행사에 선착순으로 신청하고 결제해요.',
     tags: ['선착순', '결제 15분', '3일 전 환불'],
     action: '일정 보기',
   },
   {
     to: '/memories',
     name: '기록',
-    body: '다녀온 곳을 사진과 글로 지도에 남겨요. 기본은 나만 보여요.',
+    body: '다녀온 곳을 사진과 글로 지도에 남겨요. 기본은 비공개로 저장돼요.',
     tags: ['기본 비공개', '사진', '피드'],
     action: '피드 보기',
   },
   {
     to: '/community',
     name: '커뮤니티',
-    body: '다녀온 박지와 장비 이야기를 나누고 궁금한 걸 물어봐요.',
+    body: '다녀온 박지와 장비 이야기를 나누고 궁금한 점을 물어봐요.',
     tags: ['사진 5장', '댓글', '좋아요'],
     action: '글 보기',
   },
@@ -347,9 +347,9 @@ function ServicesSection() {
 }
 
 const JUDGE_POINTS = [
-  '국립·도립·군립공원 경계 자료로 공원 안인지 확인해요',
-  '출처와 기준일이 항상 같이 보여요',
-  '경고가 붙은 박지로는 베이스캠프를 열 수 없어요',
+  '국립·도립·군립공원 경계 자료로 공원 구역 여부를 확인해요',
+  '출처와 기준일이 항상 함께 표시돼요',
+  '주의 표시가 붙은 박지에서는 베이스캠프를 열 수 없어요',
 ];
 
 const JUDGE_PHOTOS = [
@@ -406,16 +406,16 @@ function JudgeSection() {
 
 const PROGRAM_POINTS = [
   {
-    title: '선착순으로 정원만큼만',
-    body: '정원이 차면 마감돼요. 한 사람당 한 번만 신청할 수 있어요.',
+    title: '선착순으로 정원만큼만 모집해요',
+    body: '정원이 차면 마감되며, 1인당 1회만 신청할 수 있어요.',
   },
   {
-    title: '결제는 15분 안에',
-    body: '기한을 넘기면 자리는 다음 사람에게 돌아가요. 정원이 찼다면 빈자리 알림을 신청해 두세요.',
+    title: '결제는 15분 안에 마쳐야 해요',
+    body: '기한을 넘기면 자리가 다음 대기자에게 넘어가요. 마감됐다면 빈자리 알림을 신청해 보세요.',
   },
   {
-    title: '시작 3일 전까지는 전액 환불',
-    body: '그 뒤로는 취소할 수 없어요. 숙박 행사는 신뢰 단계 1부터 신청할 수 있어요.',
+    title: '시작 3일 전까지 전액 환불돼요',
+    body: '그 이후에는 취소할 수 없어요. 숙박 행사는 신뢰 단계 1부터 신청할 수 있어요.',
   },
 ];
 
@@ -498,24 +498,23 @@ const TRUST_LEVELS: TrustLevel[] = [
   {
     level: 0,
     name: '이메일 인증',
-    condition: '가입하고 이메일을 인증하면 바로 돼요.',
-    abilities: ['박지 탐색·제보·확인·신고', '장소 후기', '숙박 없는 행사 신청', '베이스캠프 둘러보기'],
+    condition: '회원가입 후 이메일을 인증하면 바로 부여돼요.',
+    abilities: ['박지 탐색·제보·현장 확인·신고', '장소 후기 작성', '당일 행사 신청', '베이스캠프 둘러보기'],
     action: { to: '/signup', label: '회원가입' },
   },
   {
     level: 1,
     name: '본인확인 · 성인',
-    condition: '본인확인을 마친 만 19세 이상이에요.',
-    abilities: ['베이스캠프 열기와 합류', '숙박 행사 신청', '0단계에서 할 수 있는 모든 일'],
+    condition: '본인확인을 마친 만 19세 이상 회원이에요.',
+    abilities: ['베이스캠프 개설 및 합류', '숙박 행사 신청', '0단계의 모든 기능'],
     action: { to: '/identity-verification', label: '본인확인하기' },
     featured: true,
   },
   {
     level: 2,
     name: '신뢰 회원',
-    condition:
-      '동행을 3번 이상 마치고, 함께한 사람의 80% 이상이 다시 동행하고 싶다고 했고, 최근 180일 동안 제재가 없어야 해요.',
-    abilities: ['"신뢰 회원만" 조건의 베이스캠프 합류', '1단계에서 할 수 있는 모든 일'],
+    condition: '동행 3회 이상 완료, 재동행 희망률 80% 이상, 최근 180일간 제재 이력이 없는 회원이에요.',
+    abilities: ['"신뢰 회원만" 조건의 베이스캠프 합류', '1단계의 모든 기능'],
     action: { to: '/basecamps', label: '베이스캠프 둘러보기' },
   },
 ];
@@ -588,28 +587,28 @@ function TrustSection() {
 
 const FAQ = [
   {
-    q: '경고가 붙은 박지는 가면 안 되나요?',
-    a: '경고는 공원 경계 자료로 확인한 참고 정보라서 법적 효력은 없어요. 다만 경고가 붙은 박지로는 베이스캠프를 열 수 없어요.',
+    q: '공원 구역 주의 표시가 붙은 박지는 가면 안 되나요?',
+    a: '공원 경계 자료를 바탕으로 한 참고 안내라 법적 효력은 없어요. 다만 주의 표시가 붙은 박지에서는 베이스캠프를 열 수 없어요.',
   },
   {
     q: '본인확인 때 무엇을 저장하나요?',
-    a: '출생연도와 성별, 그리고 한 사람이 계정 하나만 쓰도록 확인하는 암호화된 값만 저장해요. 이름과 전화번호는 저장하지 않아요.',
+    a: '출생연도와 성별, 그리고 중복 가입을 막기 위한 암호화된 식별값만 저장해요. 이름과 전화번호는 저장하지 않아요.',
   },
   {
     q: '베이스캠프는 몇 명이 함께 가나요?',
-    a: '캠프 리더를 포함해 2명에서 6명까지예요. 출발일은 다음 날부터 60일 안에서 고르고, 1박에서 3박까지 갈 수 있어요.',
+    a: '캠프 리더 포함 2~6명이 함께해요. 출발일은 내일부터 60일 이내로 선택할 수 있고, 일정은 1~3박까지 가능해요.',
   },
   {
     q: '베이스캠프는 언제 확정되나요?',
-    a: '출발 전날 0시에 두 명 이상이면 자동으로 확정돼요. 그 시각에 한 명뿐이면 자동으로 취소돼요.',
+    a: '출발 전날 0시에 2명 이상이면 자동으로 확정돼요. 그때까지 혼자뿐이면 자동으로 취소돼요.',
   },
   {
     q: '멤버와는 어떻게 연락하나요?',
-    a: '베이스캠프가 확정되면 멤버끼리 연락 수단이 보여요. 다녀온 뒤 7일이 지나면 다시 가려져요.',
+    a: '베이스캠프가 확정되면 멤버끼리 연락처를 볼 수 있어요. 다녀온 뒤 7일이 지나면 다시 가려져요.',
   },
   {
-    q: '동행 후기는 언제 보이나요?',
-    a: '내가 상대에게 후기를 쓰면 받은 후기를 볼 수 있어요. 쓰지 않아도 다녀온 지 14일이 지나면 볼 수 있어요. 후기는 한 번 쓰면 수정하거나 삭제할 수 없어요.',
+    q: '동행 후기는 언제 볼 수 있나요?',
+    a: '상대에게 후기를 작성하면 내가 받은 후기도 바로 볼 수 있어요. 작성하지 않아도 다녀온 지 14일이 지나면 공개돼요. 작성한 후기는 수정하거나 삭제할 수 없어요.',
   },
 ];
 
@@ -692,7 +691,7 @@ function ClosingSection() {
             어디서 잘까요?
           </h2>
           <p className="mt-5 max-w-[34ch] text-lg text-brand-ink lg:text-xl">
-            지역을 넣으면 그 일대의 박지와 야영장을 지도에서 바로 볼 수 있어요. 가입하지 않아도 돼요.
+            지역을 입력하면 주변 박지와 야영장을 지도에서 바로 볼 수 있어요. 로그인 없이도 둘러볼 수 있어요.
           </p>
         </div>
         <form

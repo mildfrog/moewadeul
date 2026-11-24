@@ -20,7 +20,7 @@ const AI_MAX_LENGTH = 100;
 
 const AI_LENGTH_MESSAGE = `${AI_MIN_LENGTH}자 이상 ${AI_MAX_LENGTH}자 이하로 입력해 주세요.`;
 const AI_PLACEHOLDER = '예: 강원도 계곡 옆 박지';
-const AI_NOTICE = '입력한 문장은 해석을 위해 OpenAI로 보내져요. 하루 20번까지 쓸 수 있어요.';
+const AI_NOTICE = '입력한 검색어는 조건 분석을 위해 OpenAI로 전송돼요. 하루 20회까지 이용할 수 있어요.';
 const GUIDE_BOX_CLASS = 'rounded-sheet bg-surface px-4 py-3 text-sm text-ink shadow-raise';
 const GUIDE_LINK_CLASS =
   'inline-flex min-h-11 items-center font-semibold text-accent underline underline-offset-2 hover:text-accent-deep';
@@ -87,7 +87,7 @@ export function MapSearchBar({
   async function handleRegionSubmit() {
     const trimmed = query.trim();
     if (normalizeRegionQuery(trimmed) === '') {
-      setInputError('찾을 지역 이름이나 주소를 입력해 주세요.');
+      setInputError('지역 이름이나 주소를 입력해 주세요.');
       setState({ status: 'idle' });
       return;
     }
@@ -236,7 +236,7 @@ export function MapSearchBar({
         <div className="min-w-0 flex-1">
           {aiGuide ? (
             <div className={`${boxClass} flex flex-col items-start gap-1`}>
-              <p>{anonymous ? 'AI 검색은 로그인한 회원이 쓸 수 있어요.' : '이메일 인증을 마친 뒤에 쓸 수 있어요.'}</p>
+              <p>{anonymous ? 'AI 검색은 로그인 후 이용할 수 있어요.' : '이메일 인증 후 이용할 수 있어요.'}</p>
               <Link
                 to={anonymous ? withNext('/login', pathname + search) : '/verify-email'}
                 className={GUIDE_LINK_CLASS}
@@ -244,7 +244,7 @@ export function MapSearchBar({
                 {anonymous ? '로그인' : '이메일 인증하기'}
               </Link>
               <button type="button" onClick={toggleMode} className={MODE_BUTTON_CLASS}>
-                지역 검색으로 바꾸기
+                지역 검색으로 전환
               </button>
             </div>
           ) : (
@@ -300,19 +300,19 @@ export function MapSearchBar({
 
       {aiActive && limitedShown && (
         <p role="alert" className={`${boxClass} mt-1`}>
-          오늘 AI 검색 20번을 모두 썼어요.{' '}
+          오늘 AI 검색 20회를 모두 사용했어요.{' '}
           {aiError.timed
-            ? `${formatRemaining(countdown.secondsLeft)} 뒤에 다시 쓸 수 있어요.`
-            : '내일 다시 쓸 수 있어요.'}{' '}
-          지역 이름 검색은 지금도 쓸 수 있어요.
+            ? `${formatRemaining(countdown.secondsLeft)} 뒤에 다시 이용할 수 있어요.`
+            : '내일 다시 이용할 수 있어요.'}{' '}
+          지역 이름 검색은 계속 사용할 수 있어요.
         </p>
       )}
 
       {aiActive && aiError?.kind === 'unavailable' && (
         <div role="alert" className={`${boxClass} mt-1 flex flex-col items-start gap-1`}>
-          <p>지금은 AI 검색을 쓸 수 없어요. 지역 이름으로 검색해 주세요.</p>
+          <p>지금은 AI 검색을 이용할 수 없어요. 지역 이름으로 검색해 주세요.</p>
           <button type="button" onClick={toggleMode} className={MODE_BUTTON_CLASS}>
-            지역 검색으로 바꾸기
+            지역 검색으로 전환
           </button>
         </div>
       )}
@@ -325,7 +325,7 @@ export function MapSearchBar({
 
       {state.status === 'candidates' && (
         <ul
-          aria-label="지역 후보"
+          aria-label="지역 검색 결과"
           className="absolute inset-x-0 top-full z-20 mt-2 flex flex-col gap-0.5 overflow-hidden rounded-sheet bg-surface p-1.5 shadow-raise"
         >
           {state.candidates.map((candidate, index) => (
@@ -349,7 +349,7 @@ export function MapSearchBar({
           className="absolute inset-x-0 top-full z-20 mt-1 rounded-sheet bg-surface px-4 py-3 text-sm text-ink shadow-raise"
         >
           {state.status === 'empty'
-            ? `'${state.keyword}' 검색 결과가 없어요. 다른 지역 이름이나 주소로 찾아 주세요.`
+            ? `'${state.keyword}' 검색 결과가 없어요. 다른 지역명이나 주소로 검색해 주세요.`
             : state.message}
         </p>
       )}

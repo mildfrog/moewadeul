@@ -210,8 +210,8 @@ describe('validate', () => {
     const earlier = validate(filled({ applyCloseAt: '2026-11-10T09:59' }), NOW, 'create');
     const later = validate(filled({ applyCloseAt: '2026-11-10T10:01' }), NOW, 'create');
 
-    expect(same.applyCloseAt).toBe('신청 마감은 신청 시작보다 늦어야 해요.');
-    expect(earlier.applyCloseAt).toBe('신청 마감은 신청 시작보다 늦어야 해요.');
+    expect(same.applyCloseAt).toBe('신청 마감은 신청 시작 이후여야 해요.');
+    expect(earlier.applyCloseAt).toBe('신청 마감은 신청 시작 이후여야 해요.');
     expect(later.applyCloseAt).toBeUndefined();
   });
 
@@ -220,15 +220,15 @@ describe('validate', () => {
     const later = validate(filled({ applyCloseAt: '2026-11-21T10:01' }), NOW, 'create');
 
     expect(same.applyCloseAt).toBeUndefined();
-    expect(later.applyCloseAt).toBe('신청 마감은 행사 시작보다 늦을 수 없어요.');
+    expect(later.applyCloseAt).toBe('신청 마감은 행사 시작 이후로 설정할 수 없어요.');
   });
 
   it('행사 종료는 행사 시작보다 늦어야 한다', () => {
     const same = validate(filled({ endAt: '2026-11-21T10:00' }), NOW, 'create');
     const earlier = validate(filled({ endAt: '2026-11-21T09:00' }), NOW, 'create');
 
-    expect(same.endAt).toBe('행사 종료는 행사 시작보다 늦어야 해요.');
-    expect(earlier.endAt).toBe('행사 종료는 행사 시작보다 늦어야 해요.');
+    expect(same.endAt).toBe('행사 종료는 행사 시작 이후여야 해요.');
+    expect(earlier.endAt).toBe('행사 종료는 행사 시작 이후여야 해요.');
   });
 
   it('등록할 때 행사 시작은 지금보다 늦어야 하고 수정할 때는 따지지 않는다', () => {
@@ -244,8 +244,8 @@ describe('validate', () => {
       applyCloseAt: '2026-11-04T09:00',
     });
 
-    expect(validate(past, NOW, 'create').startAt).toBe('행사 시작은 지금보다 늦어야 해요.');
-    expect(validate(exactlyNow, NOW, 'create').startAt).toBe('행사 시작은 지금보다 늦어야 해요.');
+    expect(validate(past, NOW, 'create').startAt).toBe('행사 시작은 현재 시각 이후여야 해요.');
+    expect(validate(exactlyNow, NOW, 'create').startAt).toBe('행사 시작은 현재 시각 이후여야 해요.');
     expect(validate({ ...past, paymentDeadlineMinutes: '15' }, NOW, 'edit')).toEqual({});
   });
 

@@ -109,7 +109,7 @@ function RequestStep() {
   return (
     <AuthLayout
       title="비밀번호 재설정"
-      description="가입한 이메일을 입력하면 새 비밀번호를 정하는 링크를 메일로 보내요."
+      description="가입한 이메일 주소를 입력하면 비밀번호 재설정 링크를 보내드려요."
       footer={<BackToLogin />}
     >
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -121,8 +121,8 @@ function RequestStep() {
         )}
         {sent && (
           <p role="status" className="text-sm text-accent-deep">
-            입력한 이메일로 가입돼 있다면 재설정 링크를 보냈어요. 30분 안에 메일의 링크를 열어 주세요. 메일이 보이지
-            않으면 스팸함을 살펴봐 주세요.
+            입력하신 이메일로 가입된 계정이 있다면 재설정 링크를 보냈어요. 30분 이내에 확인해 주시고, 메일이 보이지
+            않으면 스팸함을 확인해 주세요.
           </p>
         )}
         <Button
@@ -226,7 +226,7 @@ function ConfirmStep({ token, onTokenInvalid }: { token: string; onTokenInvalid:
     return (
       <AuthLayout title="비밀번호 재설정" footer={<BackToLogin />}>
         <div role="alert">
-          <ErrorNotice title="이 링크로는 비밀번호를 바꿀 수 없어요" error={tokenInvalid.cause} />
+          <ErrorNotice title="유효하지 않거나 만료된 링크예요" error={tokenInvalid.cause} />
         </div>
         <Button type="button" fullWidth onClick={onTokenInvalid}>
           재설정 링크 다시 받기
@@ -236,7 +236,7 @@ function ConfirmStep({ token, onTokenInvalid }: { token: string; onTokenInvalid:
   }
 
   return (
-    <AuthLayout title="새 비밀번호 정하기" footer={<BackToLogin />}>
+    <AuthLayout title="새 비밀번호 설정" footer={<BackToLogin />}>
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
         <PasswordField
           label="새 비밀번호"
@@ -246,7 +246,7 @@ function ConfirmStep({ token, onTokenInvalid }: { token: string; onTokenInvalid:
           value={newPassword}
           onChange={(event) => setNewPassword(event.target.value)}
           error={fieldErrors.newPassword}
-          hint="10~64자로, 영문·숫자·특수문자를 하나 이상씩 넣어 주세요. 공백은 쓸 수 없어요."
+          hint="영문·숫자·특수문자 포함 10~64자 (공백 불가)"
         />
         <PasswordField
           label="새 비밀번호 확인"

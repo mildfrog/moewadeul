@@ -26,17 +26,17 @@ type ApplicationFilter = ProgramApplicationStatus | 'ALL';
 const itemKey = (item: AdminProgramApplicant) => item.applicationId;
 
 const EMPTY_COPY: Record<ApplicationFilter, { title: string; description: string }> = {
-  ALL: { title: '아직 신청한 회원이 없어요', description: '신청이 들어오면 신청한 순서대로 여기에 모여요.' },
+  ALL: { title: '아직 신청한 회원이 없어요', description: '신청이 들어오면 신청 순서대로 표시돼요.' },
   PENDING_PAYMENT: {
     title: '결제를 기다리는 신청이 없어요',
-    description: '신청한 뒤 아직 결제하지 않은 신청이 여기에 모여요.',
+    description: '신청 후 아직 결제하지 않은 내역이 표시돼요.',
   },
-  CONFIRMED: { title: '확정된 신청이 없어요', description: '결제를 마쳐서 확정된 신청이 여기에 모여요.' },
+  CONFIRMED: { title: '확정된 신청이 없어요', description: '결제를 마쳐 확정된 신청이 표시돼요.' },
   CANCELED: {
     title: '취소된 신청이 없어요',
-    description: '직접 취소했거나 행사가 취소되면서 함께 취소된 신청이 여기에 모여요.',
+    description: '본인 취소 또는 행사 취소로 취소된 신청이 표시돼요.',
   },
-  EXPIRED: { title: '만료된 신청이 없어요', description: '결제 기한이 지나 만료된 신청이 여기에 모여요.' },
+  EXPIRED: { title: '만료된 신청이 없어요', description: '결제 기한이 지나 만료된 신청이 표시돼요.' },
 };
 
 export function AdminProgramApplicationsPage({ programId }: { programId: number }) {
@@ -112,7 +112,7 @@ function ProgramHeading({ programId }: { programId: number }) {
         <BackLink to={LIST_PATH}>행사 목록으로</BackLink>
       </div>
       {load.status === 'loading' && showSkeleton && <Skeleton className="h-7 w-1/2" />}
-      {load.status === 'error' && <h2 className="text-xl font-bold text-ink">행사 {programId}번</h2>}
+      {load.status === 'error' && <h2 className="text-xl font-bold text-ink">행사 #{programId}</h2>}
       {load.status === 'ready' && (
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <h2 className="min-w-0 break-words text-xl font-bold text-ink">{load.program.title}</h2>

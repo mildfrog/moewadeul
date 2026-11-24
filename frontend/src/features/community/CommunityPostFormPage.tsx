@@ -106,14 +106,14 @@ function WriteAside() {
             에서 구해요.
           </li>
           <li>금전을 요구하는 글은 신고해 주세요.</li>
-          <li>공원 안에서 야영을 권하는 글은 신고 대상이에요.</li>
-          <li>전화번호나 주소 같은 개인정보는 적지 말아 주세요.</li>
+          <li>불법 야영을 유도하거나 권하는 글은 신고 대상이에요.</li>
+          <li>전화번호나 주소 같은 개인정보는 적지 마세요.</li>
         </ul>
       </AsideSection>
       <AsideSection title="사진">
         <ul className="list-disc pl-5">
           <li>JPEG, PNG, WebP 파일을 5장까지, 장당 5MB까지 올릴 수 있어요.</li>
-          <li>맨 앞 사진이 대표 사진이 돼요. 순서는 &apos;앞으로&apos; 버튼으로 바꿀 수 있어요.</li>
+          <li>첫 번째 사진이 대표 사진으로 등록돼요.</li>
         </ul>
       </AsideSection>
     </>
@@ -328,8 +328,8 @@ function PostForm(props: PostFormProps) {
   }
 
   let submitReason: string | undefined;
-  if (uploading) submitReason = '사진을 올리는 중이에요. 다 올라가면 저장할 수 있어요.';
-  else if (failed) submitReason = '올리지 못한 사진은 다시 올리거나 빼 주세요.';
+  if (uploading) submitReason = '사진을 올리는 중이에요. 완료된 뒤 저장할 수 있어요.';
+  else if (failed) submitReason = '업로드에 실패한 사진은 다시 시도하거나 삭제해 주세요.';
 
   const spotLabel = spot === null ? null : spot.name === null ? '선택한 장소' : spot.name;
   const cancelTarget = props.mode === 'edit' ? `/community/${props.post.postId}` : '/community';
@@ -394,7 +394,7 @@ function PostForm(props: PostFormProps) {
         <p className="text-sm font-medium text-ink">연결한 장소</p>
         {spotLabel === null ? (
           <p className="text-sm text-ink-muted">
-            지도에서 장소를 열고 &apos;이 장소로 글쓰기&apos;를 누르면 장소가 연결돼요.
+            지도에서 장소를 열고 &apos;이 장소 글쓰기&apos;를 누르면 장소가 자동으로 연결돼요.
           </p>
         ) : (
           <div className="flex flex-wrap items-center justify-between gap-2">

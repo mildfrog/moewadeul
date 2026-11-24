@@ -137,7 +137,7 @@ describe('관리자 행사 관리 목록', () => {
 
     const card = container.querySelector('ul[aria-label="행사 목록"] li');
     expect(text(card)).toContain('가을 백패킹 데이');
-    expect(text(card)).toContain('신청 받는 중');
+    expect(text(card)).toContain('모집 중');
     expect(text(card)).toContain('숙박');
     expect(text(card)).toContain('11월 10일 (화) 10:00 ~ 11월 20일 (금) 18:00');
     expect(text(card)).toContain('11월 21일 (토) 10:00 ~ 11월 22일 (일) 12:00');
@@ -166,7 +166,7 @@ describe('관리자 행사 관리 목록', () => {
   it('상태 구분을 바꾸면 status 쿼리로 다시 불러온다', async () => {
     await mount();
 
-    await click(button('신청 받는 중'));
+    await click(button('모집 중'));
     await click(button('마감'));
     await click(button('전체'));
 
@@ -186,11 +186,11 @@ describe('관리자 행사 관리 목록', () => {
     await click(button('신청 예정'));
     expect(text(container)).toContain('신청 예정인 행사가 없어요');
 
-    await click(button('신청 받는 중'));
-    expect(text(container)).toContain('신청을 받는 행사가 없어요');
+    await click(button('모집 중'));
+    expect(text(container)).toContain('모집 중인 행사가 없어요');
 
     await click(button('마감'));
-    expect(text(container)).toContain('마감한 행사가 없어요');
+    expect(text(container)).toContain('마감된 행사가 없어요');
   });
 
   it('더 보기를 누르면 다음 쪽을 이어 붙인다', async () => {
@@ -226,7 +226,7 @@ describe('관리자 행사 관리 목록', () => {
 
     const [past, upcoming] = [...container.querySelectorAll('ul[aria-label="행사 목록"] li')];
     expect(button('행사 취소', past)).toBeUndefined();
-    expect(text(past ?? null)).toContain('끝난 행사는 취소할 수 없어요.');
+    expect(text(past ?? null)).toContain('종료된 행사는 취소할 수 없어요.');
     expect(button('행사 취소', upcoming)).toBeDefined();
   });
 
@@ -252,13 +252,13 @@ describe('관리자 행사 관리 목록', () => {
 
       const focusable = dialog().querySelector('button');
       expect(focusable?.getAttribute('aria-label')).toBe('닫기');
-      expect(text(button('아니요, 그대로 둘게요', dialog()) ?? null)).toBe('아니요, 그대로 둘게요');
+      expect(text(button('취소', dialog()) ?? null)).toBe('취소');
     });
 
     it('아니요를 누르면 대화상자가 닫히고 취소 요청은 나가지 않는다', async () => {
       await openCancelDialog();
 
-      await click(button('아니요, 그대로 둘게요', dialog()));
+      await click(button('취소', dialog()));
 
       expect(container.querySelector('dialog')).toBeNull();
       expect(posts()).toEqual([]);
@@ -316,7 +316,7 @@ describe('관리자 행사 관리 목록', () => {
 
       expect(posts()).toHaveLength(1);
       expect(confirm?.disabled).toBe(true);
-      expect(button('아니요, 그대로 둘게요', dialog())?.disabled).toBe(true);
+      expect(button('취소', dialog())?.disabled).toBe(true);
 
       await act(async () => release());
 
@@ -352,7 +352,7 @@ describe('관리자 행사 관리 목록', () => {
 
       const alert = text(dialog().querySelector('[role="alert"]'));
       expect(alert).toContain('행사를 취소하지 못했어요');
-      expect(alert).toContain('이미 끝난 행사는 취소할 수 없어요.');
+      expect(alert).toContain('이미 종료된 행사는 취소할 수 없어요.');
 
       await click(button('닫기', dialog()));
 
@@ -387,7 +387,7 @@ describe('관리자 행사 관리 목록', () => {
 
       expect(detailUrls()).toHaveLength(1);
       expect(text(container.querySelector('[role="status"]'))).toContain(
-        '행사가 취소된 것을 확인했어요. 신청도 함께 취소됐어요.',
+        '행사 취소를 확인했어요. 접수된 신청도 함께 취소됐어요.',
       );
       expect(text(container)).not.toContain('가을 백패킹 데이');
       expect(programListUrls()).toHaveLength(2);
@@ -405,7 +405,7 @@ describe('관리자 행사 관리 목록', () => {
 
       await click(button('닫기', dialog()));
 
-      expect(text(container.querySelector('[role="status"]'))).toContain('행사는 아직 취소되지 않았어요.');
+      expect(text(container.querySelector('[role="status"]'))).toContain('행사가 아직 취소되지 않았어요.');
       expect(text(container)).toContain('가을 백패킹 데이');
       expect(text(container)).toContain('겨울 설악산 야영');
       expect(programListUrls()).toEqual(['/api/programs?page=0', '/api/programs?page=1']);

@@ -99,7 +99,7 @@ describe('비밀번호 재설정 화면', () => {
 
       await submitEmail();
 
-      expect(container.querySelector('[role="alert"]')?.textContent).toContain('재설정을 너무 자주 요청했어요');
+      expect(container.querySelector('[role="alert"]')?.textContent).toContain('재설정 요청이 너무 많아요');
       expect(button('재설정 링크 받기')?.disabled).toBe(true);
       expect(container.textContent).toContain('30초 뒤에 다시 요청할 수 있어요');
 
@@ -135,7 +135,7 @@ describe('비밀번호 재설정 화면', () => {
     it('메일 링크의 토큰으로 열면 새 비밀번호 입력란이 보이고 주소에서 토큰이 사라진다', async () => {
       await open('/password-reset#token=abc123');
 
-      expect(container.querySelector('h1')?.textContent).toBe('새 비밀번호 정하기');
+      expect(container.querySelector('h1')?.textContent).toBe('새 비밀번호 설정');
       expect(field('newPassword')).not.toBeNull();
       expect(window.location.hash).toBe('');
     });
@@ -146,7 +146,7 @@ describe('비밀번호 재설정 화면', () => {
 
       await act(async () => button('비밀번호 바꾸기')?.click());
 
-      expect(container.textContent).toContain('비밀번호가 서로 달라요.');
+      expect(container.textContent).toContain('비밀번호가 일치하지 않아요.');
       expect(confirmPasswordReset).not.toHaveBeenCalled();
     });
 
@@ -178,7 +178,7 @@ describe('비밀번호 재설정 화면', () => {
 
       expect(container.textContent).toContain('비밀번호 규칙에 맞지 않아요');
       expect(field('newPassword').value).toBe('short');
-      expect(container.querySelector('h1')?.textContent).toBe('새 비밀번호 정하기');
+      expect(container.querySelector('h1')?.textContent).toBe('새 비밀번호 설정');
     });
 
     it('만료된 링크면 안내가 보이고, 다시 받기를 누르면 메일 주소를 받는 단계로 돌아간다', async () => {
@@ -188,7 +188,7 @@ describe('비밀번호 재설정 화면', () => {
 
       await act(async () => button('비밀번호 바꾸기')?.click());
 
-      expect(container.querySelector('[role="alert"]')?.textContent).toContain('이 링크로는 비밀번호를 바꿀 수 없어요');
+      expect(container.querySelector('[role="alert"]')?.textContent).toContain('유효하지 않거나 만료된 링크예요');
 
       await act(async () => button('재설정 링크 다시 받기')?.click());
 

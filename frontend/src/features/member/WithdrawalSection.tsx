@@ -20,7 +20,7 @@ export function WithdrawalSection() {
 
   return (
     <PageCard title="회원 탈퇴">
-      <p className="text-sm text-ink-muted">탈퇴하면 계정 정보가 지워지고 되돌릴 수 없어요.</p>
+      <p className="text-sm text-ink-muted">탈퇴하면 계정 정보가 삭제되며 복구할 수 없어요.</p>
       <div>
         <Button variant="danger-outline" onClick={() => setOpen(true)}>
           회원 탈퇴
@@ -89,14 +89,14 @@ function WithdrawalDialog({ onClose }: { onClose: () => void }) {
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Notice tone="warning" title="탈퇴하기 전에 확인해 주세요">
           <ul className="list-disc pl-5">
-            <li>닉네임과 이메일이 지워지고 되돌릴 수 없어요.</li>
-            <li>합류한 베이스캠프에서 나가요. 캠프 리더라면 그 베이스캠프는 취소돼요.</li>
-            <li>결제를 기다리는 행사 신청은 취소돼요.</li>
+            <li>닉네임과 이메일이 삭제되며 복구할 수 없어요.</li>
+            <li>참여 중인 베이스캠프에서 나가게 되며, 캠프 리더라면 해당 베이스캠프는 취소돼요.</li>
+            <li>결제 대기 중인 공식 행사 신청은 취소돼요.</li>
           </ul>
         </Notice>
         {formError && (
           <div role="alert">
-            <ErrorNotice title="탈퇴하지 못했어요" error={formError.cause} />
+            <ErrorNotice title="탈퇴를 처리하지 못했어요" error={formError.cause} />
           </div>
         )}
         <PasswordField

@@ -119,10 +119,9 @@ export function VerifyEmailPage() {
 
   if (session.me.status !== 'UNVERIFIED') {
     return (
-      <AuthLayout title="이미 인증을 마쳤어요" footer={footer}>
-        <p className="text-ink-muted">이메일 인증은 한 번만 하면 돼요.</p>
+      <AuthLayout title="이미 이메일 인증을 완료했어요" footer={footer}>
         <Link to={next ?? '/map'} replace className={`${buttonClassName('primary')} w-full`}>
-          {next ? '보던 화면으로 돌아가기' : '지도로 가기'}
+          {next ? '이전 화면으로 돌아가기' : '지도로 가기'}
         </Link>
       </AuthLayout>
     );
@@ -135,8 +134,8 @@ export function VerifyEmailPage() {
       title="이메일 인증"
       description={
         <p>
-          <span className="font-mono break-all text-ink">{session.me.email}</span>로 보낸 6자리 코드를 입력해 주세요.
-          코드는 10분 동안 쓸 수 있고 5번 틀리면 새 코드를 받아야 해요.
+          <span className="font-mono break-all text-ink">{session.me.email}</span>로 보낸 6자리 인증 코드를 입력해
+          주세요. (유효시간 10분 · 5회 오류 시 재발급 필요)
         </p>
       }
       footer={footer}
@@ -157,7 +156,7 @@ export function VerifyEmailPage() {
         />
         {formError && (
           <div role="alert">
-            <ErrorNotice title="인증하지 못했어요" error={formError.cause} />
+            <ErrorNotice title="인증에 실패했어요" error={formError.cause} />
           </div>
         )}
         <Button type="submit" fullWidth loading={submitting}>

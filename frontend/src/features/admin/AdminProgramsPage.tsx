@@ -28,10 +28,10 @@ type ProgramFilter = ProgramListStatus | 'ALL';
 const itemKey = (item: ProgramSummary) => item.programId;
 
 const EMPTY_COPY: Record<ProgramFilter, { title: string; description: string }> = {
-  ALL: { title: '등록한 행사가 없어요', description: '행사 등록을 눌러 첫 행사를 만들어 주세요.' },
-  UPCOMING: { title: '신청 예정인 행사가 없어요', description: '신청이 열리기를 기다리는 행사가 여기에 모여요.' },
-  OPEN: { title: '신청을 받는 행사가 없어요', description: '신청을 받는 중인 행사가 여기에 모여요.' },
-  CLOSED: { title: '마감한 행사가 없어요', description: '신청 기간이 끝난 행사가 여기에 모여요.' },
+  ALL: { title: '등록한 행사가 없어요', description: '행사 등록 버튼으로 첫 행사를 만들어 보세요.' },
+  UPCOMING: { title: '신청 예정인 행사가 없어요', description: '모집 시작 전인 행사가 표시돼요.' },
+  OPEN: { title: '모집 중인 행사가 없어요', description: '현재 참가 신청을 받는 행사가 표시돼요.' },
+  CLOSED: { title: '마감된 행사가 없어요', description: '신청 기간이 지난 행사가 표시돼요.' },
 };
 
 function fetchPrograms(
@@ -53,7 +53,7 @@ function canceledNotice(canceledApplicationCount: number): string {
     : `행사를 취소했어요. 신청 ${canceledApplicationCount}건도 함께 취소했어요.`;
 }
 
-const ALREADY_CANCELED_NOTICE = '이미 취소된 행사예요. 다른 곳에서 먼저 취소됐어요.';
+const ALREADY_CANCELED_NOTICE = '이미 취소된 행사예요.';
 
 type CancelCheck = { canceled: boolean; notice: string };
 
@@ -61,12 +61,12 @@ async function checkCanceled(programId: number): Promise<CancelCheck> {
   try {
     const program = await getProgram(programId);
     return program.status === 'CANCELED'
-      ? { canceled: true, notice: '행사가 취소된 것을 확인했어요. 신청도 함께 취소됐어요.' }
-      : { canceled: false, notice: '행사는 아직 취소되지 않았어요. 필요하면 다시 취소해 주세요.' };
+      ? { canceled: true, notice: '행사 취소를 확인했어요. 접수된 신청도 함께 취소됐어요.' }
+      : { canceled: false, notice: '행사가 아직 취소되지 않았어요. 필요하면 다시 취소해 주세요.' };
   } catch {
     return {
       canceled: false,
-      notice: '행사가 취소됐는지 확인하지 못했어요. 목록은 그대로 두었어요. 행사 상세에서 상태를 확인해 주세요.',
+      notice: '행사가 취소됐는지 확인하지 못했어요. 목록은 그대로 유지했으니 행사 상세에서 상태를 확인해 주세요.',
     };
   }
 }
@@ -214,7 +214,7 @@ function ProgramCard({ item, onCanceled, onUnsettled }: ProgramCardProps) {
           수정
         </Link>
         {ended ? (
-          <p className="text-sm text-ink-muted">끝난 행사는 취소할 수 없어요.</p>
+          <p className="text-sm text-ink-muted">종료된 행사는 취소할 수 없어요.</p>
         ) : (
           <Button variant="danger" aria-label={`${item.title} 행사 취소`} onClick={() => setConfirming(true)}>
             행사 취소
@@ -288,13 +288,13 @@ function CancelDialog({ program, onClose, onCanceled }: CancelDialogProps) {
               <ErrorNotice
                 title={UNCONFIRMED_TITLE}
                 error={error}
-                message="행사가 취소됐는지 확인하지 못했어요. 닫으면 이 행사가 취소됐는지만 확인해서 알려 드려요. 목록은 그대로 둬요."
+                message="행사가 취소됐는지 확인하지 못했어요. 닫으면 취소 여부를 확인해 알려 드려요."
               />
             ) : alreadyCanceled ? (
               <ErrorNotice
                 title="이미 취소된 행사예요"
                 error={error}
-                message="앞서 보낸 취소가 처리됐거나 다른 관리자가 먼저 취소했어요. 닫으면 목록에서 빠져요."
+                message="이전 요청이 이미 처리됐거나 다른 관리자가 먼저 취소했어요. 닫으면 목록에서 제외돼요."
               />
             ) : (
               <ErrorNotice title="행사를 취소하지 못했어요" error={error} />
@@ -303,7 +303,7 @@ function CancelDialog({ program, onClose, onCanceled }: CancelDialogProps) {
         )}
         <div className="flex flex-wrap justify-end gap-2">
           <Button variant="secondary" disabled={busy} onClick={() => onClose(outcome())}>
-            {failed ? '닫기' : '아니요, 그대로 둘게요'}
+            {failed ? '닫기' : '취소'}
           </Button>
           <Button variant="danger" loading={busy} onClick={() => void confirm()}>
             행사 취소하기
