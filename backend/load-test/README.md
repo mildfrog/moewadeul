@@ -13,7 +13,7 @@
 
 ### 실행
 
-스크립트는 두 단계로 넣는다.
+스크립트는 세 단계로 넣는다.
 
 | 단계 | 파일 | 넣는 것 | 전제 |
 |---|---|---|---|
@@ -21,7 +21,7 @@
 | `extra` | `seed/seed-extra.sql` | 관리자 5명, 배경 회원, 베이스캠프·멤버·합류 신청, 동행 후기, 회원 신고·제재, 감사 로그, 로그인 기록, 행사 신청·결제, 커뮤니티 글·댓글·좋아요·이미지, 추억 기록·사진·좋아요 | `base`를 마친 DB. `basecamp`, `member_report`, `sanction`, `community_post`, `memory` 중 하나라도 행이 있으면 멈춘다 |
 | `sweep` | `seed/seed-sweep.sql` | 알림, 아웃박스, 장소 후기와 사진, 박지 확인과 신고, 커뮤니티·기록 신고, 혼자 가는 일정, 빈자리 알림, 알림 설정, 인증·재설정 기록, 공원 경계, 탈퇴·미인증 회원 | `extra`를 마친 DB. `spot_review`에 행이 있으면 멈춘다 |
 
-두 단계 모두 조건이 맞지 않으면 아무것도 넣지 않고 오류로 멈춘다. 그래서 개발용 DB나 운영 DB에 잘못 돌려도 데이터가 섞이지 않는다. 로그인 기록, 행사, 감사 로그는 k6 스크립트도 남기므로 `extra`는 이 세 테이블이 비어 있는지 보지 않는다. 그래서 `base`만 넣고 k6를 돌린 볼륨에도 `SEED_STAGES=extra`로 두 번째 단계만 더할 수 있다.
+세 단계 모두 조건이 맞지 않으면 아무것도 넣지 않고 오류로 멈춘다. 그래서 개발용 DB나 운영 DB에 잘못 돌려도 데이터가 섞이지 않는다. 로그인 기록, 행사, 감사 로그는 k6 스크립트도 남기므로 `extra`는 이 세 테이블이 비어 있는지 보지 않는다. 그래서 `base`만 넣고 k6를 돌린 볼륨에도 `SEED_STAGES=extra`로 두 번째 단계만 더할 수 있다.
 
 ```bash
 # 로컬: 개발용 DB와 섞이지 않게 빈 데이터베이스를 따로 만든다
@@ -48,7 +48,7 @@ SPOT_COUNT=20000 MEMBER_COUNT=200 EXTRA_MEMBER_COUNT=10000 BASECAMP_COUNT=5000 A
 | `SEED_DB` | 컨테이너의 `MYSQL_DATABASE` | 데이터를 넣을 데이터베이스 |
 | `ENV_FILE` | compose 기본값 | `docker compose --env-file`에 넘길 파일 |
 | `COMPOSE_FILE` | 현재 폴더의 compose 파일 | docker compose가 직접 읽는 표준 변수 |
-| `SEED_STAGES` | `base,extra` | 돌릴 단계. `base`, `extra`, `base,extra` 중 하나 |
+| `SEED_STAGES` | `base,extra` | 돌릴 단계. `base`, `extra`, `sweep`을 차례대로 이은 값(`base`, `extra`, `base,extra`, `sweep`, `extra,sweep`, `base,extra,sweep`) 중 하나 |
 | `EXTRA_MEMBER_COUNT` | 200000 | 배경 회원 수. 10,000~1,000,000 |
 | `BASECAMP_COUNT` | 300000 | 베이스캠프 수. 1,000 이상 |
 | `AUDIT_LOG_COUNT` | 100000 | 관리자 감사 로그 수 |
@@ -139,7 +139,7 @@ SPOT_COUNT=20000 MEMBER_COUNT=200 EXTRA_MEMBER_COUNT=10000 BASECAMP_COUNT=5000 A
 **감사 로그·로그인 기록·행사**
 - 감사 로그 `AUDIT_LOG_COUNT`건: 관리자 6명이 지난 1년 동안 남긴 조치 14종을 고르게 흩뿌린다.
 - 로그인 기록 `LOGIN_HISTORY_COUNT`건: 배경 회원 이메일로만 남긴다. 98%는 최근 3개월 안(1시간 전보다 이전), 2%는 3~6개월 전이고, 성공 90%다.
-  - 로그인할 때 서버는 입력한 이메일의 최근 실패를 센다. 그런데 `attempted_email`에 인덱스가 없어서, 이 표가 클수록 모든 로그인이 느려진다. 그래서 k6의 행사 오픈 스크립트처럼 로그인이 많은 측정은 이 점을 조건에 적는다.
+  - 로그인할 때 서버는 입력한 이메일의 최근 실패와 마지막 성공을 센다. V43이 이 조회를 위해 `(attempted_email, success, created_at)` 인덱스를 만들었다. 인덱스가 없던 때는 기록 300만 건에서 로그인 한 번이 0.4~0.7초 걸렸다(V43 주석).
 - 지난 행사 `PROGRAM_COUNT`개(정원 300, 참가비 3만 원)에 신청을 50~299건씩 둔다(확정 80%와 결제 완료, 본인 취소 10%, 결제 만료 10%). 다가오는 행사 하나에는 결제 대기 20건이 있다. 기한이 24시간 뒤라서, 1분마다 도는 결제 만료 작업이 그동안 고를 행은 없다.
 
 **커뮤니티**
@@ -162,7 +162,7 @@ SPOT_COUNT=20000 MEMBER_COUNT=200 EXTRA_MEMBER_COUNT=10000 BASECAMP_COUNT=5000 A
 
 | 표 | 행 수 | 이유 |
 |---|---|---|
-| `notification` | 200만 | 회원 20만 × 평균 10건. 지우는 작업이 없어 계속 자란다. 첫 신청 회원에게 2만 건 |
+| `notification` | 200만 | 회원 20만 × 평균 10건. 첫 신청 회원에게 2만 건. 이 시드를 만들 때는 지우는 작업이 없었다. 지금은 읽은 지 90일이 지난 알림을 매일 04:35(한국 시간)에 지우는데(`NotificationRetentionService`), 시드는 읽은 시각을 최대 300일 전까지 넣으므로 첫 정리가 하루치보다 훨씬 많이 지운다 |
 | `outbox_event` | 50만 | 7일 보관, 하루 7만 건 가정. 지난 하루치 2만 5천 건을 정리 작업이 지운다 |
 | `spot_review`, `review_image` | 50만, 20만 | 장소 5%에 평균 10건, 붐비는 장소 하나에 5천 건 |
 | `bakji_confirmation`, `bakji_report` | 약 20만, 10만 | 신고 내용은 처리 뒤 1년 보관이라 1년 넘은 행은 이미 비웠고 하루치만 남긴다 |
@@ -208,8 +208,8 @@ k6 run -e BASE_URL=http://앱-서버-사설-IP --summary-trend-stats "avg,med,p(
 
 | 환경 변수 | 기본값 | 스크립트 | 뜻 |
 |---|---|---|---|
-| `BASE_URL` | `http://localhost:8080` | 둘 다 | 앱 주소 |
-| `LOADTEST_PASSWORD` | 검증용 가짜 비밀번호 | 둘 다 | 검증 회원 비밀번호. 1절 데이터를 썼다면 바꾸지 않는다 |
+| `BASE_URL` | `http://localhost:8080` | 모두 | 앱 주소 |
+| `LOADTEST_PASSWORD` | 검증용 가짜 비밀번호 | `program-open.js` | 검증 회원 비밀번호. 1절 데이터를 썼다면 바꾸지 않는다 |
 | `VUS` | 300 | `map-area.js` | 동시 사용자 수 |
 | `DURATION` | `10m` | `map-area.js` | 측정 시간 |
 | `HIDE_CLOSED_RATIO` | 0 | `map-area.js` | 휴장 제외를 켠 요청의 비율(0~1). 화면 기본값은 꺼져 있어서 0이면 예전 측정과 같은 요청만 보낸다 |
@@ -276,12 +276,12 @@ k6 run -e BASE_URL=http://앱-서버-사설-IP --summary-trend-stats "avg,med,p(
    - Grafana Alloy로 커넥션 풀·JVM 지표를 볼지 정한다. 보지 않으면 alloy 서비스를 빼고 띄운다.
 3. **데이터**: 앱이 뜨고 마이그레이션이 끝나면 1절의 검증 서버 예시로 장소 100만 건과 신청 회원 2,000명을 넣는다.
 4. **측정**: 시나리오마다 워밍업 1회 뒤 3회 측정하고 중앙값을 쓴다. 지도 조회와 행사 신청은 따로 돌린다.
-5. **측정 조건 기록**: 데이터 규모, 인스턴스 사양(앱·k6), 커넥션 풀 크기(지금은 Hikari 기본값 10), 동시 사용자 수, 측정 시간, 측정 중 돈 스케줄 작업.
+5. **측정 조건 기록**: 데이터 규모, 인스턴스 사양(앱·k6), 커넥션 풀 크기(지금은 `application-prod.yml`의 `spring.datasource.hikari.maximum-pool-size` 10), 동시 사용자 수, 측정 시간, 측정 중 돈 스케줄 작업.
 6. **정리**: EC2 두 대와 볼륨을 지우고, 남은 자원이 없는지 콘솔과 AWS Budgets로 확인한다.
 
 ## 4. 전체 API·쿼리 측정 (`sweep/`)
 
-장부의 API 118개와 쿼리 238개를 한 번에 재는 도구다. 시드 세 단계를 넣은 데이터에서 API마다 혼자 재기와 50 VU 재기를 하고, 쿼리 다이제스트와 실행계획을 모은다. 절차는 `sweep/README.md`에 있다.
+장부에 적은 API와 쿼리 전부(2026-11-06 장부 기준 API 118개, 쿼리 238개)를 한 번에 재는 도구다. 시드 세 단계를 넣은 데이터에서 API마다 혼자 재기와 50 VU 재기를 하고, 쿼리 다이제스트와 실행계획을 모은다. 절차는 `sweep/README.md`에 있다.
 
 ## 5. 배포 측정 (`deploy/`)
 
