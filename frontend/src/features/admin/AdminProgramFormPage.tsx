@@ -96,7 +96,7 @@ function EditLoader({ programId }: { programId: number }) {
       <EmptyState
         framed
         title="취소한 행사는 수정할 수 없어요"
-        description="이미 취소된 행사라서 내용을 바꿀 수 없어요."
+        description="이미 취소된 행사는 내용을 수정할 수 없어요."
         action={<ListLink />}
       />
     );
@@ -111,7 +111,7 @@ type SubmitFailure = { message: string; error: unknown; unconfirmed: boolean };
 
 const UNCONFIRMED_MESSAGES: Record<ProgramFormMode, string> = {
   create:
-    '행사가 등록됐는지 확인하지 못했어요. 내용을 바꾸지 않고 다시 등록하면 행사는 하나만 만들어져요. 내용을 바꾸려면 행사 목록에서 먼저 확인해 주세요.',
+    '행사가 등록됐는지 확인하지 못했어요. 내용을 수정하지 않고 다시 시도하면 중복 등록되지 않아요. 내용을 고치려면 먼저 행사 목록에서 등록 여부를 확인해 주세요.',
   edit: '수정한 내용이 저장됐는지 확인하지 못했어요. 행사 목록에서 확인한 뒤 필요하면 다시 저장해 주세요.',
 };
 
@@ -241,9 +241,7 @@ function ProgramForm(props: ProgramFormProps) {
           label="정원 (명)"
           inputMode="numeric"
           autoComplete="off"
-          hint={
-            isCreate ? undefined : '신청이 시작됐거나 신청이 들어온 행사는 정원을 줄일 수 없어요. 늘리는 건 괜찮아요.'
-          }
+          hint={isCreate ? undefined : '신청이 시작됐거나 신청자가 있는 행사는 정원을 늘릴 수만 있고 줄일 수 없어요.'}
           {...textProps('capacity')}
         />
         <TextField
@@ -259,8 +257,8 @@ function ProgramForm(props: ProgramFormProps) {
           autoComplete="off"
           hint={
             isCreate
-              ? '신청한 뒤 결제할 수 있는 시간이에요. 1~1440분이고, 비우면 15분이에요.'
-              : '신청한 뒤 결제할 수 있는 시간이에요. 1~1440분 사이로 적어 주세요.'
+              ? '신청 후 결제를 완료해야 하는 시간이에요. 1~1440분 사이로 입력하며, 비워 두면 기본 15분으로 설정돼요.'
+              : '신청 후 결제를 완료해야 하는 시간이에요. 1~1440분 사이로 입력해 주세요.'
           }
           {...textProps('paymentDeadlineMinutes')}
         />

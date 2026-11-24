@@ -128,13 +128,13 @@ describe('이메일 인증 화면', () => {
     expect(window.location.pathname).toBe('/verify-email');
   });
 
-  it('서버가 실패하면 인증하지 못했다는 오류가 보인다', async () => {
+  it('서버가 실패하면 인증에 실패했다는 오류가 보인다', async () => {
     vi.mocked(verifyEmail).mockRejectedValue(new ApiError(500, 'INTERNAL_ERROR', null));
     await open();
 
     await submitCode('123456');
 
-    expect(container.querySelector('[role="alert"]')?.textContent).toContain('인증하지 못했어요');
+    expect(container.querySelector('[role="alert"]')?.textContent).toContain('인증에 실패했어요');
   });
 
   it('코드를 다시 받으면 안내가 보이고 버튼이 60초 동안 잠긴다', async () => {
@@ -172,7 +172,7 @@ describe('이메일 인증 화면', () => {
 
     await open();
 
-    expect(container.querySelector('h1')?.textContent).toBe('이미 인증을 마쳤어요');
+    expect(container.querySelector('h1')?.textContent).toBe('이미 이메일 인증을 완료했어요');
     expect(codeInput()).toBeNull();
     const link = [...container.querySelectorAll('a')].find((element) => element.textContent === '지도로 가기');
     expect(link?.getAttribute('href')).toBe('/map');

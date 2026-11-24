@@ -141,7 +141,7 @@ export function SignupPage() {
   return (
     <AuthLayout
       title="회원가입"
-      description="가입하면 이메일로 인증 코드를 보내요."
+      description="가입 후 이메일 인증을 진행해요."
       footer={
         <>
           <span>이미 계정이 있나요?</span>
@@ -157,7 +157,7 @@ export function SignupPage() {
           label="비밀번호"
           name="password"
           autoComplete="new-password"
-          hint="10~64자로, 영문·숫자·특수문자를 하나 이상씩 넣어 주세요. 공백은 쓸 수 없어요."
+          hint="영문·숫자·특수문자 포함 10~64자 (공백 불가)"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           error={fieldErrors.password}
@@ -176,7 +176,7 @@ export function SignupPage() {
           type="text"
           name="nickname"
           autoComplete="nickname"
-          hint="2~20자로 정해 주세요. 앞뒤 공백과 연속된 공백은 쓸 수 없어요."
+          hint="2~20자 (앞뒤·연속 공백 불가)"
           value={nickname}
           onChange={(event) => setNickname(event.target.value)}
           error={fieldErrors.nickname}
@@ -190,11 +190,11 @@ export function SignupPage() {
         />
         {formError && (
           <div role="alert">
-            <ErrorNotice title="가입하지 못했어요" error={formError.message} traceId={formError.traceId} />
+            <ErrorNotice title="가입에 실패했어요" error={formError.message} traceId={formError.traceId} />
           </div>
         )}
         <p className="text-sm text-ink-muted">
-          가입하면{' '}
+          가입 시{' '}
           <Link to="/terms" className={NOTICE_LINK_CLASS}>
             이용약관
           </Link>
@@ -202,7 +202,7 @@ export function SignupPage() {
           <Link to="/privacy" className={NOTICE_LINK_CLASS}>
             개인정보 처리방침
           </Link>
-          에 동의하게 돼요.
+          에 동의한 것으로 간주해요.
         </p>
         <Button type="submit" fullWidth loading={submitting}>
           가입하기

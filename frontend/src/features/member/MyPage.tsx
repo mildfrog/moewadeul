@@ -45,7 +45,7 @@ function ShortcutAside({ me, onLogout }: { me: Me; onLogout: () => void }) {
     { to: '/me/program-applications', label: '내 행사 신청' },
     { to: '/me/companion-reviews', label: '동행 후기' },
     ...(me.role === 'ADMIN' ? [{ to: '/admin/reports', label: '관리자' }] : []),
-    { to: `/members/${me.memberId}`, label: '다른 회원에게 보이는 내 프로필' },
+    { to: `/members/${me.memberId}`, label: '내 공개 프로필' },
   ];
   return (
     <BoardSection title="바로 가기">
@@ -69,7 +69,7 @@ function AccountCard({ me }: { me: Me }) {
     <BoardSection title="계정">
       <dl className="flex flex-col">
         <BoardRow label="닉네임" value={me.nickname} />
-        <BoardRow label="이메일 · 나만 볼 수 있어요" value={me.email} />
+        <BoardRow label="이메일 (비공개)" value={me.email} />
       </dl>
       {me.status === 'UNVERIFIED' && (
         <div className="p-4">
@@ -130,7 +130,7 @@ function TrustCard({ me }: { me: Me }) {
           me.identityVerified ? (
             <MemberBoardTag>
               <Icon name="check" size={16} />
-              본인확인됨
+              본인확인 완료
             </MemberBoardTag>
           ) : (
             <Link to="/identity-verification" className={MEMBER_BOARD_LINK_CLASS}>
@@ -141,7 +141,7 @@ function TrustCard({ me }: { me: Me }) {
       />
       {!me.identityVerified && (
         <p className="text-sm text-ink-muted">
-          본인확인을 마치면 베이스캠프를 열거나 합류할 수 있어요. 성인만 할 수 있고 출생연도와 성별만 확인해요.
+          본인확인을 마친 성인만 베이스캠프를 열거나 합류할 수 있어요. 확인 시 출생연도와 성별 정보만 사용해요.
         </p>
       )}
       {error && (
@@ -155,7 +155,7 @@ function TrustCard({ me }: { me: Me }) {
         </div>
       )}
       {next && (
-        <BoardSection title={`신뢰 단계 ${next.level}까지`}>
+        <BoardSection title={`신뢰 단계 ${next.level} 달성 조건`}>
           <dl className="flex flex-col">
             <ProgressRow
               label="완료한 동행"
@@ -163,7 +163,7 @@ function TrustCard({ me }: { me: Me }) {
               value={`${next.completedCompanions.current ?? 0} / ${next.completedCompanions.required}회`}
             />
             <ProgressRow
-              label={'"다시 동행하고 싶어요"'}
+              label="재동행 희망률"
               ratio={next.rejoinRate.current === null ? 0 : next.rejoinRate.current / next.rejoinRate.required}
               value={
                 next.rejoinRate.current === null
@@ -172,10 +172,10 @@ function TrustCard({ me }: { me: Me }) {
               }
             />
             <ProgressRow
-              label="최근 180일 출발 직전 나가기"
+              label="최근 180일 출발 직전 취소"
               value={`${next.recentEarlyLeaves.current} / ${next.recentEarlyLeaves.limit}회 미만`}
             />
-            <ProgressRow label="최근 180일 확정 제재" value={next.noRecentSanction ? '없음' : '있음'} />
+            <ProgressRow label="최근 180일 제재 이력" value={next.noRecentSanction ? '없음' : '있음'} />
           </dl>
         </BoardSection>
       )}

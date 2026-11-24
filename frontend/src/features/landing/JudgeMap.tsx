@@ -129,11 +129,13 @@ export function JudgeMap() {
           aria-live="polite"
           className={`mt-2.5 rounded-xl px-3 py-2 font-semibold ${warned ? 'bg-warning-soft text-warning' : 'bg-accent-soft text-accent'}`}
         >
-          {warned ? '공원 경계 안이에요. 야영이 금지된 곳일 수 있어요' : '공원 경계 밖이에요. 경고 없이 등록돼요'}
+          {warned ? '자연공원 구역이에요. 야영이 금지된 곳일 수 있어요' : '공원 경계 밖이에요. 주의 표시 없이 등록돼요'}
         </p>
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
           <span className="text-[0.9375rem] text-ink-muted">
-            {warned ? '경고가 붙은 박지로는 베이스캠프를 열 수 없어요' : '이 자리로 베이스캠프를 열 수 있어요'}
+            {warned
+              ? '공원 구역 주의 표시가 있는 박지에서는 베이스캠프를 열 수 없어요'
+              : '이 박지에서 베이스캠프를 열 수 있어요'}
           </span>
           <span
             aria-hidden="true"

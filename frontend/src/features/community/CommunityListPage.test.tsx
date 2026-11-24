@@ -140,7 +140,7 @@ describe('커뮤니티 글 목록 화면', () => {
     await open();
 
     expect(container.querySelector('[role="alert"]')?.textContent).toContain('글을 불러오지 못했어요');
-    expect(container.textContent).toContain('일시적인 문제가 생겼어요');
+    expect(container.textContent).toContain('일시적인 오류가 발생했어요');
     expect(container.textContent).toContain('문의 번호 trace-9');
     expect(container.textContent).not.toContain('아직 올라온 글이 없어요');
 
@@ -217,7 +217,7 @@ describe('커뮤니티 글 목록 화면', () => {
 
     expect(window.location.search).toBe('?searchType=TITLE_CONTENT&keyword=%ED%85%90%ED%8A%B8');
     expect(lastFilter()).toMatchObject({ keyword: '텐트', searchType: 'TITLE_CONTENT' });
-    expect(container.textContent).toContain('최근 글 1만 개 안에서 찾았어요.');
+    expect(container.textContent).toContain('최근 게시글 기준으로 검색했어요.');
   });
 
   it('검색 결과가 없으면 안내하고 검색어 지우기를 누르면 전체 글을 다시 불러온다', async () => {
@@ -263,7 +263,7 @@ describe('커뮤니티 글 목록 화면', () => {
     await open();
 
     expect(button('글쓰기')?.disabled).toBe(true);
-    expect(container.textContent).toContain('이메일 인증을 마치면 쓸 수 있어요');
+    expect(container.textContent).toContain('이메일 인증을 마치면 글을 쓸 수 있어요.');
     expect(container.querySelector('a[href="/community/new"]')).toBeNull();
   });
 });

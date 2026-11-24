@@ -110,7 +110,7 @@ describe('기록 상세 화면', () => {
     vi.restoreAllMocks();
   });
 
-  it('다른 사람의 공개 기록은 장소 이름, 글쓴이, 방문일, 대략 위치, 글, 사진을 보여 준다', async () => {
+  it('다른 사람의 공개 기록은 장소 이름, 글쓴이, 방문일, 대략적인 위치, 글, 사진을 보여 준다', async () => {
     await open();
 
     expect(container.querySelector('h1')?.textContent).toBe('대둔산 박지');
@@ -119,7 +119,7 @@ describe('기록 상세 화면', () => {
     expect(container.textContent).toContain('1박');
     expect(container.textContent).toContain('공개');
     expect(container.querySelector('a[href="/spots/12"]')?.textContent).toContain('장소 보기');
-    expect(container.textContent).toContain('다녀온 곳 (대략 위치)');
+    expect(container.textContent).toContain('다녀온 곳 (대략적인 위치)');
     expect(container.textContent).toContain('대전 서구');
     expect(container.textContent).toContain('별이 정말 많았어요.');
     const photos = [...container.querySelectorAll('img')].map((image) => image.getAttribute('alt'));
@@ -133,7 +133,7 @@ describe('기록 상세 화면', () => {
     await open();
 
     expect(container.querySelector('h1')?.textContent).toBe('10월 3일 (토) 기록');
-    expect(container.textContent).toContain('사진도 글도 없는 기록이에요.');
+    expect(container.textContent).toContain('등록된 글이나 사진이 없어요.');
     expect(container.querySelector('a[href="/spots/12"]')).toBeNull();
   });
 
@@ -144,7 +144,7 @@ describe('기록 상세 화면', () => {
 
     expect(container.querySelector('h1')?.textContent).toBe('기록을 찾을 수 없어요');
     expect(container.textContent).toContain('삭제됐거나 볼 수 없는 기록이에요');
-    expect(container.textContent).toContain('나만 보기 기록은 남긴 사람만 열 수 있어요.');
+    expect(container.textContent).toContain('비공개 기록은 작성자만 볼 수 있어요.');
   });
 
   it('불러오지 못하면 오류 문구를 보여 주고 다시 불러오기를 누르면 기록이 나온다', async () => {
@@ -153,7 +153,7 @@ describe('기록 상세 화면', () => {
     await open();
 
     expect(container.textContent).toContain('기록을 불러오지 못했어요');
-    expect(container.textContent).toContain('일시적인 문제가 생겼어요');
+    expect(container.textContent).toContain('일시적인 오류가 발생했어요');
 
     await act(async () => button('다시 불러오기')?.click());
 
@@ -234,7 +234,7 @@ describe('기록 상세 화면', () => {
     it('정확한 위치와 나만 보기 표시, 수정 링크, 삭제 버튼이 있고 돌아가기는 내 기록 지도다', async () => {
       await open();
 
-      expect(container.textContent).toContain('다녀온 곳 (정확한 위치, 나만 봐요)');
+      expect(container.textContent).toContain('다녀온 곳 (정확한 위치 · 나만 보기)');
       expect(container.textContent).toContain('대전 서구 월평로 1');
       expect(container.textContent).toContain('나만 보기');
       expect(container.querySelector(`a[href="/memories/${MEMORY_ID}/edit"]`)?.textContent).toBe('수정');

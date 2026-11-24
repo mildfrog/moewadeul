@@ -284,7 +284,7 @@ function EditForm({
         onChange={setValues}
         fieldErrors={fieldErrors}
         groundOptions={GROUND_OPTIONS_WITH_KEEP}
-        groundHint="바닥을 바꿀 때만 골라 주세요."
+        groundHint="변경할 때만 선택해 주세요."
         onUseMapCenter={onUseMapCenter}
       />
 

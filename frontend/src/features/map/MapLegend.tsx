@@ -5,9 +5,9 @@ import { DESKTOP_QUERY } from './useIsDesktop';
 
 const OPEN_KEY = 'moewadeul.mapLegendOpen';
 const LEGEND_ITEMS: ReadonlyArray<{ key: string; label: string; swatch: string }> = [
-  { key: 'public', label: '야영장·휴양림', swatch: 'bg-brand' },
+  { key: 'public', label: '야영장·자연휴양림', swatch: 'bg-brand' },
   { key: 'bakji', label: '박지', swatch: 'bg-bakji' },
-  { key: 'warning', label: '공원 경계 경고', swatch: 'bg-surface ring-[2.5px] ring-inset ring-warning-line' },
+  { key: 'warning', label: '공원 구역 주의', swatch: 'bg-surface ring-[2.5px] ring-inset ring-warning-line' },
 ];
 
 function initialOpen(): boolean {

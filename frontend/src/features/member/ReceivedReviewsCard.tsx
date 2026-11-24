@@ -39,7 +39,7 @@ export function ReceivedReviewsCard({ memberId }: { memberId: number }) {
   if (session.me?.status === 'UNVERIFIED') {
     return (
       <PageCard title={REVIEW_TITLE}>
-        <UnverifiedNote action="이 회원이 받은 후기를 읽을 수 있어요." />
+        <UnverifiedNote action="이 회원이 받은 후기를 볼 수 있어요." />
       </PageCard>
     );
   }
@@ -74,7 +74,7 @@ function ReviewList({ memberId }: { memberId: number }) {
         )}
         {state.items.length === 0 && !state.error && (
           <p className="text-base text-ink-muted">
-            아직 받은 후기가 없어요. 함께 다녀온 멤버가 후기를 남기면 여기에 보여요.
+            아직 받은 후기가 없어요. 함께 다녀온 멤버가 후기를 남기면 이곳에 표시돼요.
           </p>
         )}
         {state.items.length > 0 && (
@@ -88,7 +88,7 @@ function ReviewList({ memberId }: { memberId: number }) {
                   <p className="whitespace-pre-line break-words text-base text-ink">{review.comment}</p>
                 )}
                 {review.tags.length === 0 && !review.comment && (
-                  <p className="text-sm text-ink-muted">태그나 한마디 없이 남긴 후기예요.</p>
+                  <p className="text-sm text-ink-muted">작성된 태그나 한마디가 없어요.</p>
                 )}
                 <p className="font-mono text-sm tabular-nums text-ink-muted">{formatKstDateTime(review.createdAt)}</p>
               </li>

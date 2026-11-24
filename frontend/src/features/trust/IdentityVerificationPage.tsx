@@ -67,11 +67,11 @@ export function IdentityVerificationPage() {
       errors.birthYear = `출생연도는 ${MIN_BIRTH_YEAR}~${currentYear}년 사이 4자리 숫자로 입력해 주세요.`;
     }
     if (gender === null) {
-      errors.gender = '성별을 골라 주세요.';
+      errors.gender = '성별을 선택해 주세요.';
     }
     const key = demoIdentityKey.trim();
     if (key === '') {
-      errors.demoIdentityKey = '시연용 식별 문자열을 입력해 주세요.';
+      errors.demoIdentityKey = '시연용 식별자를 입력해 주세요.';
     } else if (key.length > DEMO_KEY_MAX_LENGTH) {
       errors.demoIdentityKey = `${DEMO_KEY_MAX_LENGTH}자 이하로 입력해 주세요.`;
     }
@@ -148,7 +148,7 @@ export function IdentityVerificationPage() {
   if (session.me.status === 'UNVERIFIED') {
     return (
       <AuthLayout title="이메일 인증이 먼저 필요해요" footer={footer}>
-        <p className="text-ink-muted">메일로 받은 인증 코드를 입력하면 바로 본인확인으로 넘어가요.</p>
+        <p className="text-ink-muted">이메일 인증을 마치면 바로 본인확인을 진행할 수 있어요.</p>
         <Link to="/verify-email" className={linkButtonClass}>
           이메일 인증하기
         </Link>
@@ -159,18 +159,18 @@ export function IdentityVerificationPage() {
   if (result !== null || session.me.identityVerified) {
     const adult = result ? result.adult : session.me.trustLevel >= 1;
     return (
-      <AuthLayout title="본인확인을 마쳤어요" footer={footer}>
+      <AuthLayout title="본인확인을 완료했어요" footer={footer}>
         {adult ? (
           <p className="text-ink-muted">
-            성인으로 확인돼 신뢰 단계 1이 됐어요. 이제 베이스캠프를 열거나 합류할 수 있어요.
+            성인으로 확인되어 신뢰 단계 1이 부여됐어요. 이제 베이스캠프를 열거나 합류할 수 있어요.
           </p>
         ) : (
-          <Notice tone="warning" title="아직 성인 기준에 맞지 않아요">
-            <p>만 19세가 되는 해의 1월 1일부터 성인으로 봐요. 그때까지는 신뢰 단계가 0이에요.</p>
+          <Notice tone="warning" title="아직 성인 기준에 해당하지 않아요">
+            <p>만 19세가 되는 해의 1월 1일부터 성인으로 인정되며, 그전까지는 신뢰 단계 0이 유지돼요.</p>
           </Notice>
         )}
         <Link to={next ?? '/map'} replace className={linkButtonClass}>
-          {next ? '보던 화면으로 돌아가기' : '지도로 가기'}
+          {next ? '이전 화면으로 돌아가기' : '지도로 가기'}
         </Link>
       </AuthLayout>
     );
@@ -182,10 +182,10 @@ export function IdentityVerificationPage() {
       description={<p>베이스캠프를 열거나 합류하려면 본인확인이 필요해요.</p>}
       footer={footer}
     >
-      <Notice tone="info" title="시연용 본인확인">
+      <Notice tone="info" title="시연용 본인확인 안내">
         <p>
-          실제 본인확인기관과 연결하지 않고 입력한 내용을 그대로 써요. 식별 문자열이 같으면 같은 사람으로 봐요. 한
-          사람은 계정 하나에서만 본인확인할 수 있어요.
+          실제 본인확인기관과 연동되지 않은 시연용 기능이에요. 동일한 식별자를 입력하면 같은 사람으로 인식하며, 한
+          계정에서만 본인확인을 완료할 수 있어요.
         </p>
       </Notice>
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -209,19 +209,19 @@ export function IdentityVerificationPage() {
           error={fieldErrors.gender}
         />
         <TextField
-          label="시연용 식별 문자열"
+          label="시연용 식별자"
           type="text"
           name="demoIdentityKey"
           autoComplete="off"
           maxLength={DEMO_KEY_MAX_LENGTH}
-          hint="아무 문자열이나 정해 주세요. 다른 계정에서 쓴 문자열은 쓸 수 없어요."
+          hint="임의의 식별자를 입력해 주세요. 다른 계정에서 사용한 값은 쓸 수 없어요."
           value={demoIdentityKey}
           onChange={(event) => setDemoIdentityKey(event.target.value)}
           error={fieldErrors.demoIdentityKey}
         />
         {formError && (
           <div role="alert">
-            <ErrorNotice title="본인확인하지 못했어요" error={formError.cause} />
+            <ErrorNotice title="본인확인에 실패했어요" error={formError.cause} />
           </div>
         )}
         <Button type="submit" fullWidth loading={submitting}>

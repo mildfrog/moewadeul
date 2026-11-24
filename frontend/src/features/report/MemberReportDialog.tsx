@@ -21,7 +21,7 @@ const MEMBER_REPORT_OPTIONS: ReadonlyArray<ChoiceOption<MemberReportType>> = [
   { value: 'HARASSMENT_OR_THREAT', label: '성희롱하거나 위협했어요' },
   { value: 'OFFENSIVE_BEHAVIOR', label: '불쾌한 행동을 했어요' },
   { value: 'FAKE_PROFILE', label: '프로필이 사실과 달라요' },
-  { value: 'ILLEGAL_CAMPING_INDUCEMENT', label: '불법 야영을 부추겼어요' },
+  { value: 'ILLEGAL_CAMPING_INDUCEMENT', label: '불법 야영을 유도하거나 권유했어요' },
 ];
 
 type MemberReportDialogProps = {
@@ -92,7 +92,7 @@ export function MemberReportDialog({
             신고를 접수했어요
           </p>
           <p className="text-sm text-ink-muted">
-            관리자가 검토한 뒤 결과를 알림으로 보내요. 급히 알릴 일이 있으면 <MailLink />
+            관리자 검토 후 결과를 알림으로 보내드려요. 긴급한 문의는 <MailLink />
             으로 메일을 보내 주세요.
           </p>
           <div className="flex justify-end">
@@ -108,7 +108,7 @@ export function MemberReportDialog({
       <div className="flex flex-col gap-4">
         <p className="text-sm text-ink-muted">
           {isReview
-            ? `${targetNickname}님이 내게 쓴 동행 후기를 신고해요.`
+            ? `${targetNickname}님이 나에게 남긴 동행 후기를 신고해요.`
             : '이 베이스캠프에서 함께한 회원만 신고할 수 있어요.'}
         </p>
         {error && (
@@ -135,8 +135,8 @@ export function MemberReportDialog({
           />
         )}
         {type === 'HARASSMENT_OR_THREAT' && (
-          <Notice tone="warning" title="상대가 바로 임시 정지돼요">
-            <p>접수하면 상대 회원은 72시간 동안 이용이 정지돼요. 관리자가 검토한 뒤 정지를 확정하거나 풀어요.</p>
+          <Notice tone="warning" title="상대가 즉시 임시 정지돼요">
+            <p>신고가 접수되면 상대 회원은 72시간 동안 이용이 제한되며, 관리자 검토 후 최종 조치하거나 해제해요.</p>
           </Notice>
         )}
         <TextArea
@@ -151,14 +151,14 @@ export function MemberReportDialog({
         />
         <div className="flex flex-wrap items-start justify-end gap-2">
           <Button variant="secondary" disabled={submitting} onClick={onClose}>
-            닫기
+            취소
           </Button>
           <Button
             variant={type === 'HARASSMENT_OR_THREAT' ? 'danger' : 'primary'}
             loading={submitting}
             disabled={!ready}
             disabledReason={
-              ready ? undefined : isReview ? '신고 내용을 적어 주세요.' : '신고 사유를 고르고 내용을 적어 주세요.'
+              ready ? undefined : isReview ? '신고 내용을 입력해 주세요.' : '신고 사유를 선택하고 내용을 입력해 주세요.'
             }
             onClick={() => void submit()}
           >

@@ -293,12 +293,12 @@ function ReviewForm({
   function validate(): ReviewFieldErrors {
     const errors: ReviewFieldErrors = {};
     if (mode === 'create') {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(visitedDate)) errors.visitedDate = '방문한 날짜를 골라 주세요.';
-      else if (visitedDate > today) errors.visitedDate = '오늘이나 그 전 날짜를 골라 주세요.';
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(visitedDate)) errors.visitedDate = '방문일을 선택해 주세요.';
+      else if (visitedDate > today) errors.visitedDate = '오늘 이전 날짜만 선택할 수 있어요.';
     }
-    if (rating === null) errors.rating = '평점을 골라 주세요.';
-    if (content.trim() === '') errors.content = '후기 내용을 적어 주세요.';
-    else if (content.length > CONTENT_MAX) errors.content = `${CONTENT_MAX.toLocaleString()}자 이하로 적어 주세요.`;
+    if (rating === null) errors.rating = '평점을 선택해 주세요.';
+    if (content.trim() === '') errors.content = '후기 내용을 입력해 주세요.';
+    else if (content.length > CONTENT_MAX) errors.content = `${CONTENT_MAX.toLocaleString()}자 이하로 입력해 주세요.`;
     return errors;
   }
 
@@ -401,9 +401,9 @@ function ReviewForm({
           disabled={uploads.uploading || uploads.failed}
           disabledReason={
             uploads.uploading
-              ? '사진을 올리는 중이에요. 다 올라가면 저장할 수 있어요.'
+              ? '사진을 올리는 중이에요. 완료된 뒤 저장할 수 있어요.'
               : uploads.failed
-                ? '올리지 못한 사진은 다시 올리거나 빼 주세요.'
+                ? '업로드에 실패한 사진은 다시 시도하거나 삭제해 주세요.'
                 : undefined
           }
         >

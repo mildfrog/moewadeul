@@ -29,7 +29,7 @@ export class RouteBoundary extends Component<RouteBoundaryProps, RouteBoundarySt
       <div className="flex min-h-dvh items-center justify-center bg-canvas px-4 py-10">
         <section className="w-full max-w-sm rounded-sheet bg-fill p-6">
           <h1 className="text-xl font-bold tracking-tight">화면을 불러오지 못했어요</h1>
-          <p className="mt-2 text-ink-muted">새 버전이 나왔거나 연결이 끊겼을 수 있어요. 새로고침해 주세요.</p>
+          <p className="mt-2 text-ink-muted">잠시 문제가 생겼거나 연결이 끊겼어요. 새로고침해 주세요.</p>
           <button
             type="button"
             className={`mt-6 ${buttonClassName('primary')}`}

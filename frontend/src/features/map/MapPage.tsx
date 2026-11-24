@@ -290,7 +290,7 @@ export function MapPage({
     clearSearchPin();
     if (result.radiusKm !== undefined) {
       const center = candidate?.position ?? map.getCenter();
-      setRadiusSearch({ center, radiusKm: result.radiusKm, label: candidate?.name ?? '지도 가운데' });
+      setRadiusSearch({ center, radiusKm: result.radiusKm, label: candidate?.name ?? '지도 중심' });
       map.fitBounds(radiusBounds(center, result.radiusKm));
       if (spotId !== undefined) navigate('/map');
     } else {
@@ -438,7 +438,7 @@ export function MapPage({
         >
           <div ref={hostRef} className="absolute inset-0" />
           <p id="map-keyboard-hint" className="sr-only">
-            방향키로 지도를 옮기고 +, - 키로 넓히거나 좁혀요.
+            방향키로 지도를 이동하고 +, - 키로 확대하거나 축소해요.
           </p>
           {!mapFailure && (
             <>
@@ -562,7 +562,7 @@ function totalCount(area: SpotsInView): number {
 
 function regionTitle(label: RegionLabel | null): string {
   if (label?.kind === 'named') return label.name;
-  if (label?.kind === 'wide') return '여러 시·도';
+  if (label?.kind === 'wide') return '넓은 지역';
   return '이 지역';
 }
 
@@ -583,7 +583,7 @@ function NearbyListHeader({ nearby, radius }: { nearby: SpotsNearby; radius: Rad
   const counted = nearby.status === 'ready' || nearby.items.length > 0;
   return (
     <h2 className="truncate text-lg font-extrabold tracking-[-0.02em]">
-      {radius.label}에서 {radius.radiusKm}km 안 장소
+      {radius.label} 반경 {radius.radiusKm}km 장소
       {counted && (
         <span className="tabular-nums">
           {' '}
@@ -602,7 +602,7 @@ function FilterButton({ count, onClick, compact = false }: { count: number; onCl
       type="button"
       onClick={onClick}
       aria-haspopup="dialog"
-      aria-label={active ? `조건 ${count}개 켜짐, 조건 바꾸기` : '조건 고르기'}
+      aria-label={active ? `필터 ${count}개 적용됨, 필터 변경` : '필터 선택'}
       className={[
         'pointer-events-auto inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-control text-sm font-semibold whitespace-nowrap',
         compact ? 'min-w-11 px-2.5 shadow-raise' : 'px-3',
@@ -614,7 +614,7 @@ function FilterButton({ count, onClick, compact = false }: { count: number; onCl
       ].join(' ')}
     >
       <Icon name="sliders" size={18} />
-      {!compact && '조건'}
+      {!compact && '필터'}
       {active && <span className="tabular-nums">{count}</span>}
     </button>
   );
@@ -708,7 +708,7 @@ function SpotList({
       {area.status === 'ready' && area.markers.length === 0 && area.clusters.length > 0 && (
         <div className="px-4 pt-4 lg:px-5">
           <p className="text-sm text-ink-muted">
-            장소가 많아서 지도에 묶어서 보여요. 지도를 확대하면 목록으로 볼 수 있어요.
+            장소가 많아 지도에 묶어 표시했어요. 지도를 확대하면 목록으로 볼 수 있어요.
           </p>
         </div>
       )}
@@ -717,15 +717,18 @@ function SpotList({
         area.markers.length === 0 &&
         area.clusters.length === 0 &&
         (filtered ? (
-          <EmptyState title="조건에 맞는 장소가 없어요" description="조건을 줄이거나 지도를 다른 곳으로 옮겨 주세요." />
+          <EmptyState
+            title="필터에 맞는 장소가 없어요"
+            description="필터를 줄이거나 지도를 다른 지역으로 이동해 주세요."
+          />
         ) : (
-          <EmptyState title="이 지역에는 장소가 없어요" description="지도를 옮기거나 축소해 주세요." />
+          <EmptyState title="이 지역에는 장소가 없어요" description="지도를 이동하거나 축소해 주세요." />
         ))}
 
       {area.markers.length > 0 && (
         <>
           <p className="flex justify-between px-4 pt-1 pb-2 text-[0.8125rem] text-ink-muted lg:px-6">
-            <span>지도 가운데에서 가까운 순</span>
+            <span>지도 중심에서 가까운 순</span>
             <span className="tabular-nums">{area.markers.length}곳</span>
           </p>
           <ul aria-label="이 지역의 장소" className={LIST_BOARD_CLASS}>
@@ -780,13 +783,13 @@ function NearbyList({ nearby, waitingForMap }: { nearby: SpotsNearby; waitingFor
 
       {nearby.status === 'ready' && nearby.items.length === 0 && (
         <EmptyState
-          title="반경 안에 조건에 맞는 장소가 없어요"
-          description="반경 조건을 빼거나 다른 조건을 줄여 주세요."
+          title="반경 내 조건에 맞는 장소가 없어요"
+          description="반경을 넓히거나 다른 필터를 해제해 주세요."
         />
       )}
 
       {nearby.items.length > 0 && (
-        <ul aria-label="반경 안의 장소" className={`${LIST_BOARD_CLASS} mt-3`}>
+        <ul aria-label="반경 내 장소" className={`${LIST_BOARD_CLASS} mt-3`}>
           {nearby.items.map((item, index) => (
             <SpotListRow key={item.spotId} marker={item} number={index + 1} distanceKm={item.distanceKm} />
           ))}

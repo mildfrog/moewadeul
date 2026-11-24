@@ -35,7 +35,7 @@ export function SpotFilterDialog({ initial, onApply, onClose }: SpotFilterDialog
   }
 
   return (
-    <Dialog title="장소 조건" onClose={onClose}>
+    <Dialog title="장소 필터" onClose={onClose}>
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -52,7 +52,6 @@ export function SpotFilterDialog({ initial, onApply, onClose }: SpotFilterDialog
               </ToggleChip>
             ))}
           </div>
-          <p className="text-sm text-ink-muted">고르지 않으면 모든 유형이 보여요.</p>
         </fieldset>
 
         <fieldset className="flex min-w-0 flex-col gap-1">
@@ -68,35 +67,33 @@ export function SpotFilterDialog({ initial, onApply, onClose }: SpotFilterDialog
               </ToggleChip>
             ))}
           </div>
-          <p className="text-sm text-ink-muted">
-            고르면 입지 정보가 있는 공공 야영장만 보여요. 박지와 자연휴양림은 빠져요.
-          </p>
+          <p className="text-sm text-ink-muted">입지 정보는 공공 야영장에만 제공돼요.</p>
         </fieldset>
 
         <fieldset className="flex min-w-0 flex-col">
           <legend className="mb-1 text-sm font-medium text-ink">박지 시설</legend>
           <Checkbox
-            label="식수 있는 박지만"
+            label="식수 있음 (박지)"
             checked={draft.hasWater}
             onChange={(event) => setDraft({ ...draft, hasWater: event.target.checked })}
           />
           <Checkbox
-            label="화장실 있는 박지만"
+            label="화장실 있음 (박지)"
             checked={draft.hasToilet}
             onChange={(event) => setDraft({ ...draft, hasToilet: event.target.checked })}
           />
-          <p className="text-sm text-ink-muted">야영장과 자연휴양림은 이 조건과 상관없이 보여요.</p>
+          <p className="text-sm text-ink-muted">야영장과 자연휴양림은 이 필터의 영향을 받지 않아요.</p>
         </fieldset>
 
         <fieldset className="flex min-w-0 flex-col">
-          <legend className="mb-1 text-sm font-medium text-ink">그 밖의 조건</legend>
+          <legend className="mb-1 text-sm font-medium text-ink">기타</legend>
           <Checkbox
-            label="공원 경계 경고가 있는 곳 빼기"
+            label="공원 구역 주의 제외"
             checked={draft.excludeWarning}
             onChange={(event) => setDraft({ ...draft, excludeWarning: event.target.checked })}
           />
           <Checkbox
-            label="오늘 휴장인 곳 빼기"
+            label="휴장 중인 곳 제외"
             hint="공공데이터의 휴장 정보는 실제와 다를 수 있어요."
             checked={draft.hideClosed}
             onChange={(event) => setDraft({ ...draft, hideClosed: event.target.checked })}

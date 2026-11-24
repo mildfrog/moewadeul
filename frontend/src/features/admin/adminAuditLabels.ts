@@ -96,7 +96,7 @@ const SYNC_JOB_LABELS: Record<SyncJobType, string> = {
   FOREST: '국립 자연휴양림',
   FOREST_STANDARD: '공립·사립 휴양림',
   PARK_BOUNDARY: '공원 경계',
-  BAKJI_REJUDGE: '박지 경고 다시 확인',
+  BAKJI_REJUDGE: '박지 공원 구역 재확인',
 };
 
 const PROGRAM_FIELD_LABELS: Record<string, string> = {
@@ -128,12 +128,12 @@ const CAPACITY_SPEC = { kind: 'number', unit: '명' } as const;
 const DETAIL_FIELDS: ReadonlyMap<string, FieldSpec> = new Map<string, FieldSpec>([
   ['fromStatus', { label: '이전 상태', ...STATUS_SPEC }],
   ['toStatus', { label: '이후 상태', ...STATUS_SPEC }],
-  ['reviewedReportCount', { label: '함께 검토 처리된 신고', kind: 'number', unit: '건' }],
+  ['reviewedReportCount', { label: '함께 처리한 신고', kind: 'number', unit: '건' }],
   ['hideReview', { label: '신고된 후기 숨김', kind: 'flag', yes: '함께 숨김', no: '숨기지 않음' }],
   ['sanctionId', { label: '제재 번호', kind: 'id' }],
   ['sanctionType', { label: '제재 종류', kind: 'text', names: SANCTION_TYPE_LABELS }],
   ['level', { label: '제재 단계', kind: 'number', unit: '단계' }],
-  ['liftedSanctionId', { label: '함께 해제한 제재 번호', kind: 'id' }],
+  ['liftedSanctionId', { label: '함께 해제된 제재', kind: 'id' }],
   ['memberId', { label: '대상 회원 번호', kind: 'id' }],
   ['spotType', { label: '장소 종류', kind: 'text', names: SPOT_TYPE_LABELS }],
   ['jobType', { label: '작업', kind: 'text', names: SYNC_JOB_LABELS }],

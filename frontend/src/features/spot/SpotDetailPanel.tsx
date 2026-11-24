@@ -163,7 +163,7 @@ function DetailContent({
       </header>
 
       <div className="mt-3">
-        <UnverifiedNote action="박지를 확인하고 혼자 가는 일정과 후기를 남길 수 있어요." />
+        <UnverifiedNote action="현장 확인과 혼자 가는 일정, 후기를 남길 수 있어요." />
       </div>
 
       {(publicDetail?.closedNow || warning.warned) && (
@@ -195,7 +195,7 @@ function DetailContent({
             <Button
               variant="secondary"
               disabled
-              disabledReason="공원 경계 경고가 있는 박지에서는 베이스캠프를 열 수 없어요."
+              disabledReason="공원 구역 주의 표시가 있는 박지에서는 베이스캠프를 열 수 없어요."
             >
               이 장소에서 베이스캠프 열기
             </Button>
@@ -216,7 +216,7 @@ function DetailContent({
             이 장소 글 보기
           </Link>
           <Link to={`/community/new?spotId=${detail.spotId}`} className={buttonClassName('secondary')}>
-            이 장소로 글쓰기
+            이 장소 글쓰기
           </Link>
         </div>
       </section>
@@ -225,7 +225,7 @@ function DetailContent({
         <h3 id="spot-memory-title" className={SECTION_TITLE_CLASS}>
           다녀온 기록
         </h3>
-        <p className="mt-1 text-sm text-ink-muted">다녀온 날의 사진과 글을 남겨 두세요. 처음에는 나만 봐요.</p>
+        <p className="mt-1 text-sm text-ink-muted">다녀온 날의 사진과 글을 남겨 보세요. 처음에는 비공개로 저장돼요.</p>
         <div className="mt-2">
           <Link
             to={newMemoryPath({ lat: detail.lat, lng: detail.lng }, detail.spotId)}
@@ -248,7 +248,7 @@ function SummaryTiles({ rating, expectedPeople }: { rating: SpotRating; expected
   const tiles = [
     { label: '평점', value: rating.average === null ? '-' : rating.average.toFixed(1) },
     { label: '후기', value: `${rating.count}개` },
-    { label: next ? `${formatLocalDate(next.date)} 밤` : '예상 인원', value: next ? `${next.count}명` : '-' },
+    { label: next ? `${formatLocalDate(next.date)} 예상` : '예상 인원', value: next ? `${next.count}명` : '-' },
   ];
   return (
     <dl className="mt-5 grid grid-cols-3 gap-2">
@@ -274,10 +274,10 @@ function ClosedNotice({ publicDetail }: { publicDetail: PublicDetail }) {
   }
 
   return (
-    <Notice tone="info" title="지금은 휴장 기간이에요">
+    <Notice tone="info" title="현재 휴장 중이에요">
       <div className="flex flex-col gap-2">
         {period && <p className="tabular-nums">{period}</p>}
-        <p>운영 정보는 공공데이터 기준이라 실제와 다를 수 있어요. 방문 전에 야영장에 확인해 주세요.</p>
+        <p>운영 정보는 공공데이터 기준이므로 방문 전에 야영장에 직접 확인해 주세요.</p>
       </div>
     </Notice>
   );
@@ -310,9 +310,9 @@ function BakjiSection({
             <dd className="text-ink">{SIGNAL_LEVEL_LABELS[bakji.signalLevel]}</dd>
           </>
         )}
-        <dt className="text-ink-muted">확인 횟수</dt>
+        <dt className="text-ink-muted">현장 확인</dt>
         <dd className="tabular-nums text-ink">{confirmationCount}회</dd>
-        <dt className="text-ink-muted">제보한 회원</dt>
+        <dt className="text-ink-muted">제보자</dt>
         <dd className="text-ink">{bakji.reporter.nickname}</dd>
       </dl>
       {children}
@@ -391,11 +391,11 @@ function ExpectedPeopleSection({ expectedPeople }: { expectedPeople: ExpectedPeo
         예상 인원
       </h3>
       {expectedPeople.length === 0 ? (
-        <p className="mt-2 text-sm text-ink-muted">아직 예상 인원이 없어요</p>
+        <p className="mt-2 text-sm text-ink-muted">아직 예정된 인원이 없어요.</p>
       ) : (
         <div className="mt-2 flex flex-col gap-2">
           <p className="text-sm text-ink-muted">
-            확정된 베이스캠프 멤버, 행사 참가자, 혼자 가는 일정을 합쳐 밤마다 센 인원이에요.
+            확정된 베이스캠프, 공식 행사, 개인 일정을 합산한 일별 예상 인원이에요.
           </p>
           <Evidence
             items={expectedPeople.map((day) => ({ label: formatLocalDate(day.date), value: `${day.count}명` }))}
@@ -422,7 +422,7 @@ function WeatherSection({ weather: state }: { weather: SpotWeatherState }) {
           </div>
         )
       ) : weather === null ? (
-        <p className="mt-2 text-sm text-ink-muted">날씨 정보를 불러오지 못했어요</p>
+        <p className="mt-2 text-sm text-ink-muted">날씨 정보를 불러오지 못했어요.</p>
       ) : (
         <div className="mt-2 flex flex-col gap-3">
           <p className="text-sm text-ink-muted">출처 {weather.source}</p>
@@ -464,11 +464,11 @@ function WeatherSection({ weather: state }: { weather: SpotWeatherState }) {
               items={[
                 { label: '일출', value: weather.sun.sunrise },
                 { label: '일몰', value: weather.sun.sunset },
-                { label: '어두워지는 시각', value: weather.sun.civilTwilightEnd },
+                { label: '박명 종료', value: weather.sun.civilTwilightEnd },
               ]}
             />
           ) : (
-            <p className="text-sm text-ink-muted">일출·일몰 정보를 불러오지 못했어요</p>
+            <p className="text-sm text-ink-muted">일출·일몰 정보를 불러오지 못했어요.</p>
           )}
         </div>
       )}

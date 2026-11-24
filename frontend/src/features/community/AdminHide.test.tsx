@@ -123,19 +123,19 @@ describe('공개 글과 댓글의 관리자 숨기기', () => {
     });
   }
 
-  it('관리자에게만 글의 관리자 숨기기 버튼이 보인다', async () => {
+  it('관리자에게만 글의 숨김 처리 버튼이 보인다', async () => {
     role = 'USER';
     await renderPost();
 
-    expect(button('관리자 숨기기')).toBeUndefined();
+    expect(button('숨김 처리')).toBeUndefined();
     expect(button('신고')).toBeDefined();
   });
 
   it('관리자가 글을 숨기면 확인을 거쳐 숨김 API를 부르고 관리자 숨김 목록으로 이동한다', async () => {
     await renderPost();
 
-    await act(async () => button('관리자 숨기기')?.click());
-    expect(text(dialog())).toContain('능선님의 글을 숨겨요.');
+    await act(async () => button('숨김 처리')?.click());
+    expect(text(dialog())).toContain('능선님의 글을 숨기면');
     expect(writes).toEqual([]);
 
     await act(async () => button('숨기기', dialog() ?? container)?.click());
@@ -148,7 +148,7 @@ describe('공개 글과 댓글의 관리자 숨기기', () => {
     hideReply = () => json(409, { code: 'COMMUNITY_INVALID_STATE', message: 'x', traceId: 't' });
     await renderPost();
 
-    await act(async () => button('관리자 숨기기')?.click());
+    await act(async () => button('숨김 처리')?.click());
     await act(async () => button('숨기기', dialog() ?? container)?.click());
 
     expect(text(dialog()?.querySelector('[role="alert"]') ?? null)).toContain('글을 숨기지 못했어요');
@@ -163,7 +163,7 @@ describe('공개 글과 댓글의 관리자 숨기기', () => {
     failNextHide = reply;
     await renderPost();
 
-    await act(async () => button('관리자 숨기기')?.click());
+    await act(async () => button('숨김 처리')?.click());
     await act(async () => button('숨기기', dialog() ?? container)?.click());
 
     const alert = text(dialog()?.querySelector('[role="alert"]') ?? null);
@@ -173,19 +173,19 @@ describe('공개 글과 댓글의 관리자 숨기기', () => {
     expect(window.location.pathname).toBe('/community/5');
   });
 
-  it('관리자에게만 댓글의 관리자 숨기기 버튼이 보인다', async () => {
+  it('관리자에게만 댓글의 숨김 처리 버튼이 보인다', async () => {
     role = 'USER';
     await renderComments();
 
-    expect(button('관리자 숨기기')).toBeUndefined();
+    expect(button('숨김 처리')).toBeUndefined();
   });
 
   it('관리자가 댓글을 숨기면 숨김 API를 부르고 목록을 다시 불러와 복구 위치를 알린다', async () => {
     hideReply = () => json(200, { commentId: 10, status: 'HIDDEN' });
     await renderComments();
 
-    await act(async () => button('관리자 숨기기')?.click());
-    expect(text(dialog())).toContain('능선님의 댓글을 숨겨요.');
+    await act(async () => button('숨김 처리')?.click());
+    expect(text(dialog())).toContain('능선님의 댓글을 숨기면');
     await act(async () => button('숨기기', dialog() ?? container)?.click());
 
     expect(writes).toEqual(['/api/admin/community/comments/10/hide']);

@@ -51,7 +51,7 @@ export function SpotListRow({ marker, number, distanceKm, selected = false, onPr
               meta.label,
               marker.parkWarning && (
                 <StatusText tone="warning" icon="alert">
-                  공원 경계 안일 수 있어요
+                  공원 구역 주의
                 </StatusText>
               ),
               marker.closedNow && (

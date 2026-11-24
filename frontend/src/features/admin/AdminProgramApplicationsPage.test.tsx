@@ -133,7 +133,7 @@ describe('관리자 행사 신청자 목록', () => {
     await mount();
 
     expect(text(container.querySelector('h2'))).toBe('가을 백패킹 데이');
-    expect(text(container.querySelector('h2')?.parentElement ?? null)).toContain('신청 받는 중');
+    expect(text(container.querySelector('h2')?.parentElement ?? null)).toContain('모집 중');
     expect(link('행사 목록으로')?.getAttribute('href')).toBe('/admin/programs');
   });
 
@@ -297,7 +297,7 @@ describe('관리자 행사 신청자 목록', () => {
 
     await mount();
 
-    expect(text(container.querySelector('h2'))).toBe('행사 7번');
+    expect(text(container.querySelector('h2'))).toBe('행사 #7');
     expect(rows()).toHaveLength(1);
   });
 

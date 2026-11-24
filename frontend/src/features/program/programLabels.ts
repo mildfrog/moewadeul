@@ -4,7 +4,7 @@ import type { StatusTone } from '../../components/StatusText';
 
 export const PROGRAM_STATUS_META: Record<ProgramStatus, { label: string; tone: StatusTone }> = {
   UPCOMING: { label: '신청 예정', tone: 'info' },
-  OPEN: { label: '신청 받는 중', tone: 'accent' },
+  OPEN: { label: '모집 중', tone: 'accent' },
   CLOSED: { label: '마감', tone: 'neutral' },
   CANCELED: { label: '행사 취소', tone: 'neutral' },
 };
@@ -27,7 +27,7 @@ export const CANCEL_REASON_LABELS: Record<ProgramCancelReason, string> = {
 export const PROGRAM_FILTERS: ReadonlyArray<{ value: ProgramListStatus | 'ALL'; label: string }> = [
   { value: 'ALL', label: '전체' },
   { value: 'UPCOMING', label: '신청 예정' },
-  { value: 'OPEN', label: '신청 받는 중' },
+  { value: 'OPEN', label: '모집 중' },
   { value: 'CLOSED', label: '마감' },
 ];
 

@@ -16,7 +16,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { key: 'basecamps', label: '베이스캠프', icon: 'tent', needsLogin: false, path: '/basecamps' },
   { key: 'footprints', label: '피드', icon: 'footprints', needsLogin: false, path: '/memories' },
   { key: 'community', label: '커뮤니티', icon: 'chat', needsLogin: false, path: '/community' },
-  { key: 'programs', label: '행사', icon: 'calendar', needsLogin: false, path: '/programs' },
+  { key: 'programs', label: '공식 행사', icon: 'calendar', needsLogin: false, path: '/programs' },
 ];
 
 export function navTarget(item: NavItem, signedIn: boolean): string {

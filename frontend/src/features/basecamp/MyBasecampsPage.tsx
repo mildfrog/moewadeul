@@ -82,7 +82,7 @@ export function MyBasecampsPage() {
             {current.items.length === 0 && !current.error ? (
               <EmptyState
                 framed
-                title={filter === 'ALL' ? '열었거나 합류한 베이스캠프가 없어요' : '해당하는 베이스캠프가 없어요'}
+                title={filter === 'ALL' ? '참여 중인 베이스캠프가 없어요' : '조건에 맞는 베이스캠프가 없어요'}
                 description={
                   filter === 'ALL'
                     ? '같은 날 같은 곳으로 가는 베이스캠프를 찾아 합류 신청을 보낼 수 있어요.'

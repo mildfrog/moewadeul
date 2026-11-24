@@ -56,7 +56,7 @@ export function AdminReviewPhotos({ images, onReload }: AdminReviewPhotosProps) 
       {broken.size > 0 && (
         <div role="alert" className="flex flex-wrap items-center gap-3 text-sm text-ink">
           <p className="min-w-0 flex-1">
-            사진 {broken.size}장을 불러오지 못했어요. 화면을 오래 열어 두면 사진 주소가 만료돼요.
+            사진 {broken.size}장을 불러오지 못했어요. 페이지를 오래 열어 두면 사진 링크가 만료될 수 있어요.
           </p>
           <Button variant="secondary" onClick={reload}>
             다시 불러오기

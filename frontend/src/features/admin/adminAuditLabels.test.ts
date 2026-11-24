@@ -25,7 +25,7 @@ describe('감사 기록 detail 요약', () => {
 
   it('이전과 이후 상태는 한 줄로 합치고 대상에 맞는 이름으로 보인다', () => {
     expect(texts(summarizeAuditDetail({ fromStatus: 'ACTIVE', toStatus: 'ENDED_EARLY' }, 'SANCTION'))).toEqual([
-      '상태: 적용 중 → 일찍 해제',
+      '상태: 적용 중 → 조기 해제',
     ]);
     expect(
       texts(summarizeAuditDetail({ spotType: 'BAKJI', fromStatus: 'ACTIVE', toStatus: 'HIDDEN' }, 'SPOT')),
@@ -71,12 +71,7 @@ describe('감사 기록 detail 요약', () => {
           'SANCTION',
         ),
       ),
-    ).toEqual([
-      '제재 번호: 1234',
-      '함께 해제한 제재 번호: 12345',
-      '대상 회원 번호: 1234567',
-      '함께 검토 처리된 신고: 1,234건',
-    ]);
+    ).toEqual(['제재 번호: 1234', '함께 해제된 제재: 12345', '대상 회원 번호: 1234567', '함께 처리한 신고: 1,234건']);
   });
 
   it('행사의 바뀐 항목 이름은 등록 폼과 같은 말을 쓴다', () => {

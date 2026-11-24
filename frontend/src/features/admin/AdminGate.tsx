@@ -43,7 +43,7 @@ export function AdminPage({ title, current, children }: { title: string; current
   return (
     <PageLayout
       title={title}
-      description="모든 조치는 기록으로 남아요."
+      description="모든 관리자 활동은 감사 기록에 남아요."
       wide
       tabs={
         <UnderlineNav label="관리자 메뉴">

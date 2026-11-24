@@ -109,7 +109,9 @@ export function MapOpenMenu({ position, onClose, onCandidates }: MapOpenMenuProp
         <Button fullWidth loading={searching} onClick={search}>
           여기서 베이스캠프 열기
         </Button>
-        <p className="text-sm text-ink-muted">50m 안의 장소 중에서 골라요. 장소가 없으면 박지로 먼저 제보해요.</p>
+        <p className="text-sm text-ink-muted">
+          50m 이내 장소 중 선택할 수 있어요. 등록된 장소가 없으면 바로 박지를 제보할 수 있어요.
+        </p>
         {error && (
           <p role="alert" className="flex items-start gap-1 text-sm text-danger">
             <Icon name="alert" size={16} className="mt-0.5 shrink-0" />
@@ -125,7 +127,7 @@ export function MapOpenMenu({ position, onClose, onCandidates }: MapOpenMenuProp
   return (
     <div
       role="dialog"
-      aria-label="이 위치에서 할 일"
+      aria-label="선택한 위치 메뉴"
       onKeyDown={(event) => {
         if (event.key === 'Escape') onClose();
       }}
@@ -133,7 +135,7 @@ export function MapOpenMenu({ position, onClose, onCandidates }: MapOpenMenuProp
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 flex-col gap-1 pt-1">
-          <p className="text-sm font-semibold text-ink">이 위치에서</p>
+          <p className="text-sm font-semibold text-ink">선택한 위치</p>
           <LocationLabel position={position} />
         </div>
         <button
@@ -168,14 +170,14 @@ type SpotPickDialogProps = {
 export function SpotPickDialog({ spots, onClose }: SpotPickDialogProps) {
   return (
     <Dialog title="어느 장소에서 열까요?" onClose={onClose}>
-      <p className="text-sm text-ink-muted">누른 곳에서 50m 안에 있는 장소예요.</p>
+      <p className="text-sm text-ink-muted">선택한 위치 반경 50m 이내에 있는 장소예요.</p>
       <ul className="mt-2 flex flex-col gap-0.5">
         {spots.map((spot) => (
           <li key={spot.spotId}>
             {spot.parkWarning ? (
               <div aria-disabled="true" className="flex min-h-11 flex-col gap-1 rounded-row bg-fill px-3 py-2.5">
                 <SpotPickLabel spot={spot} />
-                <p className="text-sm text-warning">공원 경계 경고가 있는 박지라 베이스캠프를 열 수 없어요.</p>
+                <p className="text-sm text-warning">공원 구역 주의 표시가 있는 박지에서는 베이스캠프를 열 수 없어요.</p>
               </div>
             ) : (
               <Link
@@ -208,7 +210,7 @@ function SpotPickLabel({ spot }: { spot: NearbySpot }) {
           meta.label,
           spot.parkWarning && (
             <StatusText tone="warning" icon="alert">
-              공원 경계 경고
+              공원 구역 주의
             </StatusText>
           ),
           spot.closedNow && (

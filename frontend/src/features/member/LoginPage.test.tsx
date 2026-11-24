@@ -115,7 +115,7 @@ describe('로그인 성공 뒤 회원 정보를 다시 읽는 단계', () => {
 
     const alert = container.querySelector('[role="alert"]');
     expect(alert?.textContent).toContain('까지 이용이 제한돼요.');
-    expect(alert?.textContent).toContain('제재에 이의가 있으면 moewadeul@gmail.com으로 알려 주세요.');
+    expect(alert?.textContent).toContain('제재에 이의가 있다면 moewadeul@gmail.com으로 문의해 주세요.');
     expect(alert?.querySelector('a')?.getAttribute('href')).toBe('mailto:moewadeul@gmail.com');
   });
 });

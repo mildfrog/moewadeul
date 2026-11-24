@@ -108,8 +108,8 @@ describe('본인확인 화면', () => {
     await act(async () => button('본인확인하기')?.click());
 
     expect(container.textContent).toContain('출생연도는 1900~');
-    expect(container.textContent).toContain('성별을 골라 주세요.');
-    expect(container.textContent).toContain('시연용 식별 문자열을 입력해 주세요.');
+    expect(container.textContent).toContain('성별을 선택해 주세요.');
+    expect(container.textContent).toContain('시연용 식별자를 입력해 주세요.');
     expect(verifyIdentity).not.toHaveBeenCalled();
   });
 
@@ -120,7 +120,7 @@ describe('본인확인 화면', () => {
     await act(async () => button('본인확인하기')?.click());
 
     expect(container.textContent).toContain('출생연도는 1900~');
-    expect(container.textContent).not.toContain('성별을 골라 주세요.');
+    expect(container.textContent).not.toContain('성별을 선택해 주세요.');
     expect(verifyIdentity).not.toHaveBeenCalled();
   });
 
@@ -132,8 +132,8 @@ describe('본인확인 화면', () => {
 
     expect(verifyIdentity).toHaveBeenCalledWith({ birthYear: 1990, gender: 'FEMALE', demoIdentityKey: 'demo-key-1' });
     expect(session.refresh).toHaveBeenCalledTimes(1);
-    expect(container.querySelector('h1')?.textContent).toBe('본인확인을 마쳤어요');
-    expect(container.textContent).toContain('성인으로 확인돼 신뢰 단계 1이 됐어요');
+    expect(container.querySelector('h1')?.textContent).toBe('본인확인을 완료했어요');
+    expect(container.textContent).toContain('성인으로 확인되어 신뢰 단계 1이 부여됐어요');
     const link = [...container.querySelectorAll('a')].find((element) => element.textContent === '지도로 가기');
     expect(link?.getAttribute('href')).toBe('/map');
   });
@@ -145,7 +145,7 @@ describe('본인확인 화면', () => {
     await act(async () => button('본인확인하기')?.click());
 
     const link = [...container.querySelectorAll('a')].find(
-      (element) => element.textContent === '보던 화면으로 돌아가기',
+      (element) => element.textContent === '이전 화면으로 돌아가기',
     );
     expect(link?.getAttribute('href')).toBe('/basecamps/7');
   });
@@ -157,8 +157,8 @@ describe('본인확인 화면', () => {
 
     await act(async () => button('본인확인하기')?.click());
 
-    expect(container.textContent).toContain('아직 성인 기준에 맞지 않아요');
-    expect(container.textContent).toContain('신뢰 단계가 0이에요');
+    expect(container.textContent).toContain('아직 성인 기준에 해당하지 않아요');
+    expect(container.textContent).toContain('신뢰 단계 0이 유지돼요');
   });
 
   it('이미 본인확인을 마친 회원은 입력란 없이 완료 화면을 본다', async () => {
@@ -166,18 +166,18 @@ describe('본인확인 화면', () => {
 
     await open();
 
-    expect(container.querySelector('h1')?.textContent).toBe('본인확인을 마쳤어요');
+    expect(container.querySelector('h1')?.textContent).toBe('본인확인을 완료했어요');
     expect(input('birthYear')).toBeNull();
   });
 
-  it('다른 계정에서 쓴 식별 문자열이면 오류 안내가 보이고 입력은 남아 있다', async () => {
+  it('다른 계정에서 쓴 식별자면 오류 안내가 보이고 입력은 남아 있다', async () => {
     vi.mocked(verifyIdentity).mockRejectedValue(new ApiError(409, 'IDENTITY_CI_DUPLICATED', null));
     await open();
     await fillForm('1990');
 
     await act(async () => button('본인확인하기')?.click());
 
-    expect(container.querySelector('[role="alert"]')?.textContent).toContain('다른 계정에서 이미 본인확인을 했어요');
+    expect(container.querySelector('[role="alert"]')?.textContent).toContain('다른 계정으로 이미 본인확인을 마쳤어요');
     expect(input('demoIdentityKey').value).toBe('demo-key-1');
     expect(session.refresh).not.toHaveBeenCalled();
   });

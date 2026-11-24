@@ -65,7 +65,7 @@ export function BakjiFeedback({ spotId, onConfirmed }: BakjiFeedbackProps) {
     <div className="mt-3 flex flex-col gap-3">
       <div className="flex flex-wrap items-start gap-2">
         <GatedButton variant="secondary" loading={confirming} disabled={confirmed !== null} onClick={handleConfirm}>
-          {confirmed !== null ? '확인했어요' : '다녀왔어요, 정보가 맞아요'}
+          {confirmed !== null ? '현장 확인 완료' : '다녀왔어요 (정보 확인)'}
         </GatedButton>
         <GatedButton variant="ghost" disabled={reported} onClick={() => setReportOpen(true)}>
           문제 신고
@@ -74,17 +74,17 @@ export function BakjiFeedback({ spotId, onConfirmed }: BakjiFeedbackProps) {
 
       {confirmed === 'already' && (
         <p role="status" className="text-sm text-ink-muted">
-          이미 이 박지를 확인했어요.
+          이미 현장 확인을 마친 박지예요.
         </p>
       )}
       {confirmError && (
         <div role="alert">
-          <ErrorNotice title="확인을 남기지 못했어요" error={confirmError.cause} />
+          <ErrorNotice title="현장 확인을 저장하지 못했어요" error={confirmError.cause} />
         </div>
       )}
       {reported && (
         <p role="status" className="text-sm text-ink">
-          신고를 접수했어요. 신고가 쌓이면 관리자가 검토하는 동안 이 박지가 지도에 보이지 않아요.
+          신고를 접수했어요. 검토가 진행되는 동안 지도에서 임시 숨김 처리될 수 있어요.
         </p>
       )}
 
@@ -128,7 +128,7 @@ function ReportDialog({
     setContentError(undefined);
     setFormError(null);
     if (reason === null) {
-      setReasonError('신고 사유를 골라 주세요.');
+      setReasonError('신고 사유를 선택해 주세요.');
       return;
     }
 
@@ -167,7 +167,7 @@ function ReportDialog({
   return (
     <Dialog title="박지 문제 신고" onClose={onClose}>
       <form noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <p className="text-sm text-ink-muted">신고는 되돌릴 수 없어요. 사유를 골라 주세요.</p>
+        <p className="text-sm text-ink-muted">신고 접수 후에는 취소할 수 없어요. 사유를 선택해 주세요.</p>
         {formError && (
           <div role="alert">
             <ErrorNotice title="신고하지 못했어요" error={formError.cause} />

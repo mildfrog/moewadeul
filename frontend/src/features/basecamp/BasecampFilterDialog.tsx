@@ -24,7 +24,7 @@ export function BasecampFilterDialog({ initial, onApply, onClose }: BasecampFilt
   const reversed = isDateRangeReversed(draft);
 
   return (
-    <Dialog title="베이스캠프 조건" onClose={onClose}>
+    <Dialog title="베이스캠프 필터" onClose={onClose}>
       <form
         noValidate
         onSubmit={(event) => {
@@ -37,13 +37,13 @@ export function BasecampFilterDialog({ initial, onApply, onClose }: BasecampFilt
           <legend className="mb-1 text-sm font-medium text-ink">출발일</legend>
           <div className="grid grid-cols-2 gap-2">
             <TextField
-              label="시작 날짜"
+              label="시작일"
               type="date"
               value={draft.fromDate}
               onChange={(event) => setDraft({ ...draft, fromDate: event.target.value })}
             />
             <TextField
-              label="끝 날짜"
+              label="종료일"
               type="date"
               value={draft.toDate}
               min={draft.fromDate || undefined}
@@ -53,7 +53,7 @@ export function BasecampFilterDialog({ initial, onApply, onClose }: BasecampFilt
           {reversed && (
             <p role="alert" className="flex items-start gap-1 text-sm text-danger">
               <Icon name="alert" size={16} className="mt-0.5 shrink-0" />
-              <span>끝 날짜가 시작 날짜보다 빨라요. 다시 골라 주세요.</span>
+              <span>종료일은 시작일 이후여야 해요.</span>
             </p>
           )}
           <Checkbox
@@ -79,7 +79,7 @@ export function BasecampFilterDialog({ initial, onApply, onClose }: BasecampFilt
         </fieldset>
 
         <fieldset className="flex min-w-0 flex-col gap-1">
-          <legend className="mb-1 text-sm font-medium text-ink">박 수</legend>
+          <legend className="mb-1 text-sm font-medium text-ink">일정</legend>
           <div className="flex flex-wrap gap-2">
             {NIGHT_OPTIONS.map((night) => (
               <ToggleChip
@@ -91,14 +91,13 @@ export function BasecampFilterDialog({ initial, onApply, onClose }: BasecampFilt
               </ToggleChip>
             ))}
           </div>
-          <p className="text-sm text-ink-muted">고르지 않으면 모든 유형과 박 수가 보여요.</p>
         </fieldset>
 
         <fieldset className="flex min-w-0 flex-col">
           <legend className="mb-1 text-sm font-medium text-ink">합류 조건</legend>
           <Checkbox
-            label="본인확인만 하면 합류할 수 있는 곳"
-            hint="신뢰 단계 2가 필요한 베이스캠프는 빼요."
+            label="본인확인만으로 합류 가능"
+            hint="신뢰 단계 2 이상만 참여할 수 있는 베이스캠프는 제외해요."
             checked={draft.maxTrustLevel !== null}
             onChange={(event) => setDraft({ ...draft, maxTrustLevel: event.target.checked ? 1 : null })}
           />

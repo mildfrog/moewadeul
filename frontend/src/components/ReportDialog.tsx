@@ -81,7 +81,7 @@ export function ReportDialog({
   return (
     <Dialog title={title} onClose={() => !submitting && onClose()}>
       <div className="flex flex-col gap-4">
-        <p className="text-sm text-ink-muted">신고한 {targetLabel}은 관리자가 검토해요. 신고는 취소할 수 없어요.</p>
+        <p className="text-sm text-ink-muted">접수된 신고는 관리자가 검토하며, 한 번 신고하면 취소할 수 없어요.</p>
         {error && (
           <div role="alert">
             <Notice tone="danger" title="신고를 접수하지 못했어요">
@@ -119,7 +119,7 @@ export function ReportDialog({
             variant="danger"
             loading={submitting}
             disabled={reason === null}
-            disabledReason={reason === null ? '신고 사유를 골라 주세요.' : undefined}
+            disabledReason={reason === null ? '신고 사유를 선택해 주세요.' : undefined}
             onClick={() => void submit()}
           >
             신고하기

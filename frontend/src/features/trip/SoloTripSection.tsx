@@ -32,7 +32,9 @@ export function SoloTripSection({ spotId, onRegistered }: SoloTripSectionProps) 
       <h3 id="spot-solo-trip-title" className={SECTION_TITLE_CLASS}>
         혼자 가는 일정
       </h3>
-      <p className="mt-2 text-sm text-ink-muted">나만 보는 일정이에요. 다른 사람에게는 예상 인원 1명으로만 보여요.</p>
+      <p className="mt-2 text-sm text-ink-muted">
+        나만 볼 수 있는 비공개 일정이에요. 다른 회원에게는 해당 날짜의 예상 인원 수에만 반영돼요.
+      </p>
       {done && (
         <div role="status" className="mt-2">
           <Notice tone="info" title="일정을 등록했어요">
@@ -41,7 +43,7 @@ export function SoloTripSection({ spotId, onRegistered }: SoloTripSectionProps) 
               <Link to="/me" className="font-semibold text-accent underline underline-offset-2">
                 내 정보
               </Link>
-              에서 보고 삭제할 수 있어요.
+              에서 확인하고 삭제할 수 있어요.
             </p>
           </Notice>
         </div>
@@ -108,12 +110,12 @@ function SoloTripForm({
 
   function validate(): TripFieldErrors {
     const errors: TripFieldErrors = {};
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) errors.startDate = '출발일을 골라 주세요.';
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) errors.startDate = '출발일을 선택해 주세요.';
     else if (startDate < minStart || startDate > maxStart)
-      errors.startDate = '출발일은 내일부터 60일 안에서 골라 주세요.';
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(endDate)) errors.endDate = '돌아오는 날을 골라 주세요.';
+      errors.startDate = '출발일은 내일부터 60일 이내로 선택해 주세요.';
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(endDate)) errors.endDate = '종료일을 선택해 주세요.';
     else if (endDate <= startDate || endDate > addDaysToLocalDate(startDate, MAX_NIGHTS))
-      errors.endDate = '일정은 1~3박으로 골라 주세요.';
+      errors.endDate = '일정은 1~3박으로 선택해 주세요.';
     return errors;
   }
 
@@ -161,10 +163,10 @@ function SoloTripForm({
         value={startDate}
         onChange={(event) => changeStart(event.target.value)}
         error={fieldErrors.startDate}
-        hint="내일부터 60일 안에서 골라요."
+        hint="내일부터 60일 이내로 선택할 수 있어요."
       />
       <TextField
-        label="돌아오는 날"
+        label="종료일"
         name="endDate"
         type="date"
         min={addDaysToLocalDate(startDate, 1)}
@@ -172,7 +174,7 @@ function SoloTripForm({
         value={endDate}
         onChange={(event) => setEndDate(event.target.value)}
         error={fieldErrors.endDate}
-        hint="1~3박까지예요. 돌아오는 날 밤은 예상 인원에 세지 않아요."
+        hint="1~3박까지 등록할 수 있으며, 종료일 밤은 예상 인원에 포함되지 않아요."
       />
       <div className="flex flex-wrap justify-end gap-2">
         <Button variant="secondary" onClick={onCancel} disabled={submitting}>

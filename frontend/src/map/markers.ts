@@ -50,7 +50,7 @@ export function createSpotPin(data: SpotMarkerData, onActivate: (id: number) => 
     FOCUS_RING;
 
   const labelParts = data.label ? [`${data.label}번`, data.name, style.label] : [data.name, style.label];
-  if (data.warning) labelParts.push('공원 경계 경고');
+  if (data.warning) labelParts.push('공원 구역 주의');
   if (data.closed) labelParts.push('휴장');
   if (data.count !== undefined) labelParts.push(`모집 중인 베이스캠프 ${data.count}개`);
   if (stackedCount > 0) labelParts.push(`겹친 장소 ${stackedCount}곳 더, 눌러서 펼치기`);
@@ -114,7 +114,7 @@ export function createSpotDot(data: SpotMarkerData, onActivate: (id: number) => 
   button.type = 'button';
   button.className = 'flex h-11 w-11 cursor-pointer items-center justify-center rounded-full ' + FOCUS_RING;
   const labelParts = [data.name, style.label];
-  if (data.warning) labelParts.push('공원 경계 경고');
+  if (data.warning) labelParts.push('공원 구역 주의');
   if (data.closed) labelParts.push('휴장');
   button.setAttribute('aria-label', labelParts.join(', '));
   const dot = document.createElement('span');

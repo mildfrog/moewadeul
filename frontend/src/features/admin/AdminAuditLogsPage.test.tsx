@@ -135,15 +135,15 @@ describe('관리자 감사 기록 화면', () => {
     const items = [...container.querySelectorAll('ul[aria-label="감사 기록 목록"] > li')];
     expect(items).toHaveLength(2);
     expect(items[0]?.textContent).toContain('신고 조치');
-    expect(items[0]?.textContent).toContain('신고 5번');
-    expect(items[0]?.textContent).toContain('관리자 3번');
+    expect(items[0]?.textContent).toContain('신고 #5');
+    expect(items[0]?.textContent).toContain('관리자 #3');
     expect(items[0]?.textContent).toContain('2026년 11월 5일');
     expect(items[0]?.textContent).toContain('14:30');
     expect(items[0]?.textContent).toContain('상태: 검토 중 → 조치 완료');
     expect(items[0]?.textContent).toContain('제재 종류: 7일 정지');
     expect(items[0]?.textContent).toContain('제재 단계: 2단계');
     expect(items[1]?.textContent).toContain('행사 취소');
-    expect(items[1]?.textContent).toContain('행사 9번');
+    expect(items[1]?.textContent).toContain('행사 #9');
     expect(items[1]?.textContent).toContain('취소된 신청: 3건');
   });
 
@@ -160,10 +160,10 @@ describe('관리자 감사 기록 화면', () => {
     await render();
 
     const links = [...container.querySelectorAll('a')].map((el) => [el.textContent, el.getAttribute('href')]);
-    expect(links).toContainEqual(['신고 5번', '/admin/reports/5']);
-    expect(links).toContainEqual(['행사 9번', '/admin/programs/9/applications']);
-    expect(links.some(([label]) => label === '박지 4번')).toBe(false);
-    expect(text()).toContain('박지 4번');
+    expect(links).toContainEqual(['신고 #5', '/admin/reports/5']);
+    expect(links).toContainEqual(['행사 #9', '/admin/programs/9/applications']);
+    expect(links.some(([label]) => label === '박지 #4')).toBe(false);
+    expect(text()).toContain('박지 #4');
   });
 
   it('모르는 detail 키는 키 이름으로, 중첩 값은 한 줄 JSON으로 보인다', async () => {
@@ -179,7 +179,7 @@ describe('관리자 감사 기록 화면', () => {
 
     expect(queries).toHaveLength(1);
     expect([...(queries[0] ?? []).keys()].sort()).toEqual(['page', 'size']);
-    expect(button('조건 지우기')).toBeUndefined();
+    expect(button('필터 초기화')).toBeUndefined();
   });
 
   it('조회를 누르면 대상 종류, 관리자 번호, 한국 날짜 경계를 담아 요청한다', async () => {
@@ -208,12 +208,12 @@ describe('관리자 감사 기록 화면', () => {
     await type('종료일', '2026-11-04');
     await act(async () => button('조회')?.click());
 
-    expect(text()).toContain('종료일은 시작일과 같거나 뒤여야 해요.');
+    expect(text()).toContain('종료일은 시작일보다 빠를 수 없어요.');
     expect(field('종료일').getAttribute('aria-invalid')).toBe('true');
     expect(queries).toHaveLength(1);
 
     await type('종료일', '2026-11-05');
-    expect(text()).not.toContain('종료일은 시작일과 같거나 뒤여야 해요.');
+    expect(text()).not.toContain('종료일은 시작일보다 빠를 수 없어요.');
   });
 
   it('관리자 번호가 양의 정수가 아니면 필드 오류를 보이고 요청하지 않는다', async () => {
@@ -233,20 +233,20 @@ describe('관리자 감사 기록 화면', () => {
     await act(async () => button('조회')?.click());
     expect(queries).toHaveLength(2);
 
-    await act(async () => button('조건 지우기')?.click());
+    await act(async () => button('필터 초기화')?.click());
 
     expect(queries).toHaveLength(3);
     expect(queries[2]?.has('targetType')).toBe(false);
     expect(queries[2]?.has('adminId')).toBe(false);
     expect(field('대상 종류').value).toBe('');
     expect(field('관리자 번호').value).toBe('');
-    expect(button('조건 지우기')).toBeUndefined();
+    expect(button('필터 초기화')).toBeUndefined();
   });
 
   it('기록이 하나도 없고 조건도 없으면 처음 안내를 보인다', async () => {
     await render();
 
-    expect(text()).toContain('아직 관리자 기록이 없어요');
+    expect(text()).toContain('아직 감사 기록이 없어요');
     expect(text()).not.toContain('조건에 맞는 기록이 없어요');
   });
 
@@ -290,10 +290,10 @@ describe('관리자 감사 기록 화면', () => {
     await act(async () => button('조회')?.click());
 
     expect(text()).toContain('조건에 맞는 기록이 없어요');
-    expect(buttons('조건 지우기')).toHaveLength(2);
+    expect(buttons('필터 초기화')).toHaveLength(2);
 
     respond = () => json(200, pageOf([log({})]));
-    const inEmptyState = buttons('조건 지우기')[1];
+    const inEmptyState = buttons('필터 초기화')[1];
     await act(async () => inEmptyState?.click());
 
     expect(text()).not.toContain('조건에 맞는 기록이 없어요');

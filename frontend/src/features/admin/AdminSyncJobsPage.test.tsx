@@ -25,7 +25,7 @@ const JOB_LABELS: Record<SyncJobType, string> = {
   FOREST: '국립 자연휴양림',
   FOREST_STANDARD: '공립·사립 휴양림',
   PARK_BOUNDARY: '공원 경계',
-  BAKJI_REJUDGE: '박지 경고 다시 확인',
+  BAKJI_REJUDGE: '박지 공원 구역 재확인',
 };
 
 function json(status: number, body: unknown) {
@@ -165,7 +165,7 @@ describe('관리자 데이터 불러오기', () => {
     expect(text(forest)).toContain('11월 1일 (일) 12:05');
     expect(text(forest)).toContain('파일을 읽지 못했어요');
     expect(text(card('FOREST_STANDARD'))).toContain('아직 실행한 적이 없어요');
-    expect(text(card('PARK_BOUNDARY'))).toContain('성공하면 박지 경고 다시 확인이 이어서 실행돼요');
+    expect(text(card('PARK_BOUNDARY'))).toContain('완료되면 박지 공원 구역 재확인이 이어서 실행돼요');
   });
 
   it('카드 요청은 작업 종류마다 한 번씩, 고캠핑만 최근 50번까지 받는다', async () => {
