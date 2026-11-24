@@ -7,8 +7,8 @@ public final class ParkWarningTexts {
     public static final String NORMAL_GUIDE = "머문 자리는 흔적 없이 정리해 주세요. 쓰레기는 모두 가져가 주세요.";
 
     public static final String BAKJI_CHECK_NOTICE =
-            "뫼와들은 이곳에서 야영해도 되는지 확인하지 못했어요. 제보된 정보를 보여 줄 뿐이라 야영 중에 생긴 일에는 책임지지 않으니,"
-                    + " 가기 전에 관할 시군청 산림과나 국유림관리소, 공원 사무소에 야영할 수 있는지 문의해 주세요.";
+            "뫼와들은 이곳에서 야영해도 되는지 확인하지 않았어요. 가기 전에 관할 시군청 산림과나 국유림관리소, 공원 사무소에 야영할 수 있는지 문의해 주세요."
+                    + " 뫼와들은 제보된 정보를 보여 줄 뿐이며, 야영 중 발생하는 사고에 대해서는 책임지지 않아요.";
 
     public static String bakjiCheckNoticeOf(boolean warned) {
         return warned ? null : BAKJI_CHECK_NOTICE;
