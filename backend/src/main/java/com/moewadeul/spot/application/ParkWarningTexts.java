@@ -2,8 +2,7 @@ package com.moewadeul.spot.application;
 
 public final class ParkWarningTexts {
 
-    public static final String WARNED_GUIDE =
-            "자연공원 내 지정 야영장 외 구역에서는 야영과 취사가 금지되며 과태료가 부과될 수 있어요. 가까운 지정 야영장을 이용해 주세요.";
+    public static final String WARNED_GUIDE = "자연공원 내 지정 야영장 외 구역에서는 야영과 취사가 금지되며 과태료가 부과될 수 있어요. 가까운 지정 야영장을 이용해 주세요.";
 
     public static final String NORMAL_GUIDE = "머문 자리는 흔적 없이 정리해 주세요. 쓰레기는 모두 가져가 주세요.";
 

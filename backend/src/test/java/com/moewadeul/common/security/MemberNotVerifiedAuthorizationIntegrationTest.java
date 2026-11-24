@@ -62,7 +62,7 @@ class MemberNotVerifiedAuthorizationIntegrationTest {
         assertThat(result)
                 .bodyJson()
                 .extractingPath("$.message")
-                .isEqualTo("이메일 인증을 마친 뒤에 할 수 있어요. 메일로 받은 인증 코드를 입력해 주세요.");
+                .isEqualTo("이메일 인증을 마친 뒤 이용할 수 있어요.");
         String headerTraceId = result.getResponse().getHeader(TraceIdFilter.HEADER);
         assertThat(headerTraceId).isNotBlank();
         assertThat(result).bodyJson().extractingPath("$.traceId").isEqualTo(headerTraceId);

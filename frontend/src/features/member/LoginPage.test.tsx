@@ -107,7 +107,7 @@ describe('로그인 성공 뒤 회원 정보를 다시 읽는 단계', () => {
     loginReply = () =>
       json(403, {
         code: 'MEMBER_SUSPENDED',
-        message: '이용이 정지된 계정이에요. 정지가 풀린 뒤 다시 로그인해 주세요.',
+        message: '이용이 정지된 계정이에요. 정지가 해제된 뒤 다시 로그인해 주세요.',
         suspendedUntil: '2026-11-15T03:00:00Z',
       });
 

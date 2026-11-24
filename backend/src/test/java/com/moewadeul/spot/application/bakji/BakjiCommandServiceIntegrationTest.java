@@ -46,9 +46,8 @@ class BakjiCommandServiceIntegrationTest {
     private static final ProtectedAreaSource AREA_SOURCE = ProtectedAreaSource.KDPA;
     private static final LocalDate AREA_SOURCE_DATE = LocalDate.of(2026, 1, 1);
     private static final String NORMAL_GUIDE = "머문 자리는 흔적 없이 정리해 주세요. 쓰레기는 모두 가져가 주세요.";
-    private static final String CHECK_NOTICE =
-            "뫼와들은 이곳에서 야영해도 되는지 확인하지 못했어요. 제보된 정보를 보여 줄 뿐이라 야영 중에 생긴 일에는 책임지지 않으니,"
-                    + " 가기 전에 관할 시군청 산림과나 국유림관리소, 공원 사무소에 야영할 수 있는지 문의해 주세요.";
+    private static final String CHECK_NOTICE = "뫼와들은 이곳에서 야영해도 되는지 확인하지 못했어요. 제보된 정보를 보여 줄 뿐이라 야영 중에 생긴 일에는 책임지지 않으니,"
+            + " 가기 전에 관할 시군청 산림과나 국유림관리소, 공원 사무소에 야영할 수 있는지 문의해 주세요.";
 
     @Autowired
     private ProtectedAreaFixture protectedAreaFixture;
