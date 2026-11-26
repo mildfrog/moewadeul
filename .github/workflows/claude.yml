@@ -1,7 +1,7 @@
 name: Claude
 
 # 저장소 소유자가 자기 이슈에 claude 라벨을 붙이거나 @claude 댓글을 달면 Claude Code가 develop에서 브랜치를 만들어 구현하고 PR을 연다.
-# 머지는 사람이 한다. 봇 PR은 develop 룰셋이 승인 1명을 요구하고, 결정적 검사(ci.yml)가 통과해야 한다.
+# 머지는 사람이 한다. 봇 PR은 소유자 승인(ai-pr-approval.yml)과 결정적 검사(ci.yml)를 모두 통과해야 한다.
 on:
   issues:
     types: [labeled]
