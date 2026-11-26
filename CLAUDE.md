@@ -20,7 +20,7 @@
 ## DB
 
 - 스키마 변경은 `backend/src/main/resources/db/migration/`에 새 Flyway 파일로만 한다. 이미 있는 마이그레이션은 고치지 않는다. 번호는 가장 큰 번호 다음이다.
-- MySQL은 외래 키가 자동으로 만든 인덱스를, 같은 열로 시작하는 새 인덱스가 생기면 스스로 지운다. 그 인덱스를 다시 `DROP INDEX`하지 않는다.
+- MySQL은 외래 키가 자동으로 만든 인덱스를, 같은 열로 시작하는 새 인덱스가 생기면 스스로 지운다. 그 인덱스를 다시 `DROP INDEX`하지 않는다. AI가 이 DROP을 넣어 마이그레이션과 통합 테스트가 실패한 적이 있다(PR #696, `V58__community_comment_post_status_index.sql`).
 - 인덱스나 쿼리를 바꾸면 `EXPLAIN`으로 쓰는 인덱스를 확인하는 통합 테스트를 함께 둔다.
 
 ## 테스트와 검증
