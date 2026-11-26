@@ -28,6 +28,8 @@ GitHub 이슈 하나를 Claude Code로 구현해 PR까지 올리는 도구다. �
 
 `ai:blocked`나 `ai:rejected`로 끝난 이슈에 소유자가 `claude` 라벨을 다시 붙이면 다시 시작한다. 이미 승인된 계획과 커밋이 있으면 그대로 이어 쓰므로, 막힌 이슈는 원인을 고친 뒤 검증부터 다시 돈다. 계획을 새로 받으려면 새 이슈를 연다.
 
+고를 것이 있는 계획은 `/approve` 다음 줄부터 결정을 적는다. 하네스는 승인을 읽자마자 구현을 시작하므로, 결정을 따로 댓글로 달면 승인보다 늦게 달려 구현 지시에서 빠질 수 있다. #1084에서 실제로 그렇게 됐다. 디스코드 ✅로 승인할 때는 결정 댓글을 먼저 단다.
+
 디스코드로 승인하면 하네스가 이슈에 "디스코드에서 소유자가 승인했다(시각)" 댓글을 남긴다. 승인 기록의 원본은 GitHub이다.
 
 ## 게이트
@@ -36,10 +38,12 @@ GitHub 이슈 하나를 Claude Code로 구현해 PR까지 올리는 도구다. �
 
 | 게이트 | 조건 | 명령 |
 |---|---|---|
-| `backend-unit` | `backend/` 변경 | `./gradlew test spotlessCheck` |
+| `backend-unit` | `backend/` 변경 | `./gradlew test --rerun spotlessCheck` |
 | `backend-integration` | `backend/src/main/` 변경 | `./gradlew integrationTest --tests 'com.moewadeul.<바뀐 모듈>.*'`. 모듈의 Java 코드와 `mapper/<모듈>/` XML로 모듈을 정한다. `api` 패키지가 바뀌면 `EndpointAuthorizationCoverageIntegrationTest`를 더한다. 마이그레이션·설정·`common`이 하나라도 바뀌면 통합 테스트 전체 |
 | `frontend` | `frontend/` 변경 | `npm ci`, `build`, `lint`, `test`, `format:check` |
 | `secret-scan` | 항상 | CI와 같은 digest의 gitleaks, `origin/develop..HEAD` 범위 |
+
+Gradle 테스트에는 `--rerun`을 붙인다. 구현하던 Claude가 같은 워크트리에서 테스트를 돌렸으면 Gradle이 UP-TO-DATE로 건너뛰는데, 검증받는 쪽이 만든 결과를 게이트가 그대로 믿지 않기 위해서다. #1085에서 단위 테스트 게이트가 0.8초에 통과해 알게 됐다.
 
 게이트가 실패하면 로그 끝 200줄을 Claude에게 주고 고치게 한 뒤 처음 게이트부터 다시 돈다. 두 번 고쳐도 실패하면 `ai:blocked`로 멈춘다.
 

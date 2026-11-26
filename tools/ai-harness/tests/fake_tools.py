@@ -128,18 +128,20 @@ def claude(args):
     prompt = sys.stdin.read()
     task = first_line(prompt)
     record("claude", [task, *args])
+    with open(os.environ["FAKE_PROMPTS"], "a") as f:
+        f.write(json.dumps({"task": task, "prompt": prompt}, ensure_ascii=False) + "\n")
     result = {
         "# 작업: 계획": "1. SpotController를 고친다\n2. 테스트를 먼저 쓴다",
         "# 작업: 보안 리뷰": os.environ.get("FAKE_REVIEW", '{"findings":[{"file":"A.java","line":3,"severity":"low","summary":"요약|표","scenario":"시나리오"}]}'),
         "# 작업: PR 본문": "## 관련 이슈\nCloses #\n\n## 해결하려는 문제\n가짜",
     }.get(task)
+    if os.environ.get("FAKE_CLAUDE_FAIL") == task:
+        print(json.dumps({"is_error": True, "result": "가짜 실패"}))
+        return
     if task in ("# 작업: 구현", "# 작업: 게이트 실패 수정"):
         existing = subprocess.run(["git", "rev-list", "--count", "HEAD"], capture_output=True, text=True).stdout.strip()
         git_commit(os.getcwd(), f"backend/src/main/java/com/moewadeul/spot/api/Gen{existing}.java", "class Gen {}\n")
         result = "커밋했다"
-    if os.environ.get("FAKE_CLAUDE_FAIL") == task:
-        print(json.dumps({"is_error": True, "result": "가짜 실패"}))
-        return
     print(json.dumps({"is_error": False, "result": result}))
 
 
