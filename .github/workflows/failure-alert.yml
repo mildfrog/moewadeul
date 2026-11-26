@@ -1,7 +1,7 @@
 name: Failure alert
 
 # develop·main의 CI나 배포가 실패하면 incident 라벨 이슈를 열고 디스코드로 알린다. 같은 워크플로의 열린 이슈가 있으면 새로 만들지 않고 댓글을 단다.
-# 소유자가 그 이슈에 claude 라벨을 붙이면 claude.yml이 원인 조사와 수정 PR을 맡는다.
+# 이 이슈의 작성자는 github-actions[bot]이라 AI 하네스(tools/ai-harness)가 받지 않는다. 고칠 일은 소유자가 새 이슈로 정리해 claude 라벨을 붙인다.
 on:
   workflow_run:
     workflows: [CI, Deploy]
