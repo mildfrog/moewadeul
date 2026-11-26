@@ -37,7 +37,7 @@ GitHub 이슈 하나를 Claude Code로 구현해 PR까지 올리는 도구다. �
 | 게이트 | 조건 | 명령 |
 |---|---|---|
 | `backend-unit` | `backend/` 변경 | `./gradlew test spotlessCheck` |
-| `backend-integration` | `backend/src/main/` 변경 | `./gradlew integrationTest --tests 'com.moewadeul.<바뀐 모듈>.*'`. `api` 패키지가 바뀌면 `EndpointAuthorizationCoverageIntegrationTest`를 더한다. 모듈 밖 변경(마이그레이션, 설정)이면 통합 테스트 전체 |
+| `backend-integration` | `backend/src/main/` 변경 | `./gradlew integrationTest --tests 'com.moewadeul.<바뀐 모듈>.*'`. 모듈의 Java 코드와 `mapper/<모듈>/` XML로 모듈을 정한다. `api` 패키지가 바뀌면 `EndpointAuthorizationCoverageIntegrationTest`를 더한다. 마이그레이션·설정·`common`이 하나라도 바뀌면 통합 테스트 전체 |
 | `frontend` | `frontend/` 변경 | `npm ci`, `build`, `lint`, `test`, `format:check` |
 | `secret-scan` | 항상 | CI와 같은 digest의 gitleaks, `origin/develop..HEAD` 범위 |
 
@@ -80,6 +80,10 @@ python3 -m unittest discover -s tools/ai-harness/tests
 - Claude에게 `git push`와 `gh`는 허용하지 않는다. push, PR 생성, 상태 기록은 하네스가 게이트를 통과한 뒤에만 한다.
 - `ai-gate`는 필수 검사다. 사람이 연 PR은 `.github/workflows/ai-gate-required.yml`이 통과로 표시하고, `claude/` 브랜치 PR은 하네스가 남긴 상태만 인정한다.
 - AI 보안 리뷰는 참고다. 막는 일은 결정적 검사에 맡긴다.
+
+## 결함 심기 시험
+
+`eval/seed_eval.py`는 결함을 하나씩 심은 브랜치에 같은 게이트와 AI 보안 리뷰를 돌려, 무엇이 무엇을 잡는지 센다. 결과와 해석은 `eval/README.md`에 있다.
 
 ## 알려진 한계
 

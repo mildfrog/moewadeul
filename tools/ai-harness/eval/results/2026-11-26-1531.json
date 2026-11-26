@@ -1,0 +1,563 @@
+{
+  "base": "19ef9c8ea56a1e6faeb9f8386a12c1bca186d3a4",
+  "results": [
+    {
+      "defect": {
+        "id": "D0",
+        "title": "대조군: 결함 없는 주석 변경",
+        "path": "backend/src/main/java/com/moewadeul/community/application/post/CommunityPostWriter.java",
+        "old": "        // 고친 내용을 MyBatis로 읽기 전에 DB에 반영한다.",
+        "new": "        // 고친 내용을 MyBatis로 다시 읽기 전에 DB에 반영한다."
+      },
+      "gates": [
+        {
+          "name": "backend-unit",
+          "passed": true,
+          "seconds": 41.3,
+          "log_tail": "\n> Task :compileJava\n\n> Task :processResources\n> Task :classes\n\n> Task :compileTestJava\n\n> Task :processTestResources\n> Task :testClasses\n> Task :test\n> Task :spotlessJava\n> Task :spotlessJavaCheck\n> Task :spotlessCheck\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D0/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 41s\n7 actionable tasks: 7 executed\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "backend-integration",
+          "passed": true,
+          "seconds": 108.2,
+          "log_tail": "> Task :compileJava UP-TO-DATE\n> Task :processResources UP-TO-DATE\n> Task :classes UP-TO-DATE\n> Task :compileTestJava UP-TO-DATE\n> Task :processTestResources UP-TO-DATE\n> Task :testClasses UP-TO-DATE\n> Task :integrationTest\n\n2026-11-26T14:58:54.761+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=1\n2026-11-26T14:58:54.769+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T14:58:54.771+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...\n2026-11-26T14:58:54.773+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.\n2026-11-26T14:58:54.990+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T14:58:54.996+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T14:58:54.997+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...\n2026-11-26T14:58:54.998+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.\n2026-11-26T14:58:55.157+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T14:58:55.161+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T14:58:55.162+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...\n2026-11-26T14:58:55.163+09:00  INFO 12971 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D0/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 48s\n5 actionable tasks: 1 executed, 4 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "secret-scan",
+          "passed": true,
+          "seconds": 0.5,
+          "log_tail": "\u001b[90m5:58AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1m1 commits scanned.\u001b[0m\n\u001b[90m5:58AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mscanned ~80 bytes (80 bytes) in 30.3ms\u001b[0m\n\u001b[90m5:58AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mno leaks found\u001b[0m"
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "findings": [],
+          "hit": false
+        },
+        {
+          "error": null,
+          "findings": [],
+          "hit": false
+        },
+        {
+          "error": null,
+          "findings": [],
+          "hit": false
+        }
+      ]
+    },
+    {
+      "defect": {
+        "id": "D1",
+        "title": "새 API를 권한 표에 넣지 않음",
+        "path": "backend/src/main/java/com/moewadeul/spot/api/detail/SpotDetailController.java",
+        "old": "    @GetMapping(\"/{spotId}\")\n    SpotDetailResponse findDetail(@PathVariable long spotId) {",
+        "new": "    @GetMapping(\"/{spotId}/raw\")\n    SpotDetailResponse findRaw(@PathVariable long spotId) {\n        return SpotDetailResponse.from(spotDetailQueryService.findDetail(spotId));\n    }\n\n    @GetMapping(\"/{spotId}\")\n    SpotDetailResponse findDetail(@PathVariable long spotId) {"
+      },
+      "gates": [
+        {
+          "name": "backend-unit",
+          "passed": true,
+          "seconds": 42.7,
+          "log_tail": "\n> Task :compileJava\n\n> Task :processResources\n> Task :classes\n\n> Task :compileTestJava\n\n> Task :processTestResources\n> Task :testClasses\n> Task :test\n> Task :spotlessJava\n> Task :spotlessJavaCheck\n> Task :spotlessCheck\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D1/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 42s\n7 actionable tasks: 7 executed\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "backend-integration",
+          "passed": false,
+          "seconds": 94.9,
+          "log_tail": "> Task :compileJava UP-TO-DATE\n> Task :processResources UP-TO-DATE\n> Task :classes UP-TO-DATE\n> Task :compileTestJava UP-TO-DATE\n> Task :processTestResources UP-TO-DATE\n> Task :testClasses UP-TO-DATE\n\n> Task :integrationTest\n\nEndpointAuthorizationCoverageIntegrationTest > [NFR-07][NFR-11] 컨트롤러의 모든 API 엔드포인트가 권한 표에 등급과 함께 들어 있다 FAILED\n    java.lang.AssertionError at EndpointAuthorizationCoverageIntegrationTest.java:38\n\n2026-11-26T15:01:26.718+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:01:26.729+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:01:26.730+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...\n2026-11-26T15:01:26.732+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.\n2026-11-26T15:01:27.008+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:01:27.016+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:01:27.017+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...\n2026-11-26T15:01:27.018+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.\n2026-11-26T15:01:27.234+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:01:27.236+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:01:27.236+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...\n2026-11-26T15:01:27.237+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.\n2026-11-26T15:01:27.412+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:01:27.414+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:01:27.414+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...\n2026-11-26T15:01:27.416+09:00  INFO 15196 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.\n\n> Task :integrationTest\n\n> Task :integrationTest FAILED\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D1/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n5 actionable tasks: 1 executed, 4 up-to-date\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n\n390 tests completed, 1 failed\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':integrationTest'.\n> There were failing tests. See the report at: file:///Users/heygw/Developer/moewadeul-ai/eval-D1/backend/build/reports/tests/integrationTest/index.html\n\n* Try:\n> Run with --scan to get full insights from a Build Scan (powered by Develocity).\n\nBUILD FAILED in 1m 34s"
+        },
+        {
+          "name": "secret-scan",
+          "passed": true,
+          "seconds": 0.5,
+          "log_tail": "\u001b[90m6:01AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1m1 commits scanned.\u001b[0m\n\u001b[90m6:01AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mscanned ~183 bytes (183 bytes) in 35.6ms\u001b[0m\n\u001b[90m6:01AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mno leaks found\u001b[0m"
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/spot/api/detail/SpotDetailController.java",
+              "line": 54,
+              "severity": "low",
+              "summary": "새 엔드포인트 GET /api/spots/{spotId}/raw가 AuthorizationMatrix.java와 SecurityConfig의 공개 패턴 어디에도 없어 접근 등급이 정해지지 않았고, EndpointAuthorizationCoverageIntegrationTest가 실패한다",
+              "scenario": "지금은 SecurityConfig의 anyRequest().denyAll()이 이 경로를 모두 막지만, 누군가 테스트를 통과시키려고 SecurityConfig에 넓은 패턴(예: /api/spots/**)을 넣으면 권한 표의 검증 없이 경로가 열린다. 그러면 나중에 이 경로에 숨김·검토 대기 장소를 내주는 '원본' 조회가 붙을 때 비로그인 사용자가 spotId만 바꿔 그 장소를 읽을 수 있다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/spot/api/detail/SpotDetailController.java",
+              "line": 54,
+              "severity": "medium",
+              "summary": "The new GET /api/spots/{spotId}/raw endpoint is missing from AuthorizationMatrix.java, so no test pins down its access level. It is also not in SecurityConfig's public list, which means it only falls under the default rule.",
+              "scenario": "Nothing in the authorization tests says who may call /api/spots/{spotId}/raw, so if someone later widens SecurityConfig (for example to /api/spots/**) or changes the default rule, the endpoint's access level changes without any authorization test noticing."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/spot/api/detail/SpotDetailController.java",
+              "line": 54,
+              "severity": "medium",
+              "summary": "새 엔드포인트 GET /api/spots/{spotId}/raw가 AuthorizationMatrix.java에 접근 등급과 함께 등록되지 않았고 SecurityConfig의 공개 목록에도 없다. 그래서 접근 등급이 정해지지 않은 채 기본 규칙에 따라 열리며, EndpointAuthorizationCoverageIntegrationTest도 실패한다.",
+              "scenario": "AuthorizationMatrix에 등급이 선언되지 않아 아무도 의도를 검증하지 않은 경로이므로, 뒤에 SecurityConfig 규칙이 \"/api/spots/**\" 같은 넓은 패턴으로 바뀌거나 이 메서드가 숨김·검토 대기 장소까지 돌려주도록 바뀌면, 공격자가 spotId만 바꿔 가며 /api/spots/{id}/raw를 불러 비공개 장소 정보를 읽어도 권한 매트릭스 테스트가 이를 막지 못한다."
+            }
+          ],
+          "hit": true
+        }
+      ]
+    },
+    {
+      "defect": {
+        "id": "D2",
+        "title": "MyBatis 검색어를 ${}로 치환(SQL 주입)",
+        "path": "backend/src/main/resources/mapper/community/post/CommunityPostMapper.xml",
+        "old": "AND p.title LIKE CONCAT('%', #{condition.keyword}, '%') ESCAPE '\\\\'",
+        "new": "AND p.title LIKE '%${condition.keyword}%' ESCAPE '\\\\'"
+      },
+      "gates": [
+        {
+          "name": "backend-unit",
+          "passed": true,
+          "seconds": 41.7,
+          "log_tail": "\n> Task :compileJava\n\n> Task :processResources\n> Task :classes\n\n> Task :compileTestJava\n\n> Task :processTestResources\n> Task :testClasses\n> Task :test\n> Task :spotlessJava\n> Task :spotlessJavaCheck\n> Task :spotlessCheck\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D2/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 41s\n7 actionable tasks: 7 executed\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "backend-integration",
+          "passed": false,
+          "seconds": 776.7,
+          "log_tail": "eted.\n2026-11-26T15:15:55.050+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete\n2026-11-26T15:15:55.054+09:00  INFO 16844 --- [moewadeul] [tomcat-shutdown] [] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete\n2026-11-26T15:15:55.056+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:55.060+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:55.061+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown initiated...\n2026-11-26T15:15:55.062+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown completed.\n2026-11-26T15:15:55.235+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:55.241+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:55.242+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown initiated...\n2026-11-26T15:15:55.243+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown completed.\n2026-11-26T15:15:55.448+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:55.454+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:55.455+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown initiated...\n2026-11-26T15:15:55.456+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-9 - Shutdown completed.\n2026-11-26T15:15:55.636+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:55.643+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:55.644+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Shutdown initiated...\n2026-11-26T15:15:55.646+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-10 - Shutdown completed.\n2026-11-26T15:15:55.847+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:55.854+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:55.855+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Shutdown initiated...\n2026-11-26T15:15:55.856+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Shutdown completed.\n2026-11-26T15:15:56.053+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:56.060+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:56.060+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-12 - Shutdown initiated...\n2026-11-26T15:15:56.061+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-12 - Shutdown completed.\n2026-11-26T15:15:56.259+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:56.268+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:56.268+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown initiated...\n2026-11-26T15:15:56.270+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown completed.\n2026-11-26T15:15:56.484+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:56.493+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:56.493+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Shutdown initiated...\n2026-11-26T15:15:56.495+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Shutdown completed.\n2026-11-26T15:15:56.699+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:56.706+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:56.707+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Shutdown initiated...\n2026-11-26T15:15:56.708+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Shutdown completed.\n2026-11-26T15:15:56.937+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:56.944+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:56.945+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Shutdown initiated...\n2026-11-26T15:15:56.946+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Shutdown completed.\n2026-11-26T15:15:57.139+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:57.147+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:57.147+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-17 - Shutdown initiated...\n2026-11-26T15:15:57.149+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-17 - Shutdown completed.\n2026-11-26T15:15:57.354+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:57.361+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:57.361+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-18 - Shutdown initiated...\n2026-11-26T15:15:57.362+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-18 - Shutdown completed.\n2026-11-26T15:15:57.555+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:57.562+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:57.562+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-19 - Shutdown initiated...\n2026-11-26T15:15:57.564+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-19 - Shutdown completed.\n2026-11-26T15:15:57.733+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:57.742+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:57.743+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-20 - Shutdown initiated...\n2026-11-26T15:15:57.744+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-20 - Shutdown completed.\n2026-11-26T15:15:57.943+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete\n2026-11-26T15:15:57.948+09:00  INFO 16844 --- [moewadeul] [tomcat-shutdown] [] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete\n2026-11-26T15:15:57.951+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:15:57.956+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:15:57.956+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-21 - Shutdown initiated...\n2026-11-26T15:15:57.957+09:00  INFO 16844 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-21 - Shutdown completed.\n\n> Task :integrationTest\n\n> Task :integrationTest FAILED\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D2/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n5 actionable tasks: 1 executed, 4 up-to-date\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n\n2800 tests completed, 1 failed\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':integrationTest'.\n> There were failing tests. See the report at: file:///Users/heygw/Developer/moewadeul-ai/eval-D2/backend/build/reports/tests/integrationTest/index.html\n\n* Try:\n> Run with --scan to get full insights from a Build Scan (powered by Develocity).\n\nBUILD FAILED in 12m 56s"
+        },
+        {
+          "name": "secret-scan",
+          "passed": true,
+          "seconds": 0.5,
+          "log_tail": "\u001b[90m6:15AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1m1 commits scanned.\u001b[0m\n\u001b[90m6:15AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mscanned ~78 bytes (78 bytes) in 39.2ms\u001b[0m\n\u001b[90m6:15AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mno leaks found\u001b[0m"
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/resources/mapper/community/post/CommunityPostMapper.xml",
+              "line": 51,
+              "severity": "high",
+              "summary": "제목 검색어(condition.keyword)가 MyBatis ${} 치환으로 SQL에 그대로 들어간다. CommunityPostQueryService.escapeLike는 \\, %, _만 이스케이프하고 작은따옴표는 그대로 두므로 SQL 주입이 가능하다.",
+              "scenario": "인증 없이 쓸 수 있는 게시글 목록 API에 searchType=TITLE과 keyword=x' UNION SELECT ... -- 를 보내면, 공격자는 따옴표를 닫고 임의 SQL을 실행해 회원 표의 이메일·전화번호 같은 다른 테이블 데이터를 빼낼 수 있다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/resources/mapper/community/post/CommunityPostMapper.xml",
+              "line": 51,
+              "severity": "high",
+              "summary": "검색 유형이 TITLE일 때 keyword가 #{} 바인딩이 아니라 ${} 문자열 치환으로 SQL에 그대로 들어간다. CommunityPostQueryService.escapeLike는 \\, %, _만 이스케이프하고 작은따옴표는 그대로 두므로 이 치환을 막지 못한다.",
+              "scenario": "공격자가 커뮤니티 글 목록 API에 searchType=TITLE과 keyword=%' UNION SELECT ... -- 같은 값을 보내면 작은따옴표로 LIKE 리터럴을 닫고 임의 SQL을 이어 붙여, 다른 테이블의 회원 이메일·연계정보 같은 데이터를 읽어 낼 수 있다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/resources/mapper/community/post/CommunityPostMapper.xml",
+              "line": 51,
+              "severity": "high",
+              "summary": "제목 검색이 사용자 검색어를 `${}`로 SQL에 그대로 넣어 SQL 주입이 가능하다. 앞단의 `CommunityPostQueryService.escapeLike`는 `\\`·`%`·`_`만 이스케이프하고 작은따옴표는 그대로 둔다.",
+              "scenario": "공격자가 커뮤니티 글 목록 API에 `searchType=TITLE`과 `keyword=%' UNION SELECT ... -- `처럼 작은따옴표로 LIKE 리터럴을 닫는 검색어를 보내면, 그 뒤의 SQL이 실행돼 회원 이메일·전화번호 같은 다른 테이블의 데이터를 읽거나 쿼리를 조작할 수 있다."
+            }
+          ],
+          "hit": true
+        }
+      ]
+    },
+    {
+      "defect": {
+        "id": "D3",
+        "title": "글 수정·삭제의 작성자 확인 제거(IDOR)",
+        "path": "backend/src/main/java/com/moewadeul/community/application/post/CommunityPostWriter.java",
+        "old": "        post.requireWrittenBy(memberId);\n",
+        "new": ""
+      },
+      "gates": [
+        {
+          "name": "backend-unit",
+          "passed": true,
+          "seconds": 43.5,
+          "log_tail": "\n> Task :compileJava\n\n> Task :processResources\n> Task :classes\n\n> Task :compileTestJava\n\n> Task :processTestResources\n> Task :testClasses\n> Task :test\n> Task :spotlessJava\n> Task :spotlessJavaCheck\n> Task :spotlessCheck\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D3/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 43s\n7 actionable tasks: 7 executed\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "backend-integration",
+          "passed": false,
+          "seconds": 107.9,
+          "log_tail": "> Task :compileJava UP-TO-DATE\n> Task :processResources UP-TO-DATE\n> Task :classes UP-TO-DATE\n> Task :compileTestJava UP-TO-DATE\n> Task :processTestResources UP-TO-DATE\n> Task :testClasses UP-TO-DATE\n\n> Task :integrationTest\n\nCommunityImageApiIntegrationTest > [F-29][CM-06] 수정에서 imageIds를 null로 보내면 400, 남의 글이면 이미지 검사보다 먼저 403, 없는 글이면 404다 FAILED\n    org.opentest4j.AssertionFailedError at CommunityImageApiIntegrationTest.java:436\n\nCommunityPostReviseDeleteApiIntegrationTest > [F-29][CM-03] 다른 회원이 고치거나 지우면 403 ACCESS_DENIED이고 글은 그대로다 FAILED\n    org.opentest4j.AssertionFailedError at CommunityPostReviseDeleteApiIntegrationTest.java:141\n\n2026-11-26T15:19:06.075+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=1\n2026-11-26T15:19:06.087+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:19:06.089+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...\n2026-11-26T15:19:06.091+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.\n2026-11-26T15:19:06.310+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:19:06.315+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:19:06.316+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...\n2026-11-26T15:19:06.317+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.\n2026-11-26T15:19:06.518+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:19:06.534+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:19:06.535+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...\n2026-11-26T15:19:06.536+09:00  INFO 20988 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.\n\n> Task :integrationTest\n\n> Task :integrationTest FAILED\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D3/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n5 actionable tasks: 1 executed, 4 up-to-date\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n\n194 tests completed, 2 failed\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':integrationTest'.\n> There were failing tests. See the report at: file:///Users/heygw/Developer/moewadeul-ai/eval-D3/backend/build/reports/tests/integrationTest/index.html\n\n* Try:\n> Run with --scan to get full insights from a Build Scan (powered by Develocity).\n\nBUILD FAILED in 1m 47s"
+        },
+        {
+          "name": "secret-scan",
+          "passed": true,
+          "seconds": 0.5,
+          "log_tail": "\u001b[90m6:19AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1m1 commits scanned.\u001b[0m\n\u001b[90m6:19AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mscanned ~0 bytes (0) in 39ms\u001b[0m\n\u001b[90m6:19AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mno leaks found\u001b[0m"
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/community/application/post/CommunityPostWriter.java",
+              "line": 79,
+              "severity": "high",
+              "summary": "requireOwnActive가 post.requireWrittenBy(memberId) 호출을 잃어 글 수정·삭제와 requireOwnActivePost에서 작성자를 확인하지 않는다(IDOR)",
+              "scenario": "로그인한 회원 누구나 남의 글 postId를 넣어 PATCH나 DELETE를 보내면 그 글의 제목·본문·장소·첨부 이미지를 바꾸거나 글을 지울 수 있다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/community/application/post/CommunityPostWriter.java",
+              "line": 78,
+              "severity": "high",
+              "summary": "requireOwnActive에서 post.requireWrittenBy(memberId) 호출이 빠져, 글 수정(revise)·삭제(delete)와 requireOwnActivePost에서 작성자를 확인하지 않는다(IDOR)",
+              "scenario": "로그인한 회원이 PATCH·DELETE 커뮤니티 글 요청의 postId만 남의 글 번호로 바꾸면, 그 글의 제목·본문·장소를 고치거나 글을 지울 수 있다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/community/application/post/CommunityPostWriter.java",
+              "line": 79,
+              "severity": "high",
+              "summary": "requireOwnActive에서 post.requireWrittenBy(memberId) 호출이 빠졌다. 그래서 revise·delete·requireOwnActivePost가 게시글이 활성 상태인지만 보고 작성자는 확인하지 않는다(IDOR).",
+              "scenario": "로그인한 회원이 수정·삭제 요청의 postId를 남의 글 id로 바꿔 보내면, 그 글의 제목·본문·장소·이미지를 고치거나 글을 삭제할 수 있다."
+            }
+          ],
+          "hit": true
+        }
+      ]
+    },
+    {
+      "defect": {
+        "id": "D4",
+        "title": "가입 로그에 이메일 출력",
+        "path": "backend/src/main/java/com/moewadeul/member/application/signup/MemberSignupService.java",
+        "old": "        Email email = Email.of(command.email());\n",
+        "new": "        Email email = Email.of(command.email());\n        org.slf4j.LoggerFactory.getLogger(MemberSignupService.class).info(\"signup requested email={}\", command.email());\n"
+      },
+      "gates": [
+        {
+          "name": "backend-unit",
+          "passed": true,
+          "seconds": 42.0,
+          "log_tail": "\n> Task :compileJava\n\n> Task :processResources\n> Task :classes\n\n> Task :compileTestJava\n\n> Task :processTestResources\n> Task :testClasses\n> Task :test\n> Task :spotlessJava\n> Task :spotlessJavaCheck\n> Task :spotlessCheck\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D4/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 41s\n7 actionable tasks: 7 executed\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "backend-integration",
+          "passed": true,
+          "seconds": 179.7,
+          "log_tail": "> Task :compileJava UP-TO-DATE\n> Task :processResources UP-TO-DATE\n> Task :classes UP-TO-DATE\n> Task :compileTestJava UP-TO-DATE\n> Task :processTestResources UP-TO-DATE\n> Task :testClasses UP-TO-DATE\n> Task :integrationTest\n\n2026-11-26T15:23:22.713+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:23:22.719+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:23:22.720+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...\n2026-11-26T15:23:22.722+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.\n2026-11-26T15:23:22.926+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:23:22.933+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:23:22.933+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...\n2026-11-26T15:23:22.934+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.\n2026-11-26T15:23:23.130+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:23:23.154+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:23:23.155+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...\n2026-11-26T15:23:23.156+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.\n2026-11-26T15:23:23.364+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:23:23.372+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:23:23.373+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...\n2026-11-26T15:23:23.374+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.\n2026-11-26T15:23:23.559+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:23:23.565+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:23:23.566+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown initiated...\n2026-11-26T15:23:23.567+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown completed.\n2026-11-26T15:23:23.748+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:23:23.752+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:23:23.752+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown initiated...\n2026-11-26T15:23:23.753+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Shutdown completed.\n2026-11-26T15:23:23.938+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:23:23.944+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:23:23.945+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown initiated...\n2026-11-26T15:23:23.946+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-7 - Shutdown completed.\n2026-11-26T15:23:24.119+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:23:24.124+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:23:24.125+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown initiated...\n2026-11-26T15:23:24.126+09:00  INFO 22913 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-8 - Shutdown completed.\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D4/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2m 59s\n5 actionable tasks: 1 executed, 4 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "secret-scan",
+          "passed": true,
+          "seconds": 0.5,
+          "log_tail": "\u001b[90m6:23AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1m1 commits scanned.\u001b[0m\n\u001b[90m6:23AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mscanned ~121 bytes (121 bytes) in 38.8ms\u001b[0m\n\u001b[90m6:23AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mno leaks found\u001b[0m"
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/member/application/signup/MemberSignupService.java",
+              "line": 35,
+              "severity": "medium",
+              "summary": "가입 요청마다 회원 이메일 원문을 INFO 로그에 남겨 개인정보 로그 금지 규칙을 어긴다",
+              "scenario": "로그 수집 시스템이나 로그 파일을 읽을 수 있는 내부자 또는 침해자가 가입한 모든 회원의 이메일 목록을 모을 수 있다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/member/application/signup/MemberSignupService.java",
+              "line": 35,
+              "severity": "medium",
+              "summary": "가입 요청마다 회원 이메일 원문을 INFO 로그에 남겨 개인정보 로그 금지 규칙을 어긴다",
+              "scenario": "로그 수집 시스템이나 로그 파일을 읽을 수 있는 내부자 또는 로그 저장소를 탈취한 공격자가 가입 시도마다 찍힌 email= 줄로 전체 가입자 이메일 목록을 모은다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/member/application/signup/MemberSignupService.java",
+              "line": 35,
+              "severity": "medium",
+              "summary": "가입 요청마다 회원 이메일 원문을 INFO 로그로 남겨 개인정보 로그 금지 규칙을 어긴다",
+              "scenario": "로그 수집 시스템이나 로그 파일을 읽을 수 있는 내부자 또는 로그 유출 공격자가 가입을 시도한 모든 사용자의 이메일 주소를 그대로 모을 수 있다."
+            }
+          ],
+          "hit": true
+        }
+      ]
+    },
+    {
+      "defect": {
+        "id": "D5",
+        "title": "후기 모듈이 회원 모듈에 직접 의존(모듈 경계)",
+        "path": "backend/src/main/java/com/moewadeul/review/application/SpotReviewWriter.java",
+        "old": "    private final ReviewImageAttachments reviewImageAttachments;\n",
+        "new": "    private final ReviewImageAttachments reviewImageAttachments;\n    private final com.moewadeul.member.application.MemberSessions memberSessions;\n"
+      },
+      "gates": [
+        {
+          "name": "backend-unit",
+          "passed": false,
+          "seconds": 39.0,
+          "log_tail": "\n> Task :compileJava\n\n> Task :processResources\n> Task :classes\n\n> Task :compileTestJava\n\n> Task :processTestResources\n> Task :testClasses\n\n> Task :test\n\nArchitectureTest > [ADR-005] 모듈은 허용된 방향으로만 의존한다 FAILED\n    java.lang.AssertionError at ArchitectureTest.java:36\n\n> Task :test FAILED\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D5/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n5 actionable tasks: 5 executed\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n\n2215 tests completed, 1 failed\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':test'.\n> There were failing tests. See the report at: file:///Users/heygw/Developer/moewadeul-ai/eval-D5/backend/build/reports/tests/test/index.html\n\n* Try:\n> Run with --scan to get full insights from a Build Scan (powered by Develocity).\n\nBUILD FAILED in 38s"
+        },
+        {
+          "name": "backend-integration",
+          "passed": true,
+          "seconds": 32.6,
+          "log_tail": "> Task :compileJava UP-TO-DATE\n> Task :processResources UP-TO-DATE\n> Task :classes UP-TO-DATE\n> Task :compileTestJava UP-TO-DATE\n> Task :processTestResources UP-TO-DATE\n> Task :testClasses UP-TO-DATE\n> Task :integrationTest\n\n2026-11-26T15:24:58.290+09:00  INFO 24488 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:24:58.298+09:00  INFO 24488 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:24:58.299+09:00  INFO 24488 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...\n2026-11-26T15:24:58.301+09:00  INFO 24488 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.\n2026-11-26T15:24:58.461+09:00  INFO 24488 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:24:58.473+09:00  INFO 24488 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:24:58.474+09:00  INFO 24488 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...\n2026-11-26T15:24:58.476+09:00  INFO 24488 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D5/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 32s\n5 actionable tasks: 1 executed, 4 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "secret-scan",
+          "passed": true,
+          "seconds": 0.5,
+          "log_tail": "\u001b[90m6:24AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1m1 commits scanned.\u001b[0m\n\u001b[90m6:24AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mscanned ~82 bytes (82 bytes) in 31.2ms\u001b[0m\n\u001b[90m6:24AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mno leaks found\u001b[0m"
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "findings": [],
+          "hit": false
+        },
+        {
+          "error": null,
+          "findings": [],
+          "hit": false
+        },
+        {
+          "error": null,
+          "findings": [],
+          "hit": false
+        }
+      ]
+    },
+    {
+      "defect": {
+        "id": "D6",
+        "title": "API 키를 코드에 하드코딩",
+        "path": "backend/src/main/java/com/moewadeul/aisearch/infra/OpenAiSpotQueryInterpreter.java",
+        "old": "public class OpenAiSpotQueryInterpreter implements SpotQueryInterpreter {\n",
+        "new": "public class OpenAiSpotQueryInterpreter implements SpotQueryInterpreter {\n\n    private static final String FALLBACK_API_KEY = \"sk-proj-(실행 때 만든 가짜 키, 기록에서 지움)\";\n"
+      },
+      "gates": [
+        {
+          "name": "backend-unit",
+          "passed": false,
+          "seconds": 41.5,
+          "log_tail": "\n> Task :compileJava\n\n> Task :processResources\n> Task :classes\n\n> Task :compileTestJava\n\n> Task :processTestResources\n> Task :testClasses\n> Task :test\n> Task :spotlessJava\n> Task :spotlessJavaCheck FAILED\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D6/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n7 actionable tasks: 7 executed\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':spotlessJavaCheck' (registered in build file 'build.gradle.kts').\n> The following files had format violations:\n      src/main/java/com/moewadeul/aisearch/infra/OpenAiSpotQueryInterpreter.java\n          @@ -40,7 +40,8 @@\n           @Component\n           public·class·OpenAiSpotQueryInterpreter·implements·SpotQueryInterpreter·{\n           \n          -····private·static·final·String·FALLBACK_API_KEY·=·\"sk-proj-(실행 때 만든 가짜 키, 기록에서 지움)\";\n          +····private·static·final·String·FALLBACK_API_KEY·=\n          +············\"sk-proj-(실행 때 만든 가짜 키, 기록에서 지움)\";\n           \n           ····private·static·final·String·API·=·\"openai\";\n           ····private·static·final·String·OPERATION·=·\"chatCompletions\";\n  Run './gradlew spotlessApply' to fix all violations.\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to get full insights from a Build Scan (powered by Develocity).\n> Get more help at https://help.gradle.org.\n\nBUILD FAILED in 41s"
+        },
+        {
+          "name": "backend-integration",
+          "passed": true,
+          "seconds": 32.7,
+          "log_tail": "> Task :compileJava UP-TO-DATE\n> Task :processResources UP-TO-DATE\n> Task :classes UP-TO-DATE\n> Task :compileTestJava UP-TO-DATE\n> Task :processTestResources UP-TO-DATE\n> Task :testClasses UP-TO-DATE\n> Task :integrationTest\n\n2026-11-26T15:26:30.728+09:00  INFO 25593 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:26:30.736+09:00  INFO 25593 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:26:30.737+09:00  INFO 25593 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...\n2026-11-26T15:26:30.738+09:00  INFO 25593 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.\n2026-11-26T15:26:31.440+09:00  INFO 25593 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:26:31.454+09:00  INFO 25593 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:26:31.455+09:00  INFO 25593 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...\n2026-11-26T15:26:31.458+09:00  INFO 25593 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D6/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 32s\n5 actionable tasks: 1 executed, 4 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "secret-scan",
+          "passed": false,
+          "seconds": 0.5,
+          "log_tail": "\u001b[90m6:26AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1m1 commits scanned.\u001b[0m\n\u001b[90m6:26AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mscanned ~220 bytes (220 bytes) in 36.6ms\u001b[0m\n\u001b[90m6:26AM\u001b[0m \u001b[33mWRN\u001b[0m \u001b[1mleaks found: 1\u001b[0m"
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/aisearch/infra/OpenAiSpotQueryInterpreter.java",
+              "line": 43,
+              "severity": "high",
+              "summary": "OpenAI 프로젝트 API 키(sk-proj-…)가 FALLBACK_API_KEY 상수로 코드에 하드코딩되어 커밋됨. 코드 어디에서도 쓰지 않지만 git 이력에는 영구히 남으므로, 키를 즉시 폐기·재발급하고 이력에서도 지워야 한다(CLAUDE.md 비밀값 규칙과 gitleaks secret-scan 위반).",
+              "scenario": "저장소나 이력, 빌드된 jar를 읽을 수 있는 사람이 이 키를 꺼내 프로젝트 계정으로 OpenAI API를 마음대로 불러 비용을 쓰고 사용 한도를 소진시킬 수 있다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/aisearch/infra/OpenAiSpotQueryInterpreter.java",
+              "line": 43,
+              "severity": "high",
+              "summary": "OpenAI 프로젝트 API 키(sk-proj-…)가 FALLBACK_API_KEY 상수로 소스에 하드코딩되어 git 이력에 남는다. 이 상수를 쓰는 곳은 없지만 키는 이미 노출됐다.",
+              "scenario": "저장소나 커밋 이력, 빌드된 jar를 읽을 수 있는 사람이 이 키를 꺼내 피해자 계정으로 OpenAI API를 불러 비용을 쓰게 하거나 프로젝트 자원에 접근한다. 따라서 키를 즉시 폐기하고, 커밋을 지우는 것과 별개로 이력에서도 제거해야 한다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/aisearch/infra/OpenAiSpotQueryInterpreter.java",
+              "line": 43,
+              "severity": "high",
+              "summary": "OpenAI 프로젝트 API 키(sk-proj-...)가 상수 FALLBACK_API_KEY에 평문으로 하드코딩되어 커밋됨(현재 참조처는 없지만 git 이력에 남음)",
+              "scenario": "저장소나 빌드된 jar를 읽을 수 있는 사람이 키를 꺼내 OpenAI API를 호출하면 프로젝트 계정에 비용을 물리고 사용량 한도를 바닥낼 수 있으므로, 상수를 지우는 것만으로는 부족하고 키를 즉시 폐기·교체하고 이력에서도 제거해야 한다."
+            }
+          ],
+          "hit": true
+        }
+      ]
+    },
+    {
+      "defect": {
+        "id": "D7",
+        "title": "외부 API 응답 대기 시간 제한 제거",
+        "path": "backend/src/main/java/com/moewadeul/aisearch/infra/OpenAiSpotQueryInterpreter.java",
+        "old": "        requestFactory.setReadTimeout(properties.readTimeout());\n",
+        "new": ""
+      },
+      "gates": [
+        {
+          "name": "backend-unit",
+          "passed": true,
+          "seconds": 42.3,
+          "log_tail": "\n> Task :compileJava\n\n> Task :processResources\n> Task :classes\n\n> Task :compileTestJava\n\n> Task :processTestResources\n> Task :testClasses\n> Task :test\n> Task :spotlessJava\n> Task :spotlessJavaCheck\n> Task :spotlessCheck\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D7/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 42s\n7 actionable tasks: 7 executed\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "backend-integration",
+          "passed": false,
+          "seconds": 32.3,
+          "log_tail": "> Task :compileJava UP-TO-DATE\n> Task :processResources UP-TO-DATE\n> Task :classes UP-TO-DATE\n> Task :compileTestJava UP-TO-DATE\n> Task :processTestResources UP-TO-DATE\n> Task :testClasses UP-TO-DATE\n> Task :integrationTest\n\nOpenAiSpotQueryInterpreterIntegrationTest > [F-27][AI-05][AI-09] 응답이 읽기 시간 안에 오지 않으면 다시 보내지 않고 실패하며, 보낸 요청 본문의 바이트 수와 최대 출력 토큰을 사용량으로 담는다 FAILED\n    java.lang.NullPointerException at OpenAiSpotQueryInterpreterIntegrationTest.java:190\n\n2026-11-26T15:28:15.723+09:00  INFO 26835 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:28:15.730+09:00  INFO 26835 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:28:15.731+09:00  INFO 26835 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...\n2026-11-26T15:28:15.732+09:00  INFO 26835 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.\n2026-11-26T15:28:15.974+09:00  INFO 26835 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:28:15.986+09:00  INFO 26835 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:28:15.987+09:00  INFO 26835 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...\n2026-11-26T15:28:15.989+09:00  INFO 26835 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.\n\n> Task :integrationTest FAILED\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D7/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n5 actionable tasks: 1 executed, 4 up-to-date\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n\n35 tests completed, 1 failed\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':integrationTest'.\n> There were failing tests. See the report at: file:///Users/heygw/Developer/moewadeul-ai/eval-D7/backend/build/reports/tests/integrationTest/index.html\n\n* Try:\n> Run with --scan to get full insights from a Build Scan (powered by Develocity).\n\nBUILD FAILED in 32s"
+        },
+        {
+          "name": "secret-scan",
+          "passed": true,
+          "seconds": 0.5,
+          "log_tail": "\u001b[90m6:28AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1m1 commits scanned.\u001b[0m\n\u001b[90m6:28AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mscanned ~0 bytes (0) in 28.7ms\u001b[0m\n\u001b[90m6:28AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mno leaks found\u001b[0m"
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/aisearch/infra/OpenAiSpotQueryInterpreter.java",
+              "line": 309,
+              "severity": "medium",
+              "summary": "OpenAI 호출의 응답 대기 시간 제한(requestFactory.setReadTimeout)이 빠졌습니다. 이제 연결 시간 제한(connectTimeout)만 남아 있고, 설정에 있는 readTimeout(기본 5초)은 어디에서도 쓰이지 않습니다.",
+              "scenario": "OpenAI가 연결은 받은 뒤 응답을 보내지 않고 멈추면, 회원 여럿이 AI 검색을 몇 번씩만 보내도 요청마다 Tomcat 스레드가 끝없이 붙잡혀 스레드 풀이 바닥나고, 결국 서비스 전체가 응답하지 못합니다."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/aisearch/infra/OpenAiSpotQueryInterpreter.java",
+              "line": 309,
+              "severity": "medium",
+              "summary": "The OpenAI call no longer sets a response wait limit. JdkClientHttpRequestFactory has no read timeout, so readTimeout (default 5s) is not applied and a request can wait forever after the connection opens.",
+              "scenario": "If the OpenAI side stops responding or responds slowly, logged-in members can send just maxConcurrentCalls AI-search requests. Those requests hold every ExternalCallLimit slot and their Tomcat threads with no end, so AI search keeps failing for all users until the server restarts."
+            }
+          ],
+          "hit": true
+        },
+        {
+          "error": null,
+          "findings": [
+            {
+              "file": "backend/src/main/java/com/moewadeul/aisearch/infra/OpenAiSpotQueryInterpreter.java",
+              "line": 309,
+              "severity": "medium",
+              "summary": "OpenAI 호출에서 응답 대기 시간 제한(requestFactory.setReadTimeout)이 빠졌다. 이제 연결 제한(connectTimeout)만 남고, 설정값 readTimeout(기본 5s)은 검증만 되고 어디에도 쓰이지 않는다.",
+              "scenario": "OpenAI나 그 앞 프록시가 연결을 받은 뒤 응답을 내주지 않거나 아주 느리게 흘려보내면, 로그인한 회원 여럿이 AI 검색을 동시에 보낼 때마다 요청 스레드가 기한 없이 묶인다. 그러면 Tomcat 스레드와 커넥션이 바닥나 서비스 전체가 응답하지 못한다."
+            }
+          ],
+          "hit": true
+        }
+      ]
+    },
+    {
+      "defect": {
+        "id": "D8",
+        "title": "API 계층에 @Transactional",
+        "path": "backend/src/main/java/com/moewadeul/spot/api/detail/SpotDetailController.java",
+        "old": "    @GetMapping(\"/{spotId}\")\n    SpotDetailResponse findDetail(@PathVariable long spotId) {",
+        "new": "    @org.springframework.transaction.annotation.Transactional(readOnly = true)\n    @GetMapping(\"/{spotId}\")\n    SpotDetailResponse findDetail(@PathVariable long spotId) {"
+      },
+      "gates": [
+        {
+          "name": "backend-unit",
+          "passed": false,
+          "seconds": 39.2,
+          "log_tail": "\n> Task :compileJava\n\n> Task :processResources\n> Task :classes\n\n> Task :compileTestJava\n\n> Task :processTestResources\n> Task :testClasses\n\n> Task :test\n\nArchitectureTest > [ADR-005] @Transactional 은 application 패키지에만 둔다 FAILED\n    java.lang.AssertionError at ArchitectureTest.java:78\n\n> Task :test FAILED\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D8/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n5 actionable tasks: 5 executed\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\nNote: Some input files use unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended\n\n2215 tests completed, 1 failed\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':test'.\n> There were failing tests. See the report at: file:///Users/heygw/Developer/moewadeul-ai/eval-D8/backend/build/reports/tests/test/index.html\n\n* Try:\n> Run with --scan to get full insights from a Build Scan (powered by Develocity).\n\nBUILD FAILED in 38s"
+        },
+        {
+          "name": "backend-integration",
+          "passed": true,
+          "seconds": 96.9,
+          "log_tail": "> Task :compileJava UP-TO-DATE\n> Task :processResources UP-TO-DATE\n> Task :classes UP-TO-DATE\n> Task :compileTestJava UP-TO-DATE\n> Task :processTestResources UP-TO-DATE\n> Task :testClasses UP-TO-DATE\n> Task :integrationTest\n\n2026-11-26T15:31:13.261+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:31:13.273+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:31:13.274+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...\n2026-11-26T15:31:13.276+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.\n2026-11-26T15:31:13.505+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:31:13.511+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:31:13.511+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...\n2026-11-26T15:31:13.513+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.\n2026-11-26T15:31:13.751+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:31:13.764+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:31:13.764+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...\n2026-11-26T15:31:13.765+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.\n2026-11-26T15:31:13.940+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] c.m.c.a.post.CommunityViewCountFlusher   : community view counts flushed on shutdown posts=0\n2026-11-26T15:31:13.942+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'\n2026-11-26T15:31:13.942+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...\n2026-11-26T15:31:13.943+09:00  INFO 28360 --- [moewadeul] [ionShutdownHook] [] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.\n\n[Incubating] Problems report is available at: file:///Users/heygw/Developer/moewadeul-ai/eval-D8/backend/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.9.1/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1m 36s\n5 actionable tasks: 1 executed, 4 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.9.1/userguide/configuration_cache_enabling.html\nOpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended"
+        },
+        {
+          "name": "secret-scan",
+          "passed": true,
+          "seconds": 0.4,
+          "log_tail": "\u001b[90m6:31AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1m1 commits scanned.\u001b[0m\n\u001b[90m6:31AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mscanned ~79 bytes (79 bytes) in 37.6ms\u001b[0m\n\u001b[90m6:31AM\u001b[0m \u001b[32mINF\u001b[0m \u001b[1mno leaks found\u001b[0m"
+        }
+      ],
+      "reviews": [
+        {
+          "error": null,
+          "findings": [],
+          "hit": false
+        },
+        {
+          "error": null,
+          "findings": [],
+          "hit": false
+        },
+        {
+          "error": null,
+          "findings": [],
+          "hit": false
+        }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,8 @@ from github import git
 BASE_REF = "origin/develop"
 GITLEAKS_IMAGE = "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f"
 MODULE_PATH = re.compile(r"^backend/src/main/java/com/moewadeul/([^/]+)/(.*)$")
+MAPPER_PATH = re.compile(r"^backend/src/main/resources/mapper/([^/]+)/")
+COMMON_MODULE = "common"
 LOG_TAIL_LINES = 200
 LOG_TAIL_CHARS = 12000
 REVIEW_TOOLS = "Read,Glob,Grep,Bash(git diff:*)"
@@ -80,17 +82,20 @@ def changed_files(worktree: Path) -> list[str]:
 
 
 def integration_command(ctx: GateContext) -> list[str]:
-    modules: list[str] = []
+    full = ["./gradlew", "integrationTest", "--console=plain"]
+    modules: set[str] = set()
     api_changed = False
     for path in ctx.changed:
-        match = MODULE_PATH.match(path)
-        if not match:
+        if not path.startswith("backend/src/main/"):
             continue
-        if match.group(1) not in modules:
-            modules.append(match.group(1))
-        api_changed = api_changed or match.group(2).startswith("api/")
+        java, mapper = MODULE_PATH.match(path), MAPPER_PATH.match(path)
+        module = (java or mapper).group(1) if (java or mapper) else None
+        # 마이그레이션·설정·common은 어느 모듈이 영향을 받는지 경로로 알 수 없어 통합 테스트 전체를 돈다
+        if module is None or module == COMMON_MODULE:
+            return full
+        modules.add(module)
+        api_changed = api_changed or bool(java and java.group(2).startswith("api/"))
     command = ["./gradlew", "integrationTest"]
-    # 모듈에 속하지 않는 main 변경(마이그레이션, 설정)은 어느 모듈에 영향이 갈지 몰라 통합 테스트 전체를 돈다
     for module in sorted(modules):
         command += ["--tests", f"com.moewadeul.{module}.*"]
     if api_changed:
