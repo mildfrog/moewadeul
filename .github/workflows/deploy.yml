@@ -164,6 +164,8 @@ jobs:
       !cancelled() && github.ref == 'refs/heads/main' &&
       (needs.build.result == 'success' ||
        (github.event_name == 'workflow_dispatch' && needs.drill.result != 'failure'))
+    # production 환경은 소유자 승인을 요구한다. 빌드가 끝나도 승인 전에는 운영 서버에 명령을 보내지 않는다.
+    environment: production
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     permissions:
