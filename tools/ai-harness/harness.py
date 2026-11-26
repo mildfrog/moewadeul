@@ -322,6 +322,9 @@ ORDER = [INTAKE, AWAITING, IMPLEMENTING, VERIFYING]
 
 
 def current_state(labels: frozenset[str]) -> str | None:
+    # 멈춘 이슈에 소유자가 claude 라벨을 다시 붙이면 재시작이다. 승인된 계획과 커밋은 그대로 이어 쓴다.
+    if INTAKE in labels:
+        return INTAKE
     if labels & TERMINAL:
         return None
     present = [s for s in ORDER if s in labels]

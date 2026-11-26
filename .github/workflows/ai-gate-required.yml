@@ -9,7 +9,8 @@ permissions:
 
 jobs:
   human-pr:
-    name: ai-gate
+    # 잡 이름을 ai-gate로 두면 claude/ 브랜치에서 건너뛴 잡이 같은 이름의 체크로 남고, 필수 검사는 건너뜀을 통과로 친다.
+    name: mark-human-pr
     # claude/ 브랜치는 하네스가 검증을 끝낸 뒤에만 ai-gate 상태를 남긴다. 여기서 대신 통과시키면 필수 검사가 의미를 잃는다.
     if: ${{ !startsWith(github.event.pull_request.head.ref, 'claude/') }}
     runs-on: ubuntu-24.04

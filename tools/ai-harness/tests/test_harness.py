@@ -151,6 +151,24 @@ class FailureTest(WorldTest):
         self.assertEqual(self.comment_bodies(), comments_before)
         self.assertEqual(self.labels(), {"ai:blocked"})
 
+    def test_멈춘_이슈에_claude_라벨을_다시_붙이면_승인된_계획으로_검증부터_다시_돈다(self):
+        self.approved_issue()
+        with mock.patch.dict(os.environ, {"FAKE_GRADLE_FAIL": "1"}):
+            self.harness().run_once()
+        plans_before = len(self.calls("claude '# 작업: 계획'"))
+
+        def relabel(state):
+            issue = state["issues"]["1"]
+            issue["labels"].append({"name": "claude"})
+            issue["timeline"].append({"event": "labeled", "label": {"name": "claude"}, "actor": {"login": "mildfrog"}})
+
+        self.edit_state(relabel)
+        self.harness().run_once()
+
+        self.assertEqual(self.labels(), {"ai:pr-open"})
+        self.assertEqual(len(self.calls("claude '# 작업: 계획'")), plans_before)
+        self.only_pr()
+
     def test_비밀값_검사가_실패하면_고치게_한_뒤_멈춘다(self):
         self.approved_issue()
         with mock.patch.dict(os.environ, {"FAKE_GITLEAKS_FAIL": "1"}):

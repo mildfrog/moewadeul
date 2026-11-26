@@ -22,9 +22,11 @@ GitHub 이슈 하나를 Claude Code로 구현해 PR까지 올리는 도구다. �
 | `ai:awaiting-approval` | 소유자의 `/approve`·`/reject` 댓글이나 디스코드 ✅·❌를 기다린다 | `ai:implementing` 또는 `ai:rejected` |
 | `ai:implementing` | `claude -p`가 계획대로 구현하고 커밋한다. 커밋이 없으면 실패다 | `ai:verifying` |
 | `ai:verifying` | 게이트를 돌리고, 실패하면 Claude가 고치게 한다(최대 2회). 통과하면 push, PR, 검증 보고 댓글, `ai-gate` 상태 | `ai:pr-open` |
-| `ai:pr-open`, `ai:blocked`, `ai:rejected` | 더 손대지 않는다 | |
+| `ai:pr-open`, `ai:blocked`, `ai:rejected` | 더 손대지 않는다. `claude` 라벨을 다시 붙이면 재시작 | |
 
-라벨은 새 라벨을 먼저 붙이고 옛 라벨을 뗀다. 중간에 죽어도 두 라벨이 함께 남을 뿐 상태를 잃지 않고, 더 앞선 단계가 현재 상태가 된다.
+라벨은 새 라벨을 먼저 붙이고 옛 라벨을 뗀다. 중간에 죽어도 두 라벨이 함께 남을 뿐 상태를 잃지 않고, 더 뒤 단계가 현재 상태가 된다.
+
+`ai:blocked`나 `ai:rejected`로 끝난 이슈에 소유자가 `claude` 라벨을 다시 붙이면 다시 시작한다. 이미 승인된 계획과 커밋이 있으면 그대로 이어 쓰므로, 막힌 이슈는 원인을 고친 뒤 검증부터 다시 돈다. 계획을 새로 받으려면 새 이슈를 연다.
 
 디스코드로 승인하면 하네스가 이슈에 "디스코드에서 소유자가 승인했다(시각)" 댓글을 남긴다. 승인 기록의 원본은 GitHub이다.
 
