@@ -1,0 +1,34 @@
+# 검증 전용 MySQL과 메일 수신기. backend/docker-compose.yml과 같은 MySQL 설정을 쓰되, 데이터는 tmpfs에 둬서 내리면 사라진다.
+# up.sh가 -p moewadeul-verify --env-file backend/.env로 띄운다.
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?backend/.env에 DB_ROOT_PASSWORD가 필요합니다}
+      MYSQL_DATABASE: ${DB_NAME:-moewadeul}
+      MYSQL_USER: ${DB_USERNAME:-moewadeul}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?backend/.env에 DB_PASSWORD가 필요합니다}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --default-time-zone=+00:00
+      - --log-bin-trust-function-creators=1
+    ports:
+      - "127.0.0.1:13306:3306"
+    tmpfs:
+      - /var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+      start_period: 15s
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "1"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "1"
+    ports:
+      - "127.0.0.1:11025:1025"
+      - "127.0.0.1:18025:8025"
