@@ -59,6 +59,8 @@ class WorldTest(unittest.TestCase):
 
         self.calls_file = self.root / "calls.log"
         self.calls_file.touch()
+        self.prompts_file = self.root / "prompts.jsonl"
+        self.prompts_file.touch()
         self.state_file = self.root / "gh-state.json"
         self.state_file.write_text(json.dumps({"issues": {}, "comments": {}, "prs": [], "statuses": [], "labels": [], "next_id": 1000}))
 
@@ -79,6 +81,7 @@ class WorldTest(unittest.TestCase):
                 **GIT_ENV,
                 "PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}",
                 "FAKE_CALLS": str(self.calls_file),
+                "FAKE_PROMPTS": str(self.prompts_file),
                 "FAKE_GH_STATE": str(self.state_file),
             },
         )
@@ -100,6 +103,10 @@ class WorldTest(unittest.TestCase):
         state = self.state()
         change(state)
         self.state_file.write_text(json.dumps(state))
+
+    def prompts(self, task):
+        lines = self.prompts_file.read_text().splitlines()
+        return [p["prompt"] for p in map(json.loads, lines) if p["task"] == task]
 
     def calls(self, prefix=""):
         return [line for line in self.calls_file.read_text().splitlines() if line.startswith(prefix)]

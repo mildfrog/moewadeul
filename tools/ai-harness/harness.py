@@ -46,7 +46,11 @@ PLAN_MARK = "<!-- ai-harness:plan -->"
 PLAN_HEADER = "## 구현 계획"
 DISCORD_MESSAGE = re.compile(r"<!-- ai-harness:discord-message=(\S+) -->")
 DISCORD_APPROVAL_MARK = "<!-- ai-harness:discord-approval -->"
-APPROVAL_FOOTER = "승인: 디스코드 ✅ 또는 이 이슈에 `/approve` 댓글, 반려: ❌ 또는 `/reject`"
+BLOCKED_MARK = "<!-- ai-harness:blocked -->"
+APPROVAL_FOOTER = (
+    "승인: 디스코드 ✅ 또는 이 이슈에 `/approve` 댓글, 반려: ❌ 또는 `/reject`. "
+    "고를 것이 있으면 `/approve` 다음 줄부터 결정을 적는다. 그 내용이 구현 지시에 들어간다"
+)
 
 
 class Outcome(Enum):
@@ -144,7 +148,7 @@ class Harness:
 
     def block(self, issue: Issue, reason: str, log_tail: str) -> None:
         detail = log_tail.replace("```", "'''")[-12000:]
-        body = f"## 하네스가 멈췄다\n\n사유: {reason}\n"
+        body = f"{BLOCKED_MARK}\n## 하네스가 멈췄다\n\n사유: {reason}\n"
         if detail.strip():
             body += f"\n```\n{detail}\n```\n"
         body += "\n라벨을 `ai:blocked`로 바꿨다. 다시 돌리려면 원인을 해결하고 `claude` 라벨을 새로 붙인다."
@@ -169,11 +173,15 @@ class Harness:
         return plans[-1] if plans else None
 
     def owner_notes(self, number: int) -> str:
-        notes = [
-            c.body.strip()
-            for c in self.owner_comments(number)
-            if "<!-- ai-harness:" not in c.body and command_of(c) is None
-        ]
+        notes = []
+        for c in self.owner_comments(number):
+            if "<!-- ai-harness:" in c.body:
+                continue
+            body = c.body.strip()
+            if command_of(c) is not None:
+                body = body.partition("\n")[2].strip()
+            if body:
+                notes.append(body)
         return "\n\n---\n\n".join(notes) or "(없음)"
 
     def ensure_worktree(self, number: int) -> Path:

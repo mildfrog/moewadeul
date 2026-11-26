@@ -16,6 +16,8 @@ GITLEAKS_IMAGE = "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a
 MODULE_PATH = re.compile(r"^backend/src/main/java/com/moewadeul/([^/]+)/(.*)$")
 MAPPER_PATH = re.compile(r"^backend/src/main/resources/mapper/([^/]+)/")
 COMMON_MODULE = "common"
+# 구현하던 Claude가 같은 워크트리에서 테스트를 돌렸으면 Gradle이 UP-TO-DATE로 건너뛴다. 검증받는 쪽이 만든 결과를 믿지 않으려고 다시 돈다.
+GRADLE_RUN = ["--rerun", "--console=plain"]
 LOG_TAIL_LINES = 200
 LOG_TAIL_CHARS = 12000
 REVIEW_TOOLS = "Read,Glob,Grep,Bash(git diff:*)"
@@ -82,7 +84,7 @@ def changed_files(worktree: Path) -> list[str]:
 
 
 def integration_command(ctx: GateContext) -> list[str]:
-    full = ["./gradlew", "integrationTest", "--console=plain"]
+    full = ["./gradlew", "integrationTest", *GRADLE_RUN]
     modules: set[str] = set()
     api_changed = False
     for path in ctx.changed:
@@ -100,7 +102,7 @@ def integration_command(ctx: GateContext) -> list[str]:
         command += ["--tests", f"com.moewadeul.{module}.*"]
     if api_changed:
         command += ["--tests", "com.moewadeul.common.security.EndpointAuthorizationCoverageIntegrationTest"]
-    return command + ["--console=plain"]
+    return command + GRADLE_RUN
 
 
 def gitleaks_command(ctx: GateContext) -> list[str]:
@@ -112,7 +114,7 @@ def gitleaks_command(ctx: GateContext) -> list[str]:
 
 
 GATES = [
-    Gate("backend-unit", lambda ctx: ["./gradlew", "test", "spotlessCheck", "--console=plain"], "backend", changed("backend/")),
+    Gate("backend-unit", lambda ctx: ["./gradlew", "test", "--rerun", "spotlessCheck", "--console=plain"], "backend", changed("backend/")),
     Gate("backend-integration", integration_command, "backend", changed("backend/src/main/")),
     Gate(
         "frontend",
