@@ -44,6 +44,25 @@ class GateSelectionTest(unittest.TestCase):
         command = selected(["backend/src/main/resources/db/migration/V99__x.sql"])["backend-integration"]
         self.assertEqual(command, ["./gradlew", "integrationTest", "--console=plain"])
 
+    def test_모듈_코드와_마이그레이션이_함께_바뀌면_통합_테스트_전체를_돈다(self):
+        files = [
+            "backend/src/main/java/com/moewadeul/spot/application/SpotService.java",
+            "backend/src/main/resources/db/migration/V99__x.sql",
+        ]
+        self.assertEqual(selected(files)["backend-integration"], ["./gradlew", "integrationTest", "--console=plain"])
+
+    def test_common_모듈이_바뀌면_통합_테스트_전체를_돈다(self):
+        command = selected(["backend/src/main/java/com/moewadeul/common/time/ClockConfig.java"])["backend-integration"]
+        self.assertEqual(command, ["./gradlew", "integrationTest", "--console=plain"])
+
+    def test_모듈_매퍼_XML만_바뀌면_그_모듈_통합_테스트만_돈다(self):
+        command = selected(["backend/src/main/resources/mapper/community/post/CommunityPostMapper.xml"])["backend-integration"]
+        self.assertEqual(command, ["./gradlew", "integrationTest", "--tests", "com.moewadeul.community.*", "--console=plain"])
+
+    def test_공용_매퍼_조각이_바뀌면_통합_테스트_전체를_돈다(self):
+        command = selected(["backend/src/main/resources/mapper/common/retry/RetryPolicySql.xml"])["backend-integration"]
+        self.assertEqual(command, ["./gradlew", "integrationTest", "--console=plain"])
+
 
 class ReviewParseTest(unittest.TestCase):
     def test_코드_블록으로_감싼_JSON도_읽는다(self):
