@@ -1,0 +1,11 @@
+# 작업: PR 본문
+
+`git diff {diff_base}...HEAD`와 `git log {diff_base}..HEAD`를 읽고 PR 본문을 쓴다. 파일은 읽기만 한다.
+`.github/pull_request_template.md`를 읽고 그 항목 순서와 제목을 그대로 따른다.
+본문만 출력한다. 앞뒤 설명이나 코드 블록 울타리는 쓰지 않는다.
+
+- 첫 줄 `Closes #`는 `Closes #{issue_number}`로 채운다.
+- "테스트"에는 실제로 바뀐 테스트 파일만 적는다. 돌리지 않은 것은 "확인하지 않은 것"으로 적는다.
+- 체크리스트는 사실인 항목만 체크한다. 확인하지 못했으면 비워 둔다.
+
+이슈 #{issue_number}: {issue_title}
