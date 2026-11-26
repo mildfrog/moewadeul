@@ -9,6 +9,7 @@
 #   SM_API_URL        Synthetic Monitoring API 주소. 예: https://synthetic-monitoring-api.grafana.net (스택 지역마다 다르다.
 #                     Grafana의 Testing & synthetics > Config 화면에 나온다)
 #   SM_ACCESS_TOKEN   Synthetic Monitoring 접근 토큰. 위 Config 화면에서 만들며 GRAFANA_SA_TOKEN과 다른 토큰이다
+# 선택: DISCORD_ALERT_WEBHOOK_URL  디스코드 채널 웹후크. 있으면 같은 연락처에 디스코드를 더해 메일과 함께 받는다
 # 선택: PROM_UID, LOKI_UID  데이터 소스 uid. 비우면 이름이 -prom, -logs로 끝나는 Grafana Cloud 기본 데이터 소스를 찾는다
 #
 # 필요한 도구: curl, jq
@@ -113,6 +114,17 @@ if [[ ! "$code" =~ ^2 ]]; then
     code="$(api POST /api/v1/provisioning/contact-points "$contact")"
 fi
 require_ok "$code" "알림 연락처 설정"
+
+# 연락처 이름이 같으면 Grafana는 한 수신처로 묶어 둘 다 보낸다. 그래서 정책은 그대로 두고 디스코드만 더한다.
+if [[ -n "${DISCORD_ALERT_WEBHOOK_URL:-}" ]]; then
+    discord="$(jq -n --arg uid "${CONTACT_POINT_UID}-discord" --arg name "$CONTACT_POINT_NAME" --arg url "$DISCORD_ALERT_WEBHOOK_URL" \
+        '{uid: $uid, name: $name, type: "discord", settings: {url: $url, use_discord_username: false}, disableResolveMessage: false}')"
+    code="$(api PUT "/api/v1/provisioning/contact-points/${CONTACT_POINT_UID}-discord" "$discord")"
+    if [[ ! "$code" =~ ^2 ]]; then
+        code="$(api POST /api/v1/provisioning/contact-points "$discord")"
+    fi
+    require_ok "$code" "디스코드 알림 연락처 설정"
+fi
 
 # 4. 알림 정책: 기본 수신처를 위 연락처로 바꾼다. 하위 경로는 그대로 둔다.
 policies="$(api_get /api/v1/provisioning/policies | jq --arg receiver "$CONTACT_POINT_NAME" \
