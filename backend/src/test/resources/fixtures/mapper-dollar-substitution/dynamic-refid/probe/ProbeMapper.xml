@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moewadeul.probe.infra.ProbeMapper">
+    <select id="allReports" resultType="long">
+        <include refid="com.moewadeul.common.probe.ProbeSql.reports">
+            <property name="table" value="probe_report"/>
+            <property name="scope" value="com.moewadeul.common.probe.ProbeSql.anyRow"/>
+        </include>
+    </select>
+    <select id="reportsByColumn" resultType="long">
+        <include refid="com.moewadeul.common.probe.ProbeSql.reports">
+            <property name="table" value="probe_report"/>
+            <property name="scope" value="com.moewadeul.common.probe.ProbeSql.byColumn"/>
+        </include>
+    </select>
+</mapper>

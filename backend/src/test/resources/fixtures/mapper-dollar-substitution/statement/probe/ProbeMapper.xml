@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moewadeul.probe.infra.ProbeMapper">
+    <select id="safeSearch" resultType="long">
+        SELECT id
+        FROM probe
+        WHERE title LIKE CONCAT('%', #{condition.keyword}, '%')
+    </select>
+    <select id="search" resultType="long">
+        SELECT id
+        FROM probe
+        WHERE title LIKE CONCAT('%', ${condition.keyword}, '%')
+    </select>
+    <insert id="insertName">
+        INSERT INTO probe (name) VALUES ('${name}')
+    </insert>
+    <update id="updateName">
+        UPDATE probe
+        <set>${column} = #{value}</set>
+        WHERE id = #{id}
+    </update>
+    <delete id="deleteFrom">
+        DELETE FROM ${table} WHERE id = #{id}
+    </delete>
+</mapper>
