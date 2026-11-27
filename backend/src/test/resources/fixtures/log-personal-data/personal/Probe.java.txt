@@ -28,4 +28,8 @@ public class Probe {
                 notificationId,
                 message.to());
     }
+
+    void logger(String email) {
+        logger.warn("login failed email={}", email);
+    }
 }

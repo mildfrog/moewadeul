@@ -24,7 +24,7 @@ class LogPersonalDataTest {
     private static final Path FIXTURE_ROOT = Path.of("src/test/resources/fixtures/log-personal-data");
 
     private static final String LEVEL = "(?:trace|debug|info|warn|error)";
-    private static final Pattern LOG_FIELD_CALL = Pattern.compile("\\blog\\s*\\.\\s*" + LEVEL + "\\s*\\(");
+    private static final Pattern LOG_FIELD_CALL = Pattern.compile("\\b(?:log|logger)\\s*\\.\\s*" + LEVEL + "\\s*\\(");
     private static final Pattern GET_LOGGER = Pattern.compile("\\bgetLogger\\s*\\(");
     private static final Pattern CHAINED_LEVEL = Pattern.compile("\\G\\s*\\.\\s*" + LEVEL + "\\s*\\(");
     private static final Pattern IDENTIFIER = Pattern.compile("[A-Za-z_$][A-Za-z0-9_$]*");
@@ -54,7 +54,7 @@ class LogPersonalDataTest {
     @DisplayName("[NFR-07] 가입 서비스가 command.email()을 로그에 넘기면 실패한다")
     void signupEmailLogFails() throws IOException {
         assertThat(scan(FIXTURE_ROOT.resolve("signup")).violations())
-                .containsExactly("MemberSignupService.java.txt:7: log 호출에 개인정보 인자 command.email()을 넘긴다");
+                .containsExactly("MemberSignupService.java.txt:7: log 호출에 개인정보 인자를 넘긴다: command.email()");
     }
 
     @Test
@@ -62,12 +62,13 @@ class LogPersonalDataTest {
     void otherPersonalDataLogFails() throws IOException {
         assertThat(scan(FIXTURE_ROOT.resolve("personal")).violations())
                 .containsExactlyInAnyOrder(
-                        "Probe.java.txt:6: log 호출에 개인정보 인자 identity.ci()을 넘긴다",
-                        "Probe.java.txt:10: log 호출에 개인정보 인자 ciHash을 넘긴다",
-                        "Probe.java.txt:14: log 호출에 개인정보 인자 ciHasher.hash(ci)을 넘긴다",
-                        "Probe.java.txt:18: log 호출에 개인정보 인자 demoIdentityKey을 넘긴다",
-                        "Probe.java.txt:22: log 호출에 개인정보 인자 row.phone()을 넘긴다",
-                        "Probe.java.txt:29: log 호출에 개인정보 인자 message.to()을 넘긴다");
+                        "Probe.java.txt:6: log 호출에 개인정보 인자를 넘긴다: identity.ci()",
+                        "Probe.java.txt:10: log 호출에 개인정보 인자를 넘긴다: ciHash",
+                        "Probe.java.txt:14: log 호출에 개인정보 인자를 넘긴다: ciHasher.hash(ci)",
+                        "Probe.java.txt:18: log 호출에 개인정보 인자를 넘긴다: demoIdentityKey",
+                        "Probe.java.txt:22: log 호출에 개인정보 인자를 넘긴다: row.phone()",
+                        "Probe.java.txt:29: log 호출에 개인정보 인자를 넘긴다: message.to()",
+                        "Probe.java.txt:33: log 호출에 개인정보 인자를 넘긴다: email");
     }
 
     @Test
@@ -106,7 +107,7 @@ class LogPersonalDataTest {
                         continue;
                     }
                     int start = range[0] + (code.substring(range[0], range[1]).indexOf(argument));
-                    violations.add(file + ":" + lineOf(code, start) + ": log 호출에 개인정보 인자 " + expression + "을 넘긴다");
+                    violations.add(file + ":" + lineOf(code, start) + ": log 호출에 개인정보 인자를 넘긴다: " + expression);
                 }
             }
         }
