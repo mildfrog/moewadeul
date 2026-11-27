@@ -1,0 +1,31 @@
+package com.moewadeul.probe;
+
+public class Probe {
+
+    void identity(VerifiedIdentity identity) {
+        log.info("identity verified ci={}", identity.ci());
+    }
+
+    void hash(CiHash ciHash) {
+        log.warn("duplicate ci hash={}", ciHash);
+    }
+
+    void hasher(String ci) {
+        log.debug("hashed={}", ciHasher.hash(ci));
+    }
+
+    void demo(String demoIdentityKey) {
+        log.trace("demo key={}", demoIdentityKey);
+    }
+
+    void phone(PublicSpotRow row) {
+        log.info("spot phone={}", row.phone());
+    }
+
+    void mail(MailMessage message, long notificationId) {
+        log.error(
+                "mail failed notificationId={} to={}",
+                notificationId,
+                message.to());
+    }
+}
