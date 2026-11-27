@@ -114,6 +114,26 @@ class FlowTest(WorldTest):
         records = [b for b in self.comment_bodies() if "디스코드에서 소유자가 승인했다" in b]
         self.assertEqual(len(records), 1)
 
+    def test_결정이_필요한_계획은_디스코드_승인을_받지_않고_이슈_댓글로만_승인한다(self):
+        plan = "1. 검사를 추가한다\n\n미정: 로거 이름을 강제할지\n<!-- ai-harness:needs-decision -->"
+        with mock.patch.dict(os.environ, {"FAKE_PLAN": plan}):
+            self.advance_to_awaiting()
+        [plan_comment] = self.comment_bodies()
+        self.assertNotIn("discord-message=", plan_comment)
+        self.assertIn("이슈 댓글로만 승인한다", plan_comment)
+        self.assertTrue(any("결정이 필요한 계획" in m for m in self.chat.sent))
+
+        self.chat.approval = Approval.APPROVED
+        self.harness().run_once()
+        self.assertEqual(self.labels(), {"ai:awaiting-approval"})
+        self.assertEqual(self.prompts("# 작업: 구현"), [])
+
+        self.comment(1, "/approve\n결정: 로거 이름은 강제하지 않는다")
+        self.harness().run_once()
+        self.assertEqual(self.labels(), {"ai:pr-open"})
+        [implement] = self.prompts("# 작업: 구현")
+        self.assertIn("결정: 로거 이름은 강제하지 않는다", implement)
+
     def test_디스코드_반려도_이슈에_기록하고_끝낸다(self):
         self.advance_to_awaiting()
         self.chat.approval = Approval.REJECTED
