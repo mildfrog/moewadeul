@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moewadeul.probe.infra.ProbeMapper">
+    <select id="commented" resultType="long">
+        <!-- 예전에는 ${table}로 테이블을 골랐다. -->
+        SELECT id FROM probe
+    </select>
+    <select id="dynamicInclude" resultType="long">
+        SELECT id FROM probe
+        WHERE TRUE
+        <include refid="${scope}"/>
+    </select>
+</mapper>

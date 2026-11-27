@@ -1,0 +1,26 @@
+package com.moewadeul.probe;
+
+public class Probe {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    void verified(long memberId) {
+        log.info("email verified memberId={}", memberId);
+    }
+
+    void commented(long notificationId, int count) {
+        // log.info("signup email={}", command.email());
+        /* log.warn("ci={}", identity.ci()); */
+        log.warn("mail retry notificationId={} count={}", notificationId, count);
+    }
+
+    void literals(long memberId) {
+        char quote = '"';
+        char escaped = '\'';
+        log.info("quoted \" email={}, phone={}", memberId);
+        log.debug("""
+                email={} "ci" phone
+                """, memberId);
+        log.trace("after literals quote={} escaped={}", quote, escaped);
+    }
+}

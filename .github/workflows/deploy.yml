@@ -156,6 +156,33 @@ jobs:
           docker buildx imagetools create -t "$CADDY_IMAGE:$DRILL_TAG" "$CADDY_IMAGE:$BASE_TAG"
           echo "tag=$DRILL_TAG" >> "$GITHUB_OUTPUT"
 
+  # deploy 잡은 production 환경 승인을 기다리며 멈춘다. 멈춘 동안 아무것도 실행되지 않으니, 승인 요청 알림은 이 잡이 따로 보낸다.
+  request-approval:
+    needs: [build, drill]
+    if: >-
+      !cancelled() && github.ref == 'refs/heads/main' &&
+      (needs.build.result == 'success' ||
+       (github.event_name == 'workflow_dispatch' && needs.drill.result != 'failure'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: 디스코드로 배포 승인 요청
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SHA: ${{ github.sha }}
+          DRILL: ${{ needs.drill.outputs.tag != '' }}
+        run: |
+          if [[ -z "$DISCORD_WEBHOOK_URL" ]]; then
+            echo "DISCORD_WEBHOOK_URL이 없어 알림을 건너뛴다"
+            exit 0
+          fi
+          kind="운영 배포"
+          [[ "$DRILL" == "true" ]] && kind="되돌림 연습"
+          jq -n --arg content "🔐 ${kind} 승인 대기 (${SHA:0:8})"$'\n'"${RUN_URL}" '{content: $content}' \
+            | curl -sS --fail-with-body -H 'Content-Type: application/json' -d @- "$DISCORD_WEBHOOK_URL"
+
   deploy:
     needs: [build, drill]
     # main 푸시는 빌드가 성공했을 때, 수동 실행은 연습 이미지 만들기가 실패하지 않았을 때 배포한다.
@@ -164,6 +191,8 @@ jobs:
       !cancelled() && github.ref == 'refs/heads/main' &&
       (needs.build.result == 'success' ||
        (github.event_name == 'workflow_dispatch' && needs.drill.result != 'failure'))
+    # production 환경은 소유자 승인을 요구한다. 빌드가 끝나도 승인 전에는 운영 서버에 명령을 보내지 않는다.
+    environment: production
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     permissions:

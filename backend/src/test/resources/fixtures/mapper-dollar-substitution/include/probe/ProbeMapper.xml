@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.moewadeul.probe.infra.ProbeMapper">
+    <select id="literal" resultType="long">
+        <include refid="com.moewadeul.common.probe.ProbeSql.selectAll">
+            <property name="table" value="probe"/>
+        </include>
+    </select>
+    <select id="missing" resultType="long">
+        <include refid="com.moewadeul.common.probe.ProbeSql.selectAll"/>
+    </select>
+    <select id="parameter" resultType="long">
+        <include refid="com.moewadeul.common.probe.ProbeSql.selectAll">
+            <property name="table" value="#{table}"/>
+        </include>
+    </select>
+    <select id="dollar" resultType="long">
+        <include refid="com.moewadeul.common.probe.ProbeSql.selectAll">
+            <property name="table" value="${table}"/>
+        </include>
+    </select>
+</mapper>

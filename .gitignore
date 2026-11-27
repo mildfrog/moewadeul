@@ -2,9 +2,10 @@
 docs/
 
 ### AI 도구 설정 ###
-CLAUDE.md
+# CLAUDE.md와 .claude/skills/는 공개한다. 에이전트가 GitHub Actions에서도 같은 배경지식과 검증 도구를 쓰게 하려는 것이다.
 CLAUDE.local.md
-.claude/
+.claude/*
+!.claude/skills/
 AGENTS.md
 .codex/
 GEMINI.md
