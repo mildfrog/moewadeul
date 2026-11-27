@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import subprocess
+import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -12,6 +13,7 @@ from claude_runner import ClaudeError, run_claude
 from github import git
 
 BASE_REF = "origin/develop"
+HERE = Path(__file__).resolve().parent
 GITLEAKS_IMAGE = "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f"
 MODULE_PATH = re.compile(r"^backend/src/main/java/com/moewadeul/([^/]+)/(.*)$")
 MAPPER_PATH = re.compile(r"^backend/src/main/resources/mapper/([^/]+)/")
@@ -71,8 +73,8 @@ class SecurityReview:
     error: str | None = None
 
 
-def changed(prefix: str) -> Callable[[list[str]], bool]:
-    return lambda files: any(f.startswith(prefix) for f in files)
+def changed(*prefixes: str) -> Callable[[list[str]], bool]:
+    return lambda files: any(f.startswith(prefixes) for f in files)
 
 
 def always(files: list[str]) -> bool:
@@ -113,7 +115,19 @@ def gitleaks_command(ctx: GateContext) -> list[str]:
     return command + [GITLEAKS_IMAGE, "git", "/repo", "--no-banner", "--redact", f"--log-opts={BASE_REF}..HEAD"]
 
 
+# 워크트리의 검사 스크립트는 검증받는 Claude가 고칠 수 있으므로 하네스 쪽 사본을 돌린다
+def query_plan_command(ctx: GateContext) -> list[str]:
+    return [sys.executable, str(HERE / "query_plan_check.py"), BASE_REF]
+
+
 GATES = [
+    Gate(
+        "query-plan-test",
+        query_plan_command,
+        ".",
+        changed("backend/src/main/resources/db/migration/"),
+        timeout=60,
+    ),
     Gate("backend-unit", lambda ctx: ["./gradlew", "test", "--rerun", "spotlessCheck", "--console=plain"], "backend", changed("backend/")),
     Gate("backend-integration", integration_command, "backend", changed("backend/src/main/")),
     Gate(
@@ -188,13 +202,26 @@ def security_review(worktree: Path, prompt: str) -> SecurityReview:
         return SecurityReview([], str(e))
 
 
-def report_markdown(run: GateRun, review: SecurityReview, fix_rounds: int) -> str:
+def review_scope(prompt_template: str) -> list[str]:
+    _, _, after = prompt_template.partition("확인할 것\n")
+    scope = []
+    for line in after.splitlines():
+        if not line.startswith("- "):
+            break
+        scope.append(line[2:].strip())
+    return scope
+
+
+def report_markdown(run: GateRun, review: SecurityReview, fix_rounds: int, scope: list[str]) -> str:
     rows = ["| 검사 | 결과 | 시간 |", "|---|---|---|"]
     rows += [f"| {r.name} | {'통과' if r.passed else '실패'} | {r.seconds:g}초 |" for r in run.results]
     lines = ["## 검증 보고", "", *rows, ""]
     if run.skipped:
         lines += [f"바뀐 경로에 해당하지 않아 건너뛴 검사: {', '.join(run.skipped)}", ""]
     lines += [f"실패 후 Claude가 고친 횟수: {fix_rounds}", "", "### AI 보안 리뷰 (참고, 머지를 막지 않는다)", ""]
+    if scope:
+        lines += ["리뷰 지시문의 확인 목록만 본다. 목록 밖의 결함은 이 리뷰로 보장하지 않는다.", ""]
+        lines += [f"- {_cell(item)}" for item in scope] + [""]
     if review.error:
         lines.append(f"리뷰 결과를 읽지 못했다. 사유: {review.error}")
     elif not review.findings:

@@ -124,6 +124,10 @@ def git_commit(cwd, filename, content):
     subprocess.run(["git", "commit", "-q", "-m", "feat: 가짜 구현"], cwd=cwd, check=True)
 
 
+PLAN = "## 바꿀 것\nSpotController를 고친다\n\n## 테스트\n테스트를 먼저 쓴다\n\n## 위험\n권한 표를 건드리면 공개 API가 막힌다"
+PR_BODY = "## 관련 이슈\nCloses #\n\n## 해결하려는 문제\n가짜 문제\n\n## 바뀐 것\n- 가짜 변경\n\n## 테스트\n- 가짜 테스트"
+
+
 def claude(args):
     prompt = sys.stdin.read()
     task = first_line(prompt)
@@ -131,9 +135,9 @@ def claude(args):
     with open(os.environ["FAKE_PROMPTS"], "a") as f:
         f.write(json.dumps({"task": task, "prompt": prompt}, ensure_ascii=False) + "\n")
     result = {
-        "# 작업: 계획": os.environ.get("FAKE_PLAN", "1. SpotController를 고친다\n2. 테스트를 먼저 쓴다"),
+        "# 작업: 계획": os.environ.get("FAKE_PLAN", PLAN),
         "# 작업: 보안 리뷰": os.environ.get("FAKE_REVIEW", '{"findings":[{"file":"A.java","line":3,"severity":"low","summary":"요약|표","scenario":"시나리오"}]}'),
-        "# 작업: PR 본문": "## 관련 이슈\nCloses #\n\n## 해결하려는 문제\n가짜",
+        "# 작업: PR 본문": os.environ.get("FAKE_PR_BODY", PR_BODY),
     }.get(task)
     if os.environ.get("FAKE_CLAUDE_FAIL") == task:
         print(json.dumps({"is_error": True, "result": "가짜 실패"}))
