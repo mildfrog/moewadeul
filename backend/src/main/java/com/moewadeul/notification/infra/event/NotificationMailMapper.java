@@ -10,10 +10,17 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface NotificationMailMapper {
 
-    List<NotificationMailRow> selectDueForUpdate(
+    default List<NotificationMailRow> selectDueForUpdate(
+            Instant now, int limit, boolean bulk, boolean defaultEmailEnabled) {
+        List<Long> ids = selectDueIdsForUpdate(now, limit, bulk);
+        return ids.isEmpty() ? List.of() : selectMailRows(ids, now, defaultEmailEnabled);
+    }
+
+    List<Long> selectDueIdsForUpdate(@Param("now") Instant now, @Param("limit") int limit, @Param("bulk") boolean bulk);
+
+    List<NotificationMailRow> selectMailRows(
+            @Param("ids") Collection<Long> ids,
             @Param("now") Instant now,
-            @Param("limit") int limit,
-            @Param("bulk") boolean bulk,
             @Param("defaultEmailEnabled") boolean defaultEmailEnabled);
 
     int lease(@Param("ids") Collection<Long> ids, @Param("leaseUntil") Instant leaseUntil);

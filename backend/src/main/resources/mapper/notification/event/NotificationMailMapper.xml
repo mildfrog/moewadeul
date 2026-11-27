@@ -9,7 +9,20 @@
           AND m.email_verified_at IS NOT NULL
     </sql>
 
-    <select id="selectDueForUpdate" resultType="com.moewadeul.notification.infra.event.NotificationMailRow">
+    <!-- 집기는 notification 한 표만 인덱스 순서로 읽어 LIMIT 건만 잠근다. 회원·설정 표를 같은 문장에 붙이면 설정 표가 작을 때
+         MySQL이 해시 조인을 고르고 정렬을 따로 해서, 그 줄의 대기 메일을 모두 읽고 모두 잠근다(#1097). -->
+    <select id="selectDueIdsForUpdate" resultType="long">
+        SELECT id
+        FROM notification
+        WHERE email_status = 'PENDING'
+          AND email_bulk = #{bulk}
+          AND (email_next_attempt_at IS NULL OR email_next_attempt_at &lt;= #{now})
+        ORDER BY id
+        LIMIT #{limit}
+        FOR UPDATE SKIP LOCKED
+    </select>
+
+    <select id="selectMailRows" resultType="com.moewadeul.notification.infra.event.NotificationMailRow">
         SELECT n.id AS notification_id,
                m.email AS email,
                n.title AS title,
@@ -20,12 +33,11 @@
         FROM notification n
         JOIN member m ON m.id = n.member_id
         LEFT JOIN notification_setting s ON s.member_id = n.member_id AND s.type = n.type
-        WHERE n.email_status = 'PENDING'
-          AND n.email_bulk = #{bulk}
-          AND (n.email_next_attempt_at IS NULL OR n.email_next_attempt_at &lt;= #{now})
+        WHERE n.id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
         ORDER BY n.id
-        LIMIT #{limit}
-        FOR UPDATE OF n SKIP LOCKED
     </select>
 
     <update id="lease">
