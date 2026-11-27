@@ -539,6 +539,30 @@ class GoCampingSyncServiceIntegrationTest {
     }
 
     @Test
+    @DisplayName("[F-06][NFR-06] 앱이 기동할 때 이전 프로세스가 남긴 RUNNING 기록은 방금 갱신됐어도 실패로 처리해, 다음 동기화가 기다리지 않고 진행 위치 다음 페이지부터 받는다")
+    void startupFailsRunLeftByPreviousProcessSoNextSyncResumes() {
+        // given
+        stubAllPages();
+        long leftRunId = insertRunningRun(clock.instant().minus(Duration.ofMinutes(1)));
+
+        // when
+        int failed = syncJobRunService.failRunsLeftByPreviousProcess();
+        Optional<GoCampingSyncResult> result = goCampingSyncService.sync();
+
+        // then
+        assertThat(failed).isEqualTo(1);
+        assertThat(result).isPresent();
+        List<RunRow> runs = runs();
+        assertThat(runs).hasSize(2);
+        assertThat(runs.get(0).id()).isEqualTo(leftRunId);
+        assertThat(runs.get(0).status()).isEqualTo("FAILED");
+        assertThat(runs.get(0).progressCursor()).isEqualTo("1");
+        assertThat(runs.get(1).status()).isEqualTo("COMPLETED");
+        assertThat(requestCount(1)).isZero();
+        assertThat(requestCount(2)).isEqualTo(1);
+    }
+
+    @Test
     @DisplayName("[F-06][NFR-06] 최근에 갱신된 RUNNING 기록이 있으면 다른 실행이 진행 중이므로 API를 부르지 않고 건너뛴다")
     void syncSkipsWhenAnotherRunIsInProgress() {
         // given

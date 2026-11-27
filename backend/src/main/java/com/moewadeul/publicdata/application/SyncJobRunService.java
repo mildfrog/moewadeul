@@ -10,6 +10,7 @@ import com.moewadeul.publicdata.domain.SyncJobType;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SyncJobRunService {
 
     static final String STALE_RUN_MESSAGE = "실행 기록이 오래 갱신되지 않아, 다음 실행이 작업 도중 서버가 꺼진 것으로 보고 실패로 처리했습니다.";
+    static final String PREVIOUS_PROCESS_MESSAGE = "앱이 다시 시작할 때, 이전 프로세스가 끝내지 못하고 멈춘 실행으로 보고 실패로 처리했습니다.";
 
     private static final String RUNNING_UNIQUE_CONSTRAINT = "uk_sync_job_run_running";
     // 같은 종류를 동시에 시작하면 InnoDB가 같은 키를 넣으려는 트랜잭션 하나를 교착 상태 오류로 중단시키기도 해서 다시 시도한다.
@@ -75,6 +77,20 @@ public class SyncJobRunService {
     @Transactional
     public void reject(long runId) {
         getRun(runId).reject(clock.instant());
+    }
+
+    @Transactional
+    public int failRunsLeftByPreviousProcess() {
+        Instant now = clock.instant();
+        List<SyncJobRun> running = syncJobRunRepository.findByStatus(SyncJobStatus.RUNNING);
+        running.forEach(run -> {
+            run.fail(PREVIOUS_PROCESS_MESSAGE, now);
+            log.warn(
+                    "sync job left running by previous process marked failed jobType={} runId={}",
+                    run.getJobType(),
+                    run.getId());
+        });
+        return running.size();
     }
 
     @Transactional(readOnly = true)
