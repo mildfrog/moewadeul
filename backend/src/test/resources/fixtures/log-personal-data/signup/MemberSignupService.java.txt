@@ -1,0 +1,10 @@
+package com.moewadeul.member.application.signup;
+
+public class MemberSignupService {
+
+    public SignupResult signUp(SignupCommand command) {
+        Email email = Email.of(command.email());
+        org.slf4j.LoggerFactory.getLogger(MemberSignupService.class).info("signup requested email={}", command.email());
+        return null;
+    }
+}
