@@ -3,6 +3,7 @@ package com.moewadeul.common.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.moewadeul.common.testsupport.IntegrationTest;
+import com.moewadeul.common.testsupport.MapperExplain;
 import com.moewadeul.common.testsupport.MutableClock;
 import com.moewadeul.member.infra.MemberJpaRepository;
 import com.moewadeul.member.infra.password.PasswordResetTokenMapper;
@@ -11,8 +12,6 @@ import com.moewadeul.outbox.infra.OutboxEventCleanupMapper;
 import com.moewadeul.program.application.ProgramApplyFixture;
 import com.moewadeul.trust.infra.identity.CiRetentionCleanupMapper;
 import com.moewadeul.trust.infra.sanction.SanctionExpiryMapper;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -20,16 +19,11 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.ibatis.binding.MapperMethod;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @IntegrationTest
@@ -237,20 +231,10 @@ class RetentionCleanupIndexIntegrationTest {
     }
 
     private String explainKey(Class<?> mapper, String method, Map<String, Object> params) {
-        MappedStatement statement =
-                sqlSessionFactory.getConfiguration().getMappedStatement(mapper.getName() + "." + method);
-        MapperMethod.ParamMap<Object> parameter = new MapperMethod.ParamMap<>();
-        parameter.putAll(params);
-        BoundSql boundSql = statement.getBoundSql(parameter);
-        return jdbc.execute((ConnectionCallback<String>) connection -> {
-            try (PreparedStatement explain = connection.prepareStatement("EXPLAIN " + boundSql.getSql())) {
-                new DefaultParameterHandler(statement, parameter, boundSql).setParameters(explain);
-                try (ResultSet rows = explain.executeQuery()) {
-                    rows.next();
-                    return rows.getString("key");
-                }
-            }
-        });
+        return (String) new MapperExplain(sqlSessionFactory, jdbc)
+                .plan(mapper, method, params)
+                .getFirst()
+                .get("key");
     }
 
     private static LocalDateTime utc(Instant instant) {
