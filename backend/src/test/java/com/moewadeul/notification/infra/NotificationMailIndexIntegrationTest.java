@@ -44,33 +44,15 @@ class NotificationMailIndexIntegrationTest {
         insert(members, "SENT", false, SENT);
         insert(members, "PENDING", true, PENDING_PER_LANE);
         insert(members, "PENDING", false, PENDING_PER_LANE);
-        // 설정 표가 거의 비어 있으면 MySQL은 설정 표를 해시 조인하느라 정렬을 따로 하고, 그 줄의 대기 메일을 모두 잠근다.
-        // 이 테스트는 설정 행이 있는 경우의 계획을 고정한다. 빈 설정 표의 경우는 이슈로 따로 다룬다.
-        List<Object[]> settings = new ArrayList<>();
-        for (long member : members) {
-            for (String type : List.of("BASECAMP_APPROVED", "BASECAMP_REJECTED", "PROGRAM_PAID")) {
-                settings.add(new Object[] {member, type});
-            }
-        }
-        jdbc.batchUpdate(
-                "INSERT INTO notification_setting (member_id, type, email_enabled) VALUES (?, ?, TRUE)", settings);
-        jdbc.execute("ANALYZE TABLE notification, notification_setting, member");
+        jdbc.execute("ANALYZE TABLE notification");
 
         // when
         Map<String, Object> plan = new MapperExplain(sqlSessionFactory, jdbc)
                 .rowOf(
-                        "n",
+                        "notification",
                         NotificationMailMapper.class,
-                        "selectDueForUpdate",
-                        Map.of(
-                                "now",
-                                MutableClock.DEFAULT_INSTANT,
-                                "limit",
-                                20,
-                                "bulk",
-                                false,
-                                "defaultEmailEnabled",
-                                true));
+                        "selectDueIdsForUpdate",
+                        Map.of("now", MutableClock.DEFAULT_INSTANT, "limit", 20, "bulk", false));
 
         // then
         assertThat(plan.get("key")).as("plan %s", plan).isEqualTo("idx_notification_email_status_bulk_id");
