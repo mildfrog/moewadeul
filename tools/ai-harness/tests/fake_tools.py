@@ -131,7 +131,7 @@ def claude(args):
     with open(os.environ["FAKE_PROMPTS"], "a") as f:
         f.write(json.dumps({"task": task, "prompt": prompt}, ensure_ascii=False) + "\n")
     result = {
-        "# 작업: 계획": "1. SpotController를 고친다\n2. 테스트를 먼저 쓴다",
+        "# 작업: 계획": os.environ.get("FAKE_PLAN", "1. SpotController를 고친다\n2. 테스트를 먼저 쓴다"),
         "# 작업: 보안 리뷰": os.environ.get("FAKE_REVIEW", '{"findings":[{"file":"A.java","line":3,"severity":"low","summary":"요약|표","scenario":"시나리오"}]}'),
         "# 작업: PR 본문": "## 관련 이슈\nCloses #\n\n## 해결하려는 문제\n가짜",
     }.get(task)

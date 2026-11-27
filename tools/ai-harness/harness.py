@@ -47,6 +47,11 @@ PLAN_HEADER = "## 구현 계획"
 DISCORD_MESSAGE = re.compile(r"<!-- ai-harness:discord-message=(\S+) -->")
 DISCORD_APPROVAL_MARK = "<!-- ai-harness:discord-approval -->"
 BLOCKED_MARK = "<!-- ai-harness:blocked -->"
+NEEDS_DECISION = "<!-- ai-harness:needs-decision -->"
+DECISION_FOOTER = (
+    "소유자가 골라야 할 것이 있는 계획이다. 디스코드 반응으로는 결정을 전할 수 없어 이슈 댓글로만 승인한다. "
+    "`/approve` 다음 줄부터 결정을 적는다. 반려는 `/reject`"
+)
 APPROVAL_FOOTER = (
     "승인: 디스코드 ✅ 또는 이 이슈에 `/approve` 댓글, 반려: ❌ 또는 `/reject`. "
     "고를 것이 있으면 `/approve` 다음 줄부터 결정을 적는다. 그 내용이 구현 지시에 들어간다"
@@ -217,9 +222,16 @@ class Harness:
         )
         plan = run_claude(prompt, worktree, PLAN_TOOLS, timeout=900).strip()
         summary = plan[:700] + ("..." if len(plan) > 700 else "")
-        message_id = self.request_approval(f"#{issue.number} {issue.title}\n계획 승인 요청\n{self.gh.issue_url(issue.number)}\n\n{summary}")
-        markers = [PLAN_MARK] + ([f"<!-- ai-harness:discord-message={message_id} -->"] if message_id else [])
-        self.gh.add_comment(issue.number, f"{PLAN_HEADER}\n\n{plan}\n\n---\n" + "\n".join(markers) + f"\n{APPROVAL_FOOTER}")
+        url = self.gh.issue_url(issue.number)
+        # 디스코드 ✅는 결정을 담지 못한다. 승인이 결정 댓글보다 먼저 읽혀 결정이 빠진 일이 두 번 있었다(#1084, #1089).
+        if NEEDS_DECISION in plan:
+            self.notify(f"#{issue.number} {issue.title}\n결정이 필요한 계획이다. 이슈에 `/approve`와 결정을 적어 승인한다\n{url}\n\n{summary}")
+            markers, footer = [PLAN_MARK], DECISION_FOOTER
+        else:
+            message_id = self.request_approval(f"#{issue.number} {issue.title}\n계획 승인 요청\n{url}\n\n{summary}")
+            markers = [PLAN_MARK] + ([f"<!-- ai-harness:discord-message={message_id} -->"] if message_id else [])
+            footer = APPROVAL_FOOTER
+        self.gh.add_comment(issue.number, f"{PLAN_HEADER}\n\n{plan}\n\n---\n" + "\n".join(markers) + f"\n{footer}")
         return Outcome.ADVANCE
 
     def request_approval(self, text: str) -> str | None:
