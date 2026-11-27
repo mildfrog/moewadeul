@@ -4,6 +4,7 @@ import unittest
 from unittest import mock
 
 from chat import Approval
+from harness import PLAN_MARK
 from support import WorldTest
 
 
@@ -92,6 +93,35 @@ class FlowTest(WorldTest):
         self.assertIn("<owner_comments>\n결정: 예외 목록 방식으로 한다\n</owner_comments>", implement)
         self.assertEqual(self.labels(), {"ai:pr-open"})
 
+    def test_PR_본문에_승인된_계획의_위험_칸이_그대로_붙고_보고에_리뷰_범위가_남는다(self):
+        self.advance_to_awaiting()
+        self.comment(1, "/approve")
+        self.harness().run_once()
+        pr, [report] = self.only_pr()
+        self.assertIn("## 위험 (승인된 계획 그대로)\n\n권한 표를 건드리면 공개 API가 막힌다", pr["body"])
+        self.assertIn("목록 밖의 결함은 이 리뷰로 보장하지 않는다", report)
+        self.assertIn("IDOR", report)
+
+    def test_계획에_위험_칸이_비면_한_번_다시_쓰게_하고_그래도_비면_멈춘다(self):
+        with mock.patch.dict(os.environ, {"FAKE_PLAN": "## 바꿀 것\nA를 고친다\n\n## 테스트\nA 테스트\n\n## 위험\n<!-- 없음 -->\n-"}):
+            self.seed_issue()
+            self.harness().run_once()
+        self.assertEqual(self.labels(), {"ai:blocked"})
+        self.assertEqual(len(self.prompts("# 작업: 계획")), 2)
+        self.assertIn("## 위험 칸이 없거나 비어 있었다", self.prompts("# 작업: 계획")[1])
+        self.assertIn("계획에 ## 위험 칸이 비어 있다", self.comment_bodies()[-1])
+        self.assertFalse(any(PLAN_MARK in b for b in self.comment_bodies()))
+
+    def test_PR_본문의_필수_칸이_비면_PR을_열지_않고_멈춘다(self):
+        self.advance_to_awaiting()
+        self.comment(1, "/approve")
+        with mock.patch.dict(os.environ, {"FAKE_PR_BODY": "## 해결하려는 문제\n가짜\n\n## 바뀐 것\n- \n\n## 테스트\n<!-- 무엇을 -->"}):
+            self.harness().run_once()
+        self.assertEqual(self.labels(), {"ai:blocked"})
+        self.assertEqual(self.state()["prs"], [])
+        self.assertEqual(len(self.prompts("# 작업: PR 본문")), 2)
+        self.assertIn("## 바뀐 것, ## 테스트", self.comment_bodies()[-1])
+
     def test_반려하면_ai_rejected로_끝나고_구현하지_않는다(self):
         self.advance_to_awaiting()
         self.comment(1, "/reject")
@@ -115,7 +145,7 @@ class FlowTest(WorldTest):
         self.assertEqual(len(records), 1)
 
     def test_결정이_필요한_계획은_디스코드_승인을_받지_않고_이슈_댓글로만_승인한다(self):
-        plan = "1. 검사를 추가한다\n\n미정: 로거 이름을 강제할지\n<!-- ai-harness:needs-decision -->"
+        plan = "## 바꿀 것\n검사를 추가한다\n\n## 테스트\n검사 테스트\n\n## 위험\n없다고 본다. 테스트만 더한다\n\n미정: 로거 이름을 강제할지\n<!-- ai-harness:needs-decision -->"
         with mock.patch.dict(os.environ, {"FAKE_PLAN": plan}):
             self.advance_to_awaiting()
         [plan_comment] = self.comment_bodies()

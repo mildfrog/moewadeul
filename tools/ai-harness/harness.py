@@ -15,7 +15,7 @@ from typing import Callable
 
 from chat import Approval, Chat, chat_from_env
 from claude_runner import run_claude
-from gates import BASE_REF, report_markdown, run_gates, security_review
+from gates import BASE_REF, report_markdown, review_scope, run_gates, security_review
 from github import Comment, GitHub, Issue, git, push_branch
 
 log = logging.getLogger("ai-harness")
@@ -41,6 +41,12 @@ PR_BODY_TOOLS = "Read,Glob,Grep,Bash(git diff:*),Bash(git log:*)"
 
 # 같은 실패를 세 번 이상 고치게 하면 테스트를 약하게 만들어 통과시키는 쪽으로 흐르기 쉬워 두 번에서 끊는다
 MAX_FIX_ROUNDS = 2
+
+# 칸이 비면 소유자는 무엇을 바꾸고 무엇이 깨질 수 있는지 모른 채 승인하거나 머지한다. 프롬프트로만 부탁하지 않고 하네스가 확인한다.
+PLAN_SECTIONS = ("## 바꿀 것", "## 테스트", "## 위험")
+PR_SECTIONS = ("## 해결하려는 문제", "## 바뀐 것", "## 테스트")
+RISK_SECTION = "## 위험"
+PR_RISK_HEADER = "## 위험 (승인된 계획 그대로)"
 
 PLAN_MARK = "<!-- ai-harness:plan -->"
 PLAN_HEADER = "## 구현 계획"
@@ -81,6 +87,38 @@ class Step:
 def render(name: str, **values: object) -> str:
     text = (HERE / "prompts" / f"{name}.md").read_text()
     return re.sub(r"\{(\w+)\}", lambda m: str(values[m.group(1)]) if m.group(1) in values else m.group(0), text)
+
+
+def section(text: str, heading: str) -> str:
+    lines, inside = [], False
+    for line in text.splitlines():
+        if line.startswith("## "):
+            inside = line.strip() == heading
+            continue
+        if inside:
+            lines.append(line)
+    return "\n".join(lines).strip()
+
+
+def is_blank(body: str) -> bool:
+    body = re.sub(r"<!--.*?-->", "", body, flags=re.DOTALL)
+    return all(line.strip(" -\t") == "" for line in body.splitlines())
+
+
+def missing_sections(text: str, headings: tuple[str, ...]) -> list[str]:
+    return [h for h in headings if is_blank(section(text, h))]
+
+
+def run_with_sections(prompt: str, worktree: Path, tools: str, headings: tuple[str, ...], what: str, timeout: int) -> str:
+    out = run_claude(prompt, worktree, tools, timeout=timeout).strip()
+    missing = missing_sections(out, headings)
+    if missing:
+        retry = f"{prompt}\n\n앞서 쓴 {what}에 {', '.join(missing)} 칸이 없거나 비어 있었다. 모든 칸을 제목 그대로 채워 다시 쓴다."
+        out = run_claude(retry, worktree, tools, timeout=timeout).strip()
+        missing = missing_sections(out, headings)
+    if missing:
+        raise Blocked(f"{what}에 {', '.join(missing)} 칸이 비어 있다. 다시 쓰게 해도 채우지 않았다", out[-4000:])
+    return out
 
 
 def command_of(comment: Comment) -> str | None:
@@ -177,6 +215,10 @@ class Harness:
         plans = [c for c in self.owner_comments(number) if PLAN_MARK in c.body]
         return plans[-1] if plans else None
 
+    def approved_plan(self, number: int) -> str:
+        plan = self.plan_comment(number)
+        return plan.body.rsplit("\n\n---\n", 1)[0].removeprefix(PLAN_HEADER).strip() if plan else ""
+
     def owner_notes(self, number: int) -> str:
         notes = []
         for c in self.owner_comments(number):
@@ -220,7 +262,7 @@ class Harness:
             issue_body=issue.body,
             issue_comments=self.owner_notes(issue.number),
         )
-        plan = run_claude(prompt, worktree, PLAN_TOOLS, timeout=900).strip()
+        plan = run_with_sections(prompt, worktree, PLAN_TOOLS, PLAN_SECTIONS, "계획", timeout=900)
         summary = plan[:700] + ("..." if len(plan) > 700 else "")
         url = self.gh.issue_url(issue.number)
         # 디스코드 ✅는 결정을 담지 못한다. 승인이 결정 댓글보다 먼저 읽혀 결정이 빠진 일이 두 번 있었다(#1084, #1089).
@@ -269,14 +311,12 @@ class Harness:
         worktree = self.ensure_worktree(issue.number)
         if self.commits_ahead(worktree) > 0:
             return Outcome.ADVANCE
-        plan = self.plan_comment(issue.number)
-        approved = plan.body.rsplit("\n\n---\n", 1)[0].removeprefix(PLAN_HEADER).strip() if plan else ""
         prompt = render(
             "implement",
             issue_number=issue.number,
             issue_title=issue.title,
             issue_body=issue.body,
-            plan=approved,
+            plan=self.approved_plan(issue.number),
             issue_comments=self.owner_notes(issue.number),
         )
         run_claude(prompt, worktree, IMPLEMENT_TOOLS, permission_mode="acceptEdits", timeout=3600)
@@ -314,20 +354,25 @@ class Harness:
         sha = self.head(worktree)
         report_mark = f"<!-- ai-harness:report sha={sha} -->"
         if not any(report_mark in c.body for c in self.gh.comments(pr["number"])):
-            self.gh.add_comment(pr["number"], f"{report_mark}\n{report_markdown(outcome, review, fix_rounds)}")
+            scope = review_scope((HERE / "prompts" / "security_review.md").read_text())
+            self.gh.add_comment(pr["number"], f"{report_mark}\n{report_markdown(outcome, review, fix_rounds, scope)}")
         self.gh.set_status(sha, "success", "결정적 검사 통과. AI 보안 리뷰는 참고용", pr["url"])
         self.notify(f"#{issue.number} {issue.title} PR이 열렸다\n{pr['url']}")
         return Outcome.ADVANCE
 
     def open_pr(self, issue: Issue, worktree: Path, branch: str) -> dict:
-        body = run_claude(
+        body = run_with_sections(
             render("pr_body", issue_number=issue.number, issue_title=issue.title, diff_base=BASE_REF),
             worktree,
             PR_BODY_TOOLS,
+            PR_SECTIONS,
+            "PR 본문",
             timeout=900,
-        ).strip()
+        )
         if f"Closes #{issue.number}" not in body:
             body = f"Closes #{issue.number}\n\n{body}"
+        risks = re.sub(r"<!--.*?-->", "", section(self.approved_plan(issue.number), RISK_SECTION), flags=re.DOTALL).strip()
+        body += f"\n\n{PR_RISK_HEADER}\n\n{risks or '(승인된 계획에 위험 칸이 없다)'}\n"
         subjects = git(worktree, "log", f"{BASE_REF}..HEAD", "--reverse", "--format=%s").splitlines()
         return self.gh.create_pr(branch, BASE_BRANCH, subjects[0] if subjects else issue.title, body)
 
