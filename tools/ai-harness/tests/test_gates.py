@@ -1,7 +1,11 @@
+import os
+import subprocess
+import sys
+import tempfile
 import unittest
 from pathlib import Path
 
-from support import HARNESS_DIR  # noqa: F401
+from support import GIT_ENV, HARNESS_DIR
 from gates import GATES, GateContext, parse_review
 
 
@@ -77,3 +81,70 @@ class ReviewParseTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class QueryPlanCheckTest(unittest.TestCase):
+    """기준 커밋을 origin/develop으로 둔 임시 저장소에서 query_plan_check.py를 실제로 돌린다."""
+
+    MAPPER = "backend/src/main/resources/mapper/spot/SpotMapper.xml"
+    MIGRATION = "backend/src/main/resources/db/migration/V99__spot_index.sql"
+    EXPLAIN_TEST = "backend/src/test/java/com/moewadeul/spot/infra/SpotIndexIntegrationTest.java"
+
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.repo = Path(tmp.name)
+        self.git("init", "-q", "-b", "develop")
+        self.write(self.MIGRATION.replace("V99__spot_index", "V98__spot"), "CREATE TABLE spot (id BIGINT PRIMARY KEY, region VARCHAR(20));\n")
+        self.commit("base")
+        self.git("update-ref", "refs/remotes/origin/develop", "HEAD")
+
+    def git(self, *args):
+        subprocess.run(["git", *args], cwd=self.repo, check=True, capture_output=True, env={**os.environ, **GIT_ENV})
+
+    def write(self, path, text):
+        full = self.repo / path
+        full.parent.mkdir(parents=True, exist_ok=True)
+        full.write_text(text)
+
+    def commit(self, message):
+        self.git("add", ".")
+        self.git("commit", "-q", "-m", message)
+
+    def check(self):
+        return subprocess.run(
+            [sys.executable, str(HARNESS_DIR / "query_plan_check.py"), "origin/develop"],
+            cwd=self.repo, capture_output=True, text=True,
+        )
+
+    def test_인덱스를_만들고_EXPLAIN_테스트가_없으면_실패하고_바뀐_줄을_알린다(self):
+        self.write(self.MIGRATION, "-- 지역 검색용\nCREATE INDEX idx_spot_region ON spot (region);\n")
+        self.commit("change")
+        done = self.check()
+        self.assertEqual(done.returncode, 1)
+        self.assertIn("CREATE INDEX idx_spot_region", done.stdout)
+        self.assertNotIn("지역 검색용", done.stdout)
+        self.assertIn("CLAUDE.md DB 규칙", done.stdout)
+
+    def test_인덱스와_함께_EXPLAIN_테스트가_바뀌면_통과한다(self):
+        self.write(self.MIGRATION, "CREATE INDEX idx_spot_region ON spot (region);\n")
+        self.write(self.EXPLAIN_TEST, 'class T { String q = "EXPLAIN SELECT id FROM spot WHERE region = ?"; }\n')
+        self.commit("change")
+        self.assertEqual(self.check().returncode, 0)
+
+    def test_EXPLAIN_없는_테스트만_바뀌면_통과로_치지_않는다(self):
+        self.write(self.MIGRATION, "ALTER TABLE spot ADD INDEX idx_spot_region (region);\n")
+        self.write(self.EXPLAIN_TEST, "class T {}\n")
+        self.commit("change")
+        self.assertEqual(self.check().returncode, 1)
+
+    def test_기본_키만_있는_새_표나_매퍼_변경은_검사하지_않는다(self):
+        self.write(self.MIGRATION, "CREATE TABLE lock_bucket (bucket INT PRIMARY KEY);\n")
+        self.write(self.MAPPER, "<select id=\"find\">SELECT id FROM spot WHERE region = #{region}</select>\n")
+        self.commit("change")
+        self.assertEqual(self.check().returncode, 0)
+
+    def test_마이그레이션이_바뀌면_게이트가_고르고_하네스_쪽_스크립트를_돈다(self):
+        command = selected([self.MIGRATION])["query-plan-test"]
+        self.assertEqual(command[1], str(HARNESS_DIR / "query_plan_check.py"))
+        self.assertNotIn("query-plan-test", selected([self.MAPPER]))
